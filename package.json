@@ -14,7 +14,8 @@
     "reel": "tsx scripts/buildReel.ts",
     "transcribe": "tsx scripts/transcribeClips.ts",
     "sfx": "tsx scripts/makeSfx.ts",
-    "audio": "tsx scripts/extractAudio.ts"
+    "audio": "tsx scripts/extractAudio.ts",
+    "fonts": "tsx scripts/fetchFonts.ts"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,6 @@
   "homepage": "https://github.com/cdevidts/Videos-Next-Layer#readme",
   "dependencies": {
     "@remotion/cli": "^4.0.520",
-    "@remotion/google-fonts": "^4.0.520",
     "@remotion/install-whisper-cpp": "^4.0.520",
     "@remotion/media-utils": "^4.0.520",
     "@remotion/renderer": "^4.0.520",

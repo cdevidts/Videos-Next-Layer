@@ -1,10 +1,10 @@
 /**
  * Transcribe con whisper.cpp los clips que tienen voz y guarda, por clip:
- *   - segments: frases con inicio/fin (para subtítulos)
- *   - words: palabras con timestamp (para subtítulos karaoke)
- *   - speech: tramos con voz (para cortar silencios)
+ *   - segments: frases con inicio/fin
+ *   - words: palabras con timestamp (subtítulos karaoke)
+ *   - speech: tramos con voz medidos por energía (corte de silencios)
  *
- *   npm run transcribe -- --dir public/input/video-46/_audio
+ *   npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -30,64 +30,159 @@ const WHISPER_VERSION = '1.5.5';
 
 export type Word = {text: string; start: number; end: number};
 export type Segment = {text: string; start: number; end: number};
+export type Range = {start: number; end: number};
 export type ClipTranscript = {
   file: string;
   language: string;
   segments: Segment[];
   words: Word[];
-  /** Tramos con voz, ya fusionados: sirven para cortar silencios. */
-  speech: Array<{start: number; end: number}>;
+  speech: Range[];
 };
 
-/** Une tramos de voz separados por menos de `gap` segundos. */
-const mergeSpeech = (
-  segments: Array<{start: number; end: number}>,
-  gap = 0.45,
-  pad = 0.12,
-): Array<{start: number; end: number}> => {
-  const sorted = [...segments].sort((a, b) => a.start - b.start);
-  const out: Array<{start: number; end: number}> = [];
-  for (const segment of sorted) {
-    const start = Math.max(segment.start - pad, 0);
-    const end = segment.end + pad;
-    const last = out[out.length - 1];
-    if (last && start - last.end <= gap) {
-      last.end = Math.max(last.end, end);
-    } else {
-      out.push({start, end});
+/** Niveles RMS del WAV en ventanas de `window` segundos. */
+const rmsWindows = (file: string, window = 0.1): {levels: number[]; window: number} => {
+  const buffer = fs.readFileSync(file);
+  const dataIndex = buffer.indexOf('data', 12, 'ascii');
+  if (dataIndex === -1) return {levels: [], window};
+  const sampleRate = buffer.readUInt32LE(24);
+  const samples = buffer.subarray(dataIndex + 8);
+  const size = Math.floor(sampleRate * window) * 2;
+  const levels: number[] = [];
+
+  for (let offset = 0; offset + size <= samples.length; offset += size) {
+    let sum = 0;
+    for (let i = offset; i < offset + size; i += 2) {
+      const value = samples.readInt16LE(i) / 32768;
+      sum += value * value;
     }
+    levels.push(20 * Math.log10(Math.sqrt(sum / (size / 2)) + 1e-9));
+  }
+  return {levels, window};
+};
+
+/**
+ * Tramos con voz según la energía del audio. Es lo que manda para cortar los
+ * silencios: whisper suele estirar el primer token hasta t=0.
+ */
+const energyRanges = (
+  file: string,
+  thresholdDb = -38,
+  maxGap = 0.4,
+  pad = 0.12,
+): Range[] => {
+  const {levels, window} = rmsWindows(file);
+  const ranges: Range[] = [];
+  let open: Range | null = null;
+
+  levels.forEach((level, index) => {
+    const t = index * window;
+    if (level > thresholdDb) {
+      if (open && t - open.end <= maxGap) {
+        open.end = t + window;
+      } else {
+        if (open) ranges.push(open);
+        open = {start: t, end: t + window};
+      }
+    }
+  });
+  if (open) ranges.push(open);
+
+  return ranges
+    .map((range) => ({
+      start: Math.max(range.start - pad, 0),
+      end: range.end + pad,
+    }))
+    .filter((range) => range.end - range.start >= 0.35);
+};
+
+const totalSeconds = (ranges: Range[]) =>
+  ranges.reduce((sum, range) => sum + (range.end - range.start), 0);
+
+/**
+ * Ajusta los tiempos de whisper al tramo con voz real. Sin esto, el karaoke
+ * arranca antes de que la persona hable.
+ */
+const alignWords = (words: Word[], ranges: Range[]): Word[] => {
+  if (!words.length || !ranges.length) return words;
+
+  const from = {start: words[0].start, end: words[words.length - 1].end};
+  const to = {start: ranges[0].start, end: ranges[ranges.length - 1].end};
+  const fromLength = from.end - from.start;
+  const toLength = to.end - to.start;
+
+  const offBy = Math.abs(from.start - to.start) + Math.abs(from.end - to.end);
+  if (fromLength <= 0 || toLength <= 0 || offBy < 0.3) return words;
+
+  const scale = toLength / fromLength;
+  return words.map((word) => ({
+    text: word.text,
+    start: to.start + (word.start - from.start) * scale,
+    end: to.start + (word.end - from.start) * scale,
+  }));
+};
+
+/** Une los tokens de whisper en palabras: los que abren palabra traen espacio. */
+const tokensToWords = (
+  transcription: Array<{text?: string; offsets: {from: number; to: number}}>,
+): Word[] => {
+  const words: Word[] = [];
+  for (const item of transcription) {
+    const raw = item.text ?? '';
+    if (!raw.trim()) continue;
+    const last = words[words.length - 1];
+    if (!last || raw.startsWith(' ')) {
+      words.push({text: raw.trim(), start: item.offsets.from / 1000, end: item.offsets.to / 1000});
+    } else {
+      last.text += raw;
+      last.end = item.offsets.to / 1000;
+    }
+  }
+  return words;
+};
+
+/** Descarta lo que whisper inventa en los silencios: [BLANK_AUDIO], (música)... */
+const dropMarkers = (words: Word[]): Word[] => {
+  const out: Word[] = [];
+  let inMarker = false;
+  for (const word of words) {
+    const text = word.text.trim();
+    if (!text) continue;
+    if (/[[(*]/.test(text)) inMarker = true;
+    const closes = /[\])*]/.test(text);
+    if (inMarker) {
+      if (closes) inMarker = false;
+      continue;
+    }
+    if (/^[.,;:!?¡¿"'()[\]*-]+$/.test(text)) continue;
+    out.push({...word, text});
   }
   return out;
 };
 
-/** Detecta voz midiendo el nivel del WAV: evita transcribir B-roll mudo. */
-const hasSpeech = (file: string, thresholdDb = -38, minRatio = 0.04): boolean => {
-  const buffer = fs.readFileSync(file);
-  const dataIndex = buffer.indexOf('data', 12, 'ascii');
-  if (dataIndex === -1) return false;
-  const sampleRate = buffer.readUInt32LE(24);
-  const samples = buffer.subarray(dataIndex + 8);
-  const window = Math.floor(sampleRate * 0.25) * 2;
-  let loud = 0;
-  let total = 0;
-
-  for (let offset = 0; offset + window <= samples.length; offset += window) {
-    let sum = 0;
-    for (let i = offset; i < offset + window; i += 2) {
-      const value = samples.readInt16LE(i) / 32768;
-      sum += value * value;
+const toSegments = (words: Word[]): Segment[] => {
+  const segments: Segment[] = [];
+  let current: Segment | null = null;
+  for (const word of words) {
+    if (!current) {
+      current = {text: word.text, start: word.start, end: word.end};
+      continue;
     }
-    const db = 20 * Math.log10(Math.sqrt(sum / (window / 2)) + 1e-9);
-    if (db > thresholdDb) loud++;
-    total++;
+    if (word.end - current.start > 3.2 || word.start - current.end > 0.6) {
+      segments.push(current);
+      current = {text: word.text, start: word.start, end: word.end};
+    } else {
+      current.text = `${current.text} ${word.text}`.replace(/\s+/g, ' ');
+      current.end = word.end;
+    }
   }
-  return total > 0 && loud / total >= minRatio;
+  if (current) segments.push(current);
+  return segments;
 };
 
 const main = async () => {
   const dir = arg('dir') ?? 'public/input/video-46/_audio';
-  const model = (arg('model') ?? 'small') as WhisperModel;
-  const language = arg('language') ?? 'es';
+  const model = (arg('model') ?? 'medium') as WhisperModel;
+  const language = (arg('language') ?? 'es') as Language;
 
   await installWhisperCpp({to: WHISPER_PATH, version: WHISPER_VERSION});
   await downloadWhisperModel({model, folder: WHISPER_PATH});
@@ -96,93 +191,43 @@ const main = async () => {
 
   for (const file of files) {
     const inputPath = path.resolve(dir, file);
-    const target = path.join(dir, `${file.replace(/\.wav$/, '')}.json`);
+    const name = file.replace(/\.wav$/, '');
+    const target = path.join(dir, `${name}.json`);
+    const ranges = energyRanges(inputPath);
 
-    if (!hasSpeech(inputPath)) {
-      // B-roll sin voz: sin transcripción (si no, whisper alucina marcas).
+    // B-roll mudo: sin transcripción (si no, el modelo alucina marcas).
+    if (totalSeconds(ranges) < 0.6) {
       if (fs.existsSync(target)) fs.unlinkSync(target);
       console.log(`🔇 ${file} sin voz, se omite`);
       continue;
     }
 
     console.log(`🎙️  ${file}`);
-
     const {transcription} = await transcribe({
       inputPath,
       whisperPath: WHISPER_PATH,
       model,
-      language: language as Language,
+      language,
       tokenLevelTimestamps: true,
       whisperCppVersion: WHISPER_VERSION,
       printOutput: false,
     });
 
-    // whisper.cpp devuelve tokens (trozos de palabra). Los que empiezan con
-    // espacio abren palabra nueva; el resto continúa la anterior.
-    const rawWords: Word[] = [];
-    for (const item of transcription) {
-      const raw = item.text ?? '';
-      if (!raw.trim()) continue;
-      const start = item.offsets.from / 1000;
-      const end = item.offsets.to / 1000;
-      const last = rawWords[rawWords.length - 1];
-      if (!last || raw.startsWith(' ')) {
-        rawWords.push({text: raw.trim(), start, end});
-      } else {
-        last.text += raw;
-        last.end = end;
-      }
-    }
-
-    // Filtra las marcas que whisper inventa en los silencios:
-    // [BLANK_AUDIO], (música), *suspiro*, [silbando]...
-    const words: Word[] = [];
-    let inMarker = false;
-    for (const word of rawWords) {
-      const text = word.text.trim();
-      if (!text) continue;
-      if (/[[(*]/.test(text)) inMarker = true;
-      const closes = /[\])*]/.test(text);
-      if (inMarker) {
-        if (closes) inMarker = false;
-        continue;
-      }
-      if (closes && /^[\])*.,;:!?¡¿-]+$/.test(text)) continue;
-      if (/^[.,;:!?¡¿"'()\[\]*-]+$/.test(text)) continue;
-      words.push({text, start: word.start, end: word.end});
-    }
-
-    const segments: Segment[] = [];
-    let current: Segment | null = null;
-    for (const word of words) {
-      if (!current) {
-        current = {text: word.text, start: word.start, end: word.end};
-        continue;
-      }
-      if (word.end - current.start > 3.2 || word.start - current.end > 0.6) {
-        segments.push(current);
-        current = {text: word.text, start: word.start, end: word.end};
-      } else {
-        current.text = `${current.text} ${word.text}`.replace(/\s+/g, ' ');
-        current.end = word.end;
-      }
-    }
-    if (current) segments.push(current);
-
+    const words = alignWords(dropMarkers(tokensToWords(transcription)), ranges);
     const result: ClipTranscript = {
-      file: file.replace(/\.wav$/, ''),
+      file: name,
       language,
-      segments: segments.map((s) => ({...s, text: s.text.trim()})),
+      segments: toSegments(words),
       words,
-      speech: mergeSpeech(words),
+      speech: ranges,
     };
 
     fs.writeFileSync(target, `${JSON.stringify(result, null, 2)}\n`);
     console.log(
-      `   ${result.segments.length} frases · ${result.speech.length} tramos con voz → ${path.basename(target)}`,
+      `   ${result.segments.length} frases · ${ranges.length} tramos con voz (${totalSeconds(ranges).toFixed(1)}s)`,
     );
-    for (const s of result.segments) {
-      console.log(`   [${s.start.toFixed(2)}-${s.end.toFixed(2)}] ${s.text}`);
+    for (const segment of result.segments) {
+      console.log(`   [${segment.start.toFixed(2)}-${segment.end.toFixed(2)}] ${segment.text}`);
     }
   }
 };

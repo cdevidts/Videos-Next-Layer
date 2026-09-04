@@ -12,8 +12,7 @@ import {
 } from 'remotion';
 import {TransitionSeries, linearTiming} from '@remotion/transitions';
 import {fade} from '@remotion/transitions/fade';
-import {loadFont as loadAnton} from '@remotion/google-fonts/Anton';
-import {loadFont as loadInter} from '@remotion/google-fonts/Inter';
+import {DISPLAY_FONT, TEXT_FONT} from './lib/fonts';
 import {
   DEFAULT_TRANSITION_FRAMES,
   groupWords,
@@ -22,12 +21,6 @@ import {
   type ReelShot,
   type VerticalReelProps,
 } from './lib/reel';
-
-const {fontFamily: antonFamily} = loadAnton();
-const {fontFamily: interFamily} = loadInter();
-
-const DISPLAY_FONT = `${antonFamily}, "Arial Black", Impact, system-ui, sans-serif`;
-const TEXT_FONT = `${interFamily}, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif`;
 
 const GRAIN =
   'data:image/svg+xml;utf8,' +
@@ -234,11 +227,13 @@ const StaticCaption: React.FC<{text: string; accentColor: string}> = ({text, acc
 };
 
 /** Un corte: video en cover, zoom lento, golpe de entrada, grade y textos. */
-const Shot: React.FC<{shot: ReelShot; accentColor: string; voiceVolume: number}> = ({
-  shot,
-  accentColor,
-  voiceVolume,
-}) => {
+const Shot: React.FC<{
+  shot: ReelShot;
+  accentColor: string;
+  voiceVolume: number;
+  tickSrc?: string;
+  sfxVolume: number;
+}> = ({shot, accentColor, voiceVolume, tickSrc, sfxVolume}) => {
   const frame = useCurrentFrame();
   const {durationInFrames, fps, width, height} = useVideoConfig();
 
@@ -276,6 +271,12 @@ const Shot: React.FC<{shot: ReelShot; accentColor: string; voiceVolume: number}>
 
       <Grade accentColor={accentColor} />
       <AbsoluteFill style={{backgroundColor: `rgba(255,255,255,${flash})`}} />
+
+      {tickSrc && !shot.words?.length && shot.caption ? (
+        <Sequence from={4} durationInFrames={8} name="SFX texto">
+          <Audio src={resolveSrc(tickSrc)} volume={sfxVolume * 0.7} />
+        </Sequence>
+      ) : null}
 
       {shot.label ? <LabelChip label={shot.label} accentColor={accentColor} /> : null}
       {shot.words?.length ? (
@@ -360,7 +361,9 @@ const Progress: React.FC<{shots: ReelShot[]; accentColor: string; transition: nu
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const lengths = shots.map((shot) => shotFrames(shot, fps) - transition);
+  const lengths = shots.map(
+    (shot, index) => shotFrames(shot, fps) - (index < shots.length - 1 ? transition : 0),
+  );
   const total = lengths.reduce((a, b) => a + b, 0);
 
   let consumed = 0;
@@ -433,7 +436,13 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
         {shots.map((shot, index) => (
           <React.Fragment key={`${shot.src}-${index}`}>
             <TransitionSeries.Sequence durationInFrames={shotFrames(shot, fps)}>
-              <Shot shot={shot} accentColor={accentColor} voiceVolume={voiceVolume} />
+              <Shot
+                shot={shot}
+                accentColor={accentColor}
+                voiceVolume={voiceVolume}
+                tickSrc={sfx?.tick}
+                sfxVolume={sfxVolume}
+              />
             </TransitionSeries.Sequence>
             {index < shots.length - 1 ? (
               <TransitionSeries.Transition

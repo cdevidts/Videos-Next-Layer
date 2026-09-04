@@ -63,6 +63,21 @@ type Transcript = {
 
 const VIDEO_EXTENSIONS = ['.mp4', '.mov', '.m4v', '.webm', '.mkv'];
 const MIN_SHOT_SECONDS = 0.8;
+/** Pausas más cortas que esto no valen un corte: se fusionan. */
+const MERGE_GAP_SECONDS = 0.4;
+
+const mergeRanges = (ranges: Array<{start: number; end: number}>) => {
+  const merged: Array<{start: number; end: number}> = [];
+  for (const range of ranges) {
+    const last = merged[merged.length - 1];
+    if (last && range.start - last.end < MERGE_GAP_SECONDS) {
+      last.end = Math.max(last.end, range.end);
+    } else {
+      merged.push({...range});
+    }
+  }
+  return merged;
+};
 
 const publicPath = (absolute: string) =>
   path.relative(path.resolve('public'), absolute).split(path.sep).join('/');
@@ -117,7 +132,7 @@ const main = () => {
 
     if (transcript) {
       // Corte de silencios: un corte por cada tramo con voz.
-      const ranges = transcript.speech
+      const ranges = mergeRanges(transcript.speech)
         .map((range) => ({
           start: Math.max(range.start, windowStart),
           end: Math.min(range.end, windowEnd),
@@ -127,11 +142,14 @@ const main = () => {
       if (ranges.length) {
         ranges.forEach((range, index) => {
           const words = transcript.words
-            .filter((word) => word.end > range.start && word.start < range.end)
+            .filter((word) => {
+              const middle = (word.start + word.end) / 2;
+              return middle >= range.start && middle < range.end;
+            })
             .map((word) => ({
               text: word.text,
-              start: Math.max(word.start - range.start, 0),
-              end: Math.max(word.end - range.start, 0.05),
+              start: Math.min(Math.max(word.start - range.start, 0), range.end - range.start),
+              end: Math.min(Math.max(word.end - range.start, 0.05), range.end - range.start),
             }));
 
           shots.push({

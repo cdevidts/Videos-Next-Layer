@@ -11,6 +11,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 import type {SubtitleCue, VerticalClipProps} from './lib/types';
+import {DISPLAY_FONT, TEXT_FONT} from './lib/fonts';
 
 const resolveSrc = (src: string) => {
   if (/^(https?:)?\/\//.test(src) || src.startsWith('data:')) {
@@ -104,9 +105,8 @@ export const VerticalClip: React.FC<VerticalClipProps> = ({
           <h1
             className="text-center font-black uppercase leading-tight tracking-tight text-white"
             style={{
-              fontFamily:
-                'Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif',
-              fontSize: 82,
+              fontFamily: DISPLAY_FONT,
+              fontSize: 90,
               textShadow: '0 8px 32px rgba(0,0,0,0.65)',
               borderBottom: `10px solid ${accentColor}`,
               paddingBottom: 18,
@@ -123,8 +123,7 @@ export const VerticalClip: React.FC<VerticalClipProps> = ({
           <p
             className="text-center font-bold leading-snug text-white"
             style={{
-              fontFamily:
-                'Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif',
+              fontFamily: TEXT_FONT,
               fontSize: 58,
               textShadow: '0 6px 24px rgba(0,0,0,0.8)',
               backgroundColor: 'rgba(0,0,0,0.42)',

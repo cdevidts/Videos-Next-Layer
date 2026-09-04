@@ -64,6 +64,7 @@ npm run fetch-drive -- --list                    # ver proyectos disponibles
 npm run fetch-drive -- --project "Video 46"      # baja todo a public/input/video-46/
 npm run audio -- --dir public/input/video-46     # extrae el audio de cada clip a WAV 16 kHz
 npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
+npm run fonts                                    # baja las tipografías al repo (una sola vez)
 npm run sfx                                      # genera los efectos (una sola vez)
 npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
 ```
@@ -75,6 +76,7 @@ Qué hace cada paso:
 | `fetch-drive` | Descarga el proyecto desde Drive con caché por tamaño y arma el `manifest.json`. |
 | `audio` | Extrae el audio de cada clip a WAV mono 16 kHz (lo que necesita whisper). |
 | `transcribe` | Instala whisper.cpp, detecta qué clips tienen voz (mide el nivel, no transcribe B-roll mudo) y guarda frases + palabras con timestamp. Filtra las marcas que whisper inventa en los silencios (`[BLANK_AUDIO]`, `(música)`). |
+| `fonts` | Descarga Anton e Inter a `public/fonts/` y genera `src/fonts.generated.ts`. El Chrome del render no siempre puede salir a fonts.gstatic.com, así que las fuentes viven en el repo. |
 | `sfx` | Sintetiza `whoosh`, `tick`, `riser` e `impact` en `public/sfx/` — sin samples externos, sin problemas de licencia. |
 | `reel` | Normaliza cada fuente a un proxy 1080x1920 H.264 (aplica la rotación de cámara y baja el 4K/HEVC), **corta los silencios** usando la transcripción, arma los props y renderiza. |
 
