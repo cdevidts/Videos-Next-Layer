@@ -234,7 +234,9 @@ const main = () => {
         whooshes: ['sfx/whoosh-1.mp3', 'sfx/whoosh-2.mp3', 'sfx/whoosh-3.mp3'],
         pop: 'sfx/pop.mp3',
         riser: 'sfx/riser.mp3',
-        impact: 'sfx/impact.mp3',
+        // Sin golpe en el cierre a propósito: el swell del último corte ya
+        // cubre la placa de marca. Dos sonidos ahí se pisan y suenan "de más".
+        impact: undefined,
       }
     : undefined;
   if (!sfx) {

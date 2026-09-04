@@ -23,38 +23,39 @@
       "file": "DSCF7536.MOV",
       "startFromSeconds": 4.2,
       "durationInSeconds": 3.6,
-      "speed": 1.12
+      "speed": 1.15
     },
     {
       "file": "DSCF7537.MOV",
-      "startFromSeconds": 2.9,
-      "durationInSeconds": 4.4,
+      "startFromSeconds": 4.6,
+      "durationInSeconds": 2.9,
       "sfx": "teclado.mp3",
-      "speed": 1.15
+      "speed": 1.2
     },
     {
       "file": "DSCF7537.MOV",
-      "startFromSeconds": 10.6,
-      "durationInSeconds": 9.4,
-      "speed": 1.15
+      "startFromSeconds": 12.4,
+      "durationInSeconds": 6.9,
+      "speed": 1.25
     },
     {
       "file": "DSCF7537.MOV",
-      "startFromSeconds": 27.4,
-      "durationInSeconds": 8.2,
+      "startFromSeconds": 29.8,
+      "durationInSeconds": 4.5,
       "sfx": "reveal.mp3",
-      "speed": 1.1
+      "speed": 1.15
     },
     {
       "file": "DSCF7537.MOV",
-      "startFromSeconds": 38.4,
-      "durationInSeconds": 9.8,
-      "speed": 1.1
+      "startFromSeconds": 39.9,
+      "durationInSeconds": 8.4,
+      "speed": 1.25
     },
     {
       "file": "DSCF7532.MOV",
       "startFromSeconds": 3.6,
-      "durationInSeconds": 5.2
+      "durationInSeconds": 5.2,
+      "speed": 1.1
     },
     {
       "file": "DSCF7531.MOV",
@@ -62,21 +63,22 @@
       "sfx": "taladro.mp3",
       "caption": "Un taladro y nada más",
       "startFromSeconds": 1.4,
-      "durationInSeconds": 2.6
+      "durationInSeconds": 2.0
     },
     {
       "file": "DSCF7530.MOV",
       "ignoreSpeech": true,
-      "sfx": "reveal-final.mp3",
+      "sfx": "riser-final.mp3",
       "caption": "Cada color en su lugar",
       "startFromSeconds": 0.8,
-      "durationInSeconds": 3.0
+      "durationInSeconds": 2.6
     },
     {
       "file": "DSCF7529.MOV",
       "ignoreSpeech": true,
-      "startFromSeconds": 5.4,
-      "durationInSeconds": 3.2
+      "sfx": "swell-reveal.mp3",
+      "startFromSeconds": 5.2,
+      "durationInSeconds": 3.4
     }
   ]
 }
