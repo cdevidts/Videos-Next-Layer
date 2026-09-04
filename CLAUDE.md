@@ -74,6 +74,12 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
   cortado o la fuente caída.
 - Revisar que el audio tenga contenido, no solo que exista la pista.
 
+## OmniRoute (plan B cuando se acaban los créditos)
+
+Si la usuaria pide instalar OmniRoute, sigue `docs/omniroute-setup.md` al pie de la letra: es la
+lista de tareas del agente, no un instructivo para ella. Resumen: deja el comando `claude-omni`
+andando y **nunca** toca el `claude` global.
+
 ## Entorno
 
 - FFmpeg y ffprobe vienen con Remotion: `npx remotion ffmpeg`, `npx remotion ffprobe`.
