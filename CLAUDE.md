@@ -13,6 +13,17 @@ npm install          # si node_modules no existe
 npm run status       # qué está hecho, qué falta y el comando que sigue
 ```
 
+Si la tarea es sobre un **video** (armar, corregir, revisar, cambiar gráfica o
+sonido), la skill `reel-nextlayer` tiene el playbook completo: qué hace que un
+reel funcione, los errores de sonido y gráfica ya cometidos, y el orden de
+trabajo. Este archivo solo enruta; el detalle vive ahí.
+
+Ese conocimiento de referencia no está en git (son skills de terceros). Se
+instala una vez con `npm run skills`, que deja en `.agents/skills/`:
+`remotion-*` (motor: animación, subtítulos, render) y `ultimate-video-editor`
+(diseño sonoro, loudness por plataforma, ganchos y ritmo viral). Léelas cuando
+necesites el detalle, no de entrada.
+
 `npm run status` deduce todo del disco, así que no miente aunque la sesión
 anterior se haya cortado a la mitad. Después lee `docs/journal.md`: ahí está el
 *por qué* de las decisiones, que es lo único que no se puede deducir mirando
@@ -55,7 +66,8 @@ npm run fetch-drive -- --project "Video 46"      # descarga a public/input/video
 npm run audio -- --dir public/input/video-46     # audio a WAV 16 kHz
 npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
 npm run fonts                                    # una sola vez
-npm run sfx                                      # una sola vez
+npm run sfx                                      # una sola vez (descarga los efectos)
+npm run check -- --plan plans/video-46.json      # valida el plan antes de renderizar
 npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
 ```
 
@@ -73,9 +85,22 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
 - **No asumas la orientación por `ffprobe`**: los `.MOV` reportan 3840x2160 pero
   son verticales por metadato de rotación.
 - **No metas música comercial.** Ver la entrada de la bitácora sobre Content ID.
+- **Nunca uses `_audio/<clip>.wav` como pista del reel.** Ese archivo es mono
+  16 kHz porque es lo que exige whisper, y a 16 kHz el audio pierde todo sobre
+  los 8 kHz: suena opaco, como teléfono. La pista del reel sale de
+  `_audio/hq/<clip>.wav` (48 kHz estéreo). `buildReel.ts` ya la prefiere y
+  avisa si falta.
+- **No sintetices los efectos de sonido.** Se probó: ruido filtrado con un
+  pasa-bajos de un polo no suena a whoosh, suena a arena, porque le falta el
+  barrido de frecuencia resonante que tiene uno real. Los efectos se descargan
+  con `npm run sfx`.
+- **No uses el mismo whoosh en todos los cortes.** Suena a máquina. Hay tres
+  variantes y `VerticalReel` las rota, variando también el volumen.
 
 ## Verificar antes de dar algo por terminado
 
+- `npm run check -- --plan <plan>` sin problemas. Son 2 segundos y evita
+  descubrir a los 15 minutos que faltaba un archivo.
 - `npx tsc --noEmit` limpio.
 - `npm run review -- <render.mp4>` — saca 8 frames parejos a `out/review/<nombre>/`
   y un resumen del nivel de audio en dBFS por ventana. Léelos con `Read`. Un
@@ -101,12 +126,6 @@ filter"). Sí están disponibles `scale`, `volume`, `concat`, `loudnorm`, `pan`,
 nuevo, probarlo suelto primero; si falla así, hay que resolverlo sin ffmpeg
 (ver `rmsWindows` en `scripts/reviewReel.ts` y `transcribeClips.ts` — análisis
 de audio hecho a mano en Node leyendo el WAV, en vez de con un filtro).
-
-## OmniRoute (plan B cuando se acaban los créditos)
-
-Si la usuaria pide instalar OmniRoute, sigue `docs/omniroute-setup.md` al pie de la letra: es la
-lista de tareas del agente, no un instructivo para ella. Resumen: deja el comando `claude-omni`
-andando y **nunca** toca el `claude` global.
 
 ## Entorno
 

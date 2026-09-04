@@ -22,8 +22,10 @@ export type ReelShot = {
 };
 
 export type ReelSfx = {
-  whoosh?: string;
-  tick?: string;
+  /** Varios whooshes distintos: se rotan por corte. Usar siempre el mismo
+   * sonido en cada transición es lo que hace que el video suene a máquina. */
+  whooshes?: string[];
+  pop?: string;
   riser?: string;
   impact?: string;
 };

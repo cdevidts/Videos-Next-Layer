@@ -127,7 +127,17 @@ const main = () => {
       : info.durationInSeconds;
 
     const transcript = item.ignoreSpeech ? null : loadTranscript(audioDir, name);
-    const audioFile = path.join(audioDir, `${name}.wav`);
+    // La pista del reel sale de _audio/hq (48 kHz estéreo). La de la raíz de
+    // _audio es mono 16 kHz y existe solo para whisper: usarla acá deja el
+    // audio opaco.
+    const hqFile = path.join(audioDir, 'hq', `${name}.wav`);
+    const legacyFile = path.join(audioDir, `${name}.wav`);
+    const audioFile = fs.existsSync(hqFile) ? hqFile : legacyFile;
+    if (!fs.existsSync(hqFile) && fs.existsSync(legacyFile)) {
+      console.warn(
+        `⚠️  ${name}: usando audio de 16 kHz (calidad teléfono). Corre \`npm run audio\` para generar _audio/hq/.`,
+      );
+    }
     const audioSrc = fs.existsSync(audioFile) ? publicPath(path.resolve(audioFile)) : undefined;
 
     if (transcript) {
@@ -190,15 +200,17 @@ const main = () => {
   const transitionInFrames = plan.transitionInFrames ?? 8;
   const totalFrames = reelDurationInFrames(shots, fps, transitionInFrames);
 
-  const sfxDir = 'sfx';
-  const sfx = fs.existsSync('public/sfx')
+  const sfx = fs.existsSync('public/sfx/whoosh-1.mp3')
     ? {
-        whoosh: `${sfxDir}/whoosh.wav`,
-        tick: `${sfxDir}/tick.wav`,
-        riser: `${sfxDir}/riser.wav`,
-        impact: `${sfxDir}/impact.wav`,
+        whooshes: ['sfx/whoosh-1.mp3', 'sfx/whoosh-2.mp3', 'sfx/whoosh-3.mp3'],
+        pop: 'sfx/pop.mp3',
+        riser: 'sfx/riser.mp3',
+        impact: 'sfx/impact.mp3',
       }
     : undefined;
+  if (!sfx) {
+    console.warn('⚠️  No hay efectos en public/sfx/. Corre `npm run sfx`.');
+  }
 
   const props: VerticalReelProps = {
     shots,
@@ -243,15 +255,33 @@ const main = () => {
     return;
   }
 
+  const rawOutput = output.replace(/\.mp4$/, '.raw.mp4');
   console.log(`\n🚀 remotion render VerticalReel ${output}`);
   run('npx', [
     'remotion',
     'render',
     'VerticalReel',
-    output,
+    rawOutput,
     `--props=${propsFile}`,
     ...(arg('concurrency') ? [`--concurrency=${arg('concurrency')}`] : []),
   ]);
+
+  // Instagram, TikTok y YouTube Shorts normalizan a -14 LUFS. Si el video sale
+  // más bajo, la plataforma lo sube y de paso sube el ruido de fondo; si sale
+  // más alto, lo comprime. Dejarlo en el estándar es lo que hace que suene
+  // "fuerte y limpio" al lado de otros reels. El video se copia sin recodificar.
+  console.log('\n🔊 Normalizando a -14 LUFS (estándar de Reels/TikTok)...');
+  run('npx', [
+    'remotion', 'ffmpeg', '-y',
+    '-i', rawOutput,
+    '-af', 'loudnorm=I=-14:TP=-1:LRA=9',
+    '-c:v', 'copy',
+    '-c:a', 'aac', '-b:a', '256k', '-ar', '48000',
+    '-movflags', '+faststart',
+    output,
+  ]);
+  fs.unlinkSync(rawOutput);
+
   console.log(`\n✅ Listo: ${output}`);
 };
 

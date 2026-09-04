@@ -20,3 +20,10 @@ out/
 *.log
 npm-debug.log*
 whisper.cpp/
+public/sfx/
+
+# Skills de referencia: se instalan con `npm run skills` (ver CLAUDE.md).
+# No se commitean porque son de terceros y los symlinks quedarian rotos.
+.agents/
+.claude/skills/remotion-*
+.claude/skills/ultimate-video-editor

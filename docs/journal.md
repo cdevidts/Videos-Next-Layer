@@ -46,6 +46,39 @@ Entradas nuevas abajo, con fecha.
   humana**: dejarlo o suavizarlo editando
   `public/input/video-46/_audio/DSCF7528.json`.
 
+## 2026-09-05 · Diseño sonoro: dos errores que la usuaria detectó de oído
+
+**1. El audio sonaba opaco porque iba a 16 kHz mono.** `extractAudio.ts` generaba una sola
+pista, mono 16 kHz, porque es lo que exige whisper — y `buildReel.ts` usaba *esa misma pista*
+como audio del reel. A 16 kHz se pierde todo sobre los 8 kHz: es calidad de teléfono. El
+original de la cámara es 48 kHz estéreo 24 bits. Ahora se extraen dos pistas: la de 16 kHz
+para whisper y `_audio/hq/` a 48 kHz estéreo para el reel. `buildReel` prefiere la HQ y avisa
+si falta.
+
+**2. Los whooshes sonaban "a arena" y todos iguales.** Estaban sintetizados en
+`makeSfx.ts` con ruido blanco filtrado por un pasa-bajos de un polo. Sin resonancia y con
+barrido simétrico eso no es un whoosh, es ruido con envolvente. Se midió contra sonidos
+reales: uno de verdad barre de ~2.9 kHz a ~4.9 kHz en 1,3 s; el sintetizado no tenía esa
+curva. Además se usaba **el mismo archivo en las 12 transiciones**, lo que suena a máquina.
+
+Se reemplazó por descarga real (`scripts/fetchSfx.ts` → `npm run sfx`) desde Mixkit, con tres
+whooshes distintos que se rotan por corte más variación de volumen. Se eligieron midiendo el
+barrido de frecuencia de cada candidato, no por el nombre.
+
+Licencia: Mixkit permite uso comercial sin atribución pero **no redistribuir los archivos**,
+así que `public/sfx/` está en `.gitignore` y bajarlos es un paso de setup, igual que las
+fuentes. Los créditos quedan en `public/sfx/CREDITOS.txt`.
+
+## 2026-09-05 · Se instaló la skill oficial de Remotion
+
+`npx skills add remotion-dev/skills` deja 12 skills en `.agents/skills/`, entre ellas
+`remotion-captions` (incluye `createTikTokStyleCaptions()` de `@remotion/captions`, la vía
+oficial para subtítulos estilo TikTok) y `remotion-multimedia`. **Pendiente de evaluar**:
+migrar el `groupWords()` hecho a mano en `src/lib/reel.ts` a `@remotion/captions`.
+
+Nota de licencia a tener presente: Remotion es gratis para individuos y empresas de menos de
+3 empleados; con 3 o más se necesita licencia comercial.
+
 ## 2026-09-05 · Video 46 v2: se rehizo entero. El v1 estaba mal por omisión.
 
 La usuaria rechazó el primer render con tres críticas, las tres correctas:

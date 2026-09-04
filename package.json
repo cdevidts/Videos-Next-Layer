@@ -13,11 +13,13 @@
     "sample": "remotion render SampleSource public/input/sample.mp4",
     "reel": "tsx scripts/buildReel.ts",
     "transcribe": "tsx scripts/transcribeClips.ts",
-    "sfx": "tsx scripts/makeSfx.ts",
+    "sfx": "tsx scripts/fetchSfx.ts",
     "audio": "tsx scripts/extractAudio.ts",
     "fonts": "tsx scripts/fetchFonts.ts",
     "status": "tsx scripts/status.ts",
-    "review": "tsx scripts/reviewReel.ts"
+    "review": "tsx scripts/reviewReel.ts",
+    "check": "tsx scripts/checkPlan.ts",
+    "skills": "npx -y skills add remotion-dev/skills && npx -y skills add Rajbharti06/Ultimate-Video-Editing-Skills"
   },
   "repository": {
     "type": "git",

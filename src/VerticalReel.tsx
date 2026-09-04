@@ -432,17 +432,23 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
           <Audio src={resolveSrc(sfx.riser)} volume={sfxVolume} />
         </Sequence>
       ) : null}
-      {sfx?.whoosh
-        ? cuts.map((start, index) => (
-            <Sequence
-              key={`whoosh-${index}`}
-              from={Math.max(start - 4, 0)}
-              durationInFrames={Math.round(fps * 0.6)}
-              name={`SFX corte ${index + 1}`}
-            >
-              <Audio src={resolveSrc(sfx.whoosh as string)} volume={sfxVolume * 0.8} />
-            </Sequence>
-          ))
+      {sfx?.whooshes?.length
+        ? cuts.map((start, index) => {
+            // Se rota entre los whooshes y se varía el volumen, para que dos
+            // cortes seguidos nunca suenen igual.
+            const src = sfx.whooshes![index % sfx.whooshes!.length];
+            const variacion = 0.85 + (index % 3) * 0.1;
+            return (
+              <Sequence
+                key={`whoosh-${index}`}
+                from={Math.max(start - 5, 0)}
+                durationInFrames={Math.round(fps * 1.1)}
+                name={`SFX corte ${index + 1}`}
+              >
+                <Audio src={resolveSrc(src)} volume={sfxVolume * variacion} />
+              </Sequence>
+            );
+          })
         : null}
       {sfx?.impact && cta ? (
         <Sequence from={ctaStart} durationInFrames={Math.round(fps)} name="SFX cierre">
