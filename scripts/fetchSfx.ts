@@ -46,6 +46,11 @@ const SOUNDS: Array<{id: number; file: string; nombre: string}> = [
   {id: 1109, file: 'click.mp3', nombre: 'Select click'},
   {id: 235, file: 'reveal.mp3', nombre: 'Explainer video game reveal'},
   {id: 961, file: 'reveal-final.mp3', nombre: 'Musical reveal'},
+  // Para el final: primero construye, después golpea y sostiene. Elegidos
+  // midiendo la curva — el riser sube de -70 a -37 dB en 2,6s, y el swell
+  // pega al 0,8s y sostiene 8s. Un reveal corto no aguanta la placa de marca.
+  {id: 790, file: 'riser-final.mp3', nombre: 'Cinematic trailer riser'},
+  {id: 2672, file: 'swell-reveal.mp3', nombre: 'Angelic swell presentation'},
   // Puntuacion
   {id: 3005, file: 'pop.mp3', nombre: 'Explainer video pops whoosh light pop'},
   {id: 2903, file: 'impact.mp3', nombre: 'Movie whoosh impact presentation'},

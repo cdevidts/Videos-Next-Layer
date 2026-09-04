@@ -240,9 +240,22 @@ const Shot: React.FC<{
 
   // Alternar la dirección del zoom evita que se sienta repetitivo.
   const zoomsIn = index % 2 === 0;
+  // Cuanto más dura el corte, más recorrido necesita el zoom: una toma larga
+  // sobre una imagen quieta (una pantalla de computador) se muere sin
+  // movimiento. Un corte de 1s no alcanza a mostrar un zoom largo; uno de 6s
+  // sin movimiento se hace eterno.
+  const segundos = durationInFrames / fps;
+  const recorrido = interpolate(segundos, [1, 6], [0.06, 0.22], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
   const zoom = zoomsIn
-    ? interpolate(frame, [0, durationInFrames], [1.04, 1.15], {extrapolateRight: 'clamp'})
-    : interpolate(frame, [0, durationInFrames], [1.15, 1.04], {extrapolateRight: 'clamp'});
+    ? interpolate(frame, [0, durationInFrames], [1.03, 1.03 + recorrido], {
+        extrapolateRight: 'clamp',
+      })
+    : interpolate(frame, [0, durationInFrames], [1.03 + recorrido, 1.03], {
+        extrapolateRight: 'clamp',
+      });
 
   // Golpe de entrada: llega pasado de tamaño y se asienta.
   const punch = interpolate(frame, [0, 9], [1.09, 1], {

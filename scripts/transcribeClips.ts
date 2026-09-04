@@ -99,25 +99,39 @@ const totalSeconds = (ranges: Range[]) =>
   ranges.reduce((sum, range) => sum + (range.end - range.start), 0);
 
 /**
- * Ajusta los tiempos de whisper al tramo con voz real. Sin esto, el karaoke
- * arranca antes de que la persona hable.
+ * Ajusta los tiempos de whisper a los tramos con voz reales.
+ *
+ * La versión anterior estiraba linealmente toda la frase entre el primer y el
+ * último tramo, ignorando los silencios intermedios. Como el habla tiene huecos,
+ * las palabras caían dentro de esos huecos y el subtítulo se iba atrasando: se
+ * midió un desfase de 0,2 s al principio de una frase y 0,55 s al final.
+ *
+ * Ahora las palabras se reparten sobre la *suma* de los tramos con voz, saltando
+ * los silencios. Así ninguna palabra puede caer en un hueco.
  */
 const alignWords = (words: Word[], ranges: Range[]): Word[] => {
   if (!words.length || !ranges.length) return words;
 
   const from = {start: words[0].start, end: words[words.length - 1].end};
-  const to = {start: ranges[0].start, end: ranges[ranges.length - 1].end};
   const fromLength = from.end - from.start;
-  const toLength = to.end - to.start;
+  const speechLength = totalSeconds(ranges);
+  if (fromLength <= 0 || speechLength <= 0) return words;
 
-  const offBy = Math.abs(from.start - to.start) + Math.abs(from.end - to.end);
-  if (fromLength <= 0 || toLength <= 0 || offBy < 0.3) return words;
+  /** Convierte una posición 0-1 de la frase en un tiempo real, saltando huecos. */
+  const toAbsolute = (progress: number): number => {
+    let remaining = Math.max(0, Math.min(1, progress)) * speechLength;
+    for (const range of ranges) {
+      const length = range.end - range.start;
+      if (remaining <= length) return range.start + remaining;
+      remaining -= length;
+    }
+    return ranges[ranges.length - 1].end;
+  };
 
-  const scale = toLength / fromLength;
   return words.map((word) => ({
     text: word.text,
-    start: to.start + (word.start - from.start) * scale,
-    end: to.start + (word.end - from.start) * scale,
+    start: toAbsolute((word.start - from.start) / fromLength),
+    end: toAbsolute((word.end - from.start) / fromLength),
   }));
 };
 
