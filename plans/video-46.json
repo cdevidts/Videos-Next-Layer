@@ -1,0 +1,51 @@
+{
+  "project": "video-46",
+  "dir": "public/input/video-46/Videos",
+  "hook": "El filamento ya no *cabía*",
+  "cta": "Next Layer",
+  "ctaSub": "Impresión 3D",
+  "accentColor": "#FF8A3D",
+  "transitionInFrames": 8,
+  "sfxVolume": 0.28,
+  "clips": [
+    {
+      "file": "DSCF7528.MOV",
+      "label": "01 · El problema",
+      "caption": "Carretes por todos lados",
+      "startFromSeconds": 1.2,
+      "durationInSeconds": 4.2
+    },
+    {
+      "file": "DSCF7535.MOV",
+      "label": "02 · El plano",
+      "caption": "Primero, el mueble en el cuaderno",
+      "startFromSeconds": 0.6,
+      "durationInSeconds": 3.2
+    },
+    {
+      "file": "DSCF7536.MOV",
+      "label": "03 · El diseño",
+      "startFromSeconds": 1.8,
+      "durationInSeconds": 8
+    },
+    {
+      "file": "DSCF7531.MOV",
+      "label": "04 · A construir",
+      "caption": "Taladro, madera y piezas impresas",
+      "startFromSeconds": 1.5,
+      "durationInSeconds": 3.2
+    },
+    {
+      "file": "DSCF7530.MOV",
+      "label": "05 · El resultado",
+      "caption": "Ahora cada color tiene su lugar",
+      "startFromSeconds": 0.8,
+      "durationInSeconds": 3.6
+    },
+    {
+      "file": "DSCF7524.MOV",
+      "startFromSeconds": 0.8,
+      "durationInSeconds": 7
+    }
+  ]
+}

@@ -1,120 +1,139 @@
 # Videos Next Layer
 
-Pipeline automatizado de edición de video vertical (9:16) con **Remotion** + **Google Drive**.
+Pipeline automatizado de edición de video vertical (9:16) con **Remotion** + **Google Drive**,
+pensado para los reels de **Next Layer** (impresión 3D).
 
-Un solo comando baja los assets del proyecto desde Drive, mide el clip con ffprobe y renderiza un
-Short/Reel de 1080x1920 con gancho superior, subtítulos opcionales y barra de progreso animada.
+Un plan de edición en JSON + los clips crudos del proyecto en Drive → un reel listo para publicar,
+con gancho animado, subtítulos karaoke transcritos del audio real, corte de silencios, SFX propios
+y corrección de color.
 
 ```bash
-npm run process -- --project "Video 41" --hook "Tu gancho aquí"
-# -> out/final.mp4
+npm run reel -- --plan plans/video-46.json     # -> renders/video-46-reel.mp4
 ```
 
 ## 1. Estructura esperada en Drive
 
-La carpeta raíz (`DRIVE_FOLDER_ID`) contiene una subcarpeta por video. Cada proyecto trae sus
-componentes dispersos y el script los recorre recursivamente:
+La carpeta raíz (`DRIVE_FOLDER_ID`) contiene una subcarpeta por video, y cada proyecto trae sus
+componentes dispersos:
 
 ```
 Carpeta raíz/
-├── Video 41/
-│   ├── Videos/     ← .MOV / .mp4  (de aquí sale el clip principal: el más pesado)
+├── Video 46/
+│   ├── Videos/     ← .MOV / .mp4 de cámara (4K, HEVC, con metadato de rotación)
 │   ├── Sonido/     ← Musica/, SFX/, Audios/
 │   ├── Archivos/   ← imágenes y otros insumos
 │   ├── Proyecto/
 │   └── Export/
-├── Video 43/
+├── Video 45/
 └── ...
 ```
 
-No hace falta que los nombres coincidan: el script baja todo lo que sea video, audio o imagen
-(configurable con `DRIVE_ASSET_KINDS`) respetando la estructura de carpetas dentro de
-`public/input/<proyecto>/`, y escribe un `manifest.json` con la clasificación de cada asset.
+`fetchDriveClip.ts` recorre el proyecto completo, baja lo que sea video/audio/imagen respetando la
+estructura de carpetas en `public/input/<proyecto>/` y deja un `manifest.json` con todo clasificado.
 
 ## 2. Credenciales de Google Cloud
 
-Elige **una** de las dos opciones y copia `.env.example` a `.env`.
+Copia `.env.example` a `.env` y elige **una** opción.
 
 ### Opción A — Service Account (recomendada para automatizar)
 
-1. [Google Cloud Console](https://console.cloud.google.com/) → crea o elige un proyecto.
+1. [Google Cloud Console](https://console.cloud.google.com/) → proyecto nuevo o existente.
 2. **APIs y servicios → Biblioteca** → habilita **Google Drive API**.
-3. **APIs y servicios → Credenciales → Crear credenciales → Cuenta de servicio**.
-4. En la cuenta creada: **Claves → Agregar clave → Crear clave nueva → JSON**. Descarga el archivo
-   como `credentials.json` en la raíz del repo (ya está en `.gitignore`).
-5. **Importante:** abre la carpeta en Drive → **Compartir** → agrega el `client_email` del JSON
-   (algo como `nombre@proyecto.iam.gserviceaccount.com`) con permiso de **Lector**. Sin esto la API
-   responde 404 aunque la carpeta exista.
-6. En `.env`: `GOOGLE_SERVICE_ACCOUNT_KEY=./credentials.json`
-   (también acepta el JSON en una línea o en base64, útil para CI).
+3. **Credenciales → Crear credenciales → Cuenta de servicio**.
+4. En la cuenta creada: **Claves → Agregar clave → JSON**. Guarda el archivo como
+   `credentials.json` en la raíz (está en `.gitignore`).
+5. **Importante:** comparte la carpeta de Drive con el `client_email` del JSON
+   (`...@...iam.gserviceaccount.com`) con permiso de **Lector**. Sin eso la API responde 404.
+6. `GOOGLE_SERVICE_ACCOUNT_KEY=./credentials.json` (también acepta el JSON inline o en base64).
 
-### Opción B — OAuth2 con tu cuenta personal
+### Opción B — OAuth2 con tu cuenta
 
-Sirve cuando la carpeta te la compartieron a ti y no puedes agregar a la Service Account.
+Útil cuando la carpeta te la compartieron y no puedes agregar la Service Account.
 
 1. Habilita la Drive API igual que arriba.
-2. **Credenciales → Crear credenciales → ID de cliente de OAuth → Aplicación de escritorio**.
+2. **Credenciales → ID de cliente de OAuth → Aplicación de escritorio**.
 3. Genera un *refresh token* con scope `https://www.googleapis.com/auth/drive.readonly`
-   (por ejemplo con [OAuth Playground](https://developers.google.com/oauthplayground/), activando
+   (por ejemplo en [OAuth Playground](https://developers.google.com/oauthplayground/), marcando
    *Use your own OAuth credentials*).
-4. En `.env`: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REFRESH_TOKEN`.
+4. Completa `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REFRESH_TOKEN`.
 
-## 3. Comandos
-
-| Comando | Qué hace |
-| --- | --- |
-| `npm run dev` | Abre Remotion Studio para previsualizar y ajustar props en vivo. |
-| `npm run fetch-drive -- --list` | Lista los proyectos disponibles en la carpeta raíz. |
-| `npm run fetch-drive -- --project "Video 41"` | Descarga ese proyecto a `public/input/video-41/`. |
-| `npm run process -- --project "Video 41"` | Pipeline completo: Drive → metadata → render. |
-| `npm run process -- --skip-fetch` | Renderiza con lo ya descargado (sin volver a bajar). |
-| `npm run render` | Render directo con los `defaultProps` de la composición. |
-| `npm run sample` | Genera `public/input/sample.mp4` para probar sin Drive. |
-| `npm run typecheck` | `tsc --noEmit`. |
-
-### Flags útiles de `process`
+## 3. El flujo completo
 
 ```bash
-npm run process -- \
-  --project "Video 41" \        # carpeta del proyecto (nombre parcial o ID)
-  --clip DSCF7555 \             # fuerza el clip principal (por defecto, el más pesado)
-  --hook "Compra energía en 3 clics" \
-  --subtitles ./subs.json \     # [{ "text": "...", "fromSeconds": 0, "toSeconds": 2.5 }]
-  --audio input/video-41/Sonido/Musica/track.mp3 \
-  --start 12 --max-seconds 30 \ # recorta desde el segundo 12, máximo 30 s
-  --accent "#22D3EE" \
-  --transcode \                 # normaliza .MOV a H.264/mp4 antes de renderizar
-  --out-file out/video-41.mp4 \
-  --dry-run                     # solo escribe out/props.json, no renderiza
+npm run fetch-drive -- --list                    # ver proyectos disponibles
+npm run fetch-drive -- --project "Video 46"      # baja todo a public/input/video-46/
+npm run audio -- --dir public/input/video-46     # extrae el audio de cada clip a WAV 16 kHz
+npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
+npm run sfx                                      # genera los efectos (una sola vez)
+npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
 ```
 
-`--dry-run`, `--kinds`, `--max-size` y `--folder` también funcionan en `fetch-drive`.
+Qué hace cada paso:
 
-## 4. La composición `VerticalClip`
-
-`src/Root.tsx` registra `VerticalClip` en 1080x1920 @ 30fps con 900 frames (30 s) por defecto. Si
-llega `durationInSeconds` en los props (lo calcula `processClip.ts` con ffprobe) o si el archivo se
-puede leer con `@remotion/media-utils`, `calculateMetadata` ajusta la duración al clip real.
-
-Props (`src/lib/types.ts`):
-
-| Prop | Descripción |
+| Script | Qué resuelve |
 | --- | --- |
-| `src` | Ruta del video fuente relativa a `public/` (o URL absoluta). |
-| `hook` | Texto de gancho / título superior. |
-| `subtitles` | Opcional: `{ text, fromSeconds, toSeconds }[]`. |
-| `audioSrc`, `audioVolume`, `videoVolume` | Pista de audio externa y niveles. |
-| `startFromSeconds`, `durationInSeconds` | Recorte del clip fuente. |
-| `accentColor` | Color de la barra de progreso y del subrayado del gancho. |
+| `fetch-drive` | Descarga el proyecto desde Drive con caché por tamaño y arma el `manifest.json`. |
+| `audio` | Extrae el audio de cada clip a WAV mono 16 kHz (lo que necesita whisper). |
+| `transcribe` | Instala whisper.cpp, detecta qué clips tienen voz (mide el nivel, no transcribe B-roll mudo) y guarda frases + palabras con timestamp. Filtra las marcas que whisper inventa en los silencios (`[BLANK_AUDIO]`, `(música)`). |
+| `sfx` | Sintetiza `whoosh`, `tick`, `riser` e `impact` en `public/sfx/` — sin samples externos, sin problemas de licencia. |
+| `reel` | Normaliza cada fuente a un proxy 1080x1920 H.264 (aplica la rotación de cámara y baja el 4K/HEVC), **corta los silencios** usando la transcripción, arma los props y renderiza. |
 
-El video usa `<OffthreadVideo>` con `objectFit: cover`, centrado y recortado a 9:16; la barra de
-progreso del borde inferior se calcula con `useCurrentFrame()` y `useVideoConfig()`.
+## 4. El plan de edición
 
-## 5. Notas
+Un JSON por video en `plans/`. Define el orden de los clips, el gancho y los textos:
 
-- **`.MOV` de cámara:** `OffthreadVideo` los decodifica con el FFmpeg que trae Remotion, así que
-  normalmente no hace falta convertir. Si el preview del Studio va lento, usa `--transcode`.
-- **FFmpeg/ffprobe:** vienen incluidos con Remotion (`npx remotion ffprobe`), no se instala nada aparte.
-- **Tailwind v4** está habilitado vía `@remotion/tailwind-v4` en `remotion.config.ts`; los valores
-  animados van en estilos inline (recomendación de Remotion) y el layout estático en clases.
-- `.env`, `credentials*.json`, `public/input/` y `out/` están ignorados por git.
+```jsonc
+{
+  "project": "video-46",
+  "dir": "public/input/video-46/Videos",
+  "hook": "El filamento ya no *cabía*",   // *lo marcado* va resaltado en color de acento
+  "cta": "Next Layer",
+  "ctaSub": "Impresión 3D",
+  "accentColor": "#FF8A3D",
+  "clips": [
+    {
+      "file": "DSCF7528.MOV",
+      "label": "01 · El problema",         // chip superior
+      "caption": "Carretes por todos lados", // solo se usa si el clip no tiene voz
+      "startFromSeconds": 1.2,
+      "durationInSeconds": 4.2
+    }
+  ]
+}
+```
+
+- **Clip con voz** → se descarta el silencio y cada tramo hablado se vuelve un corte con
+  subtítulos karaoke (la palabra que suena se pinta con el color de acento).
+- **Clip sin voz (B-roll)** → se usa la ventana `startFromSeconds` + `durationInSeconds` y el
+  `caption` escrito a mano.
+- `ignoreSpeech: true` fuerza a tratar un clip como B-roll.
+
+## 5. Composiciones
+
+| Composición | Para qué |
+| --- | --- |
+| `VerticalReel` | El montaje: varios cortes, transiciones, gancho, subtítulos, SFX, grade y barra de progreso segmentada. |
+| `VerticalClip` | Un solo clip a pantalla completa con gancho y subtítulos opcionales. |
+| `SampleSource` | Clip sintético para probar el pipeline sin Drive (`npm run sample`). |
+
+Todas en 1080x1920 @ 30fps. `npm run dev` abre Remotion Studio para revisar y ajustar props en vivo.
+
+### Sistema gráfico de `VerticalReel`
+
+- **Gancho**: tipografía display (Anton) que entra palabra por palabra, con caja de acento en lo resaltado.
+- **Subtítulos**: pastilla con blur, 2-3 palabras por pantalla, palabra activa en color de acento.
+- **Chips de sección**: `01 · El problema`, entran desde la izquierda.
+- **Color**: saturación/contraste + split-tone cálido-frío, viñeta y grano de película animado.
+- **Movimiento**: zoom lento por corte y golpe de escala al entrar.
+- **Sonido**: voz original + riser de apertura, whoosh en cada corte e impacto en el cierre.
+- **Progreso**: barra segmentada, un tramo por corte.
+
+## 6. Notas
+
+- **FFmpeg/ffprobe** vienen con Remotion (`npx remotion ffmpeg`), no hay que instalar nada aparte.
+- **Los .MOV de cámara** son 4K HEVC 10 bits con rotación en el contenedor: el paso de proxy los
+  deja en 1080x1920 H.264 8 bits, que es lo que hace el render viable.
+- **Música**: deja el archivo en `Sonido/Musica/` del proyecto y pásalo con `--music`. Ojo con usar
+  temas comerciales: los detecta el Content ID de Instagram y YouTube.
+- `.env`, `credentials*.json`, `public/input/`, `out/` y `whisper.cpp/` están ignorados por git;
+  los reels terminados van a `renders/`.

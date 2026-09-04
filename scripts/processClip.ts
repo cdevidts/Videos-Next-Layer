@@ -11,18 +11,11 @@ import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {spawnSync} from 'node:child_process';
 import {fetchDriveClip, parseArgs as parseFetchArgs} from './fetchDriveClip';
+import {normalize, probe, run} from './lib/media';
 import {LATEST_MANIFEST, type ClipManifest} from './lib/manifest';
 
 type SubtitleCue = {text: string; fromSeconds: number; toSeconds: number};
-
-type MediaInfo = {
-  durationInSeconds: number;
-  width: number;
-  height: number;
-  fps: number;
-};
 
 const argv = process.argv.slice(2);
 
@@ -36,85 +29,6 @@ const arg = (name: string): string | undefined => {
   return undefined;
 };
 const flag = (name: string) => argv.includes(`--${name}`);
-
-const run = (command: string, args: string[], capture = false) => {
-  const result = spawnSync(command, args, {
-    stdio: capture ? ['ignore', 'pipe', 'pipe'] : 'inherit',
-    encoding: 'utf8',
-    shell: process.platform === 'win32',
-  });
-  if (result.status !== 0) {
-    throw new Error(
-      `Falló "${command} ${args.join(' ')}"\n${result.stderr ?? ''}`.trim(),
-    );
-  }
-  return result.stdout ?? '';
-};
-
-/** ffprobe viene incluido con Remotion: no hace falta instalar FFmpeg aparte. */
-const probe = (file: string): MediaInfo => {
-  const raw = run(
-    'npx',
-    [
-      'remotion',
-      'ffprobe',
-      '-v',
-      'quiet',
-      '-print_format',
-      'json',
-      '-show_format',
-      '-show_streams',
-      file,
-    ],
-    true,
-  );
-  const json = JSON.parse(raw.slice(raw.indexOf('{')));
-  const video = (json.streams ?? []).find((s: {codec_type: string}) => s.codec_type === 'video');
-  const [num, den] = String(video?.avg_frame_rate ?? '30/1').split('/').map(Number);
-
-  return {
-    durationInSeconds: Number(json.format?.duration ?? video?.duration ?? 0),
-    width: Number(video?.width ?? 0),
-    height: Number(video?.height ?? 0),
-    fps: den ? num / den : 30,
-  };
-};
-
-/** Convierte a H.264/mp4 los formatos pesados (.MOV de cámara, ProRes, etc.). */
-const transcode = (absoluteSource: string): string => {
-  const normalizedDir = path.join(path.dirname(absoluteSource), '_normalized');
-  const target = path.join(
-    normalizedDir,
-    `${path.basename(absoluteSource, path.extname(absoluteSource))}.mp4`,
-  );
-  if (fs.existsSync(target)) {
-    console.log(`♻️  Ya existe la versión normalizada: ${target}`);
-    return target;
-  }
-  fs.mkdirSync(normalizedDir, {recursive: true});
-  console.log(`🎞️  Normalizando a mp4: ${path.basename(absoluteSource)}`);
-  run('npx', [
-    'remotion',
-    'ffmpeg',
-    '-y',
-    '-i',
-    absoluteSource,
-    '-c:v',
-    'libx264',
-    '-preset',
-    'veryfast',
-    '-crf',
-    '20',
-    '-pix_fmt',
-    'yuv420p',
-    '-c:a',
-    'aac',
-    '-movflags',
-    '+faststart',
-    target,
-  ]);
-  return target;
-};
 
 const loadSubtitles = (manifest: ClipManifest): SubtitleCue[] => {
   const explicit = arg('subtitles');
@@ -164,7 +78,7 @@ const main = async () => {
   // 2) Metadata del clip principal.
   let absoluteClip = path.resolve('public', manifest.mainClip);
   if (flag('transcode') && path.extname(absoluteClip).toLowerCase() !== '.mp4') {
-    absoluteClip = transcode(absoluteClip);
+    absoluteClip = normalize(absoluteClip, path.join(path.dirname(absoluteClip), '_normalized'));
   }
 
   const info = probe(absoluteClip);

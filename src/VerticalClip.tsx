@@ -75,7 +75,7 @@ export const VerticalClip: React.FC<VerticalClipProps> = ({
         <OffthreadVideo
           src={resolveSrc(src)}
           volume={videoVolume}
-          startFrom={Math.round(startFromSeconds * fps)}
+          trimBefore={Math.round(startFromSeconds * fps)}
           style={{
             width,
             height,

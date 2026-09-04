@@ -10,7 +10,11 @@
     "process": "tsx scripts/processClip.ts",
     "pipeline": "tsx scripts/processClip.ts",
     "typecheck": "tsc --noEmit",
-    "sample": "remotion render SampleSource public/input/sample.mp4"
+    "sample": "remotion render SampleSource public/input/sample.mp4",
+    "reel": "tsx scripts/buildReel.ts",
+    "transcribe": "tsx scripts/transcribeClips.ts",
+    "sfx": "tsx scripts/makeSfx.ts",
+    "audio": "tsx scripts/extractAudio.ts"
   },
   "repository": {
     "type": "git",
@@ -25,9 +29,12 @@
   "homepage": "https://github.com/cdevidts/Videos-Next-Layer#readme",
   "dependencies": {
     "@remotion/cli": "^4.0.520",
+    "@remotion/google-fonts": "^4.0.520",
+    "@remotion/install-whisper-cpp": "^4.0.520",
     "@remotion/media-utils": "^4.0.520",
     "@remotion/renderer": "^4.0.520",
     "@remotion/tailwind-v4": "^4.0.520",
+    "@remotion/transitions": "^4.0.520",
     "dotenv": "^17.4.2",
     "googleapis": "^178.0.0",
     "react": "^19.2.8",
