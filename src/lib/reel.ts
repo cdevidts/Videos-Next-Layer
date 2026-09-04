@@ -19,6 +19,20 @@ export type ReelShot = {
   /** Audio del corte (voz), separado del proxy de video. */
   audioSrc?: string;
   audioStartFromSeconds?: number;
+  /**
+   * true cuando este corte viene de un clip distinto al anterior. Solo ahí se
+   * justifica un whoosh: los cortes dentro del mismo clip son jump cuts del
+   * corte de silencios, donde en pantalla no cambia nada y un whoosh suena
+   * puesto por reloj.
+   */
+  isSceneChange?: boolean;
+  /**
+   * Efecto puntual que corresponde a lo que se ve en este corte
+   * (ej. "taladro" sobre el plano del taladro). Nombre de archivo en public/sfx/.
+   */
+  sfx?: string;
+  /** Velocidad de reproducción. El tono de voz no cambia: Remotion usa atempo. */
+  speed?: number;
 };
 
 export type ReelSfx = {

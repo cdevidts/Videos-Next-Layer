@@ -68,27 +68,76 @@ Lo que sí funciona, ya implementado en `src/VerticalReel.tsx`:
 
 ## Sonido: donde más se nota lo amateur
 
-Tres errores ya cometidos acá, los tres detectados de oído por la usuaria:
+Cinco errores ya cometidos acá, los cinco detectados de oído por la usuaria.
+Ninguno se puede repetir.
 
-1. **Audio opaco.** Nunca uses `_audio/<clip>.wav` como pista del reel: es mono
-   16 kHz porque lo exige whisper, y suena a teléfono. La pista buena es
-   `_audio/hq/<clip>.wav` (48 kHz estéreo). `buildReel.ts` ya la prefiere.
-2. **Whooshes sintetizados.** Ruido filtrado no suena a whoosh, suena a arena:
-   le falta el barrido de frecuencia resonante. Los efectos se bajan con
-   `npm run sfx`.
-3. **El mismo sonido en cada corte.** Suena a máquina. Hay tres whooshes y
-   `VerticalReel` los rota variando el volumen.
+### 1. El sonido tiene que corresponder a lo que se ve
+Este es el error de fondo, del que salen los demás. Poner un whoosh en cada
+corte porque toca un corte es editar con reloj, no con criterio. Un sonido que
+no tiene que ver con la imagen se percibe como error aunque el espectador no
+sepa explicar por qué.
 
-El render termina normalizando a **-14 LUFS / -1 dBTP**, que es el estándar de
-Reels, TikTok y Shorts. Si sale más bajo, la plataforma lo sube y sube también
-el ruido de fondo.
+El método: **mira el frame y escucha el audio de ese corte, y recién ahí decide
+qué sonido va.** Taladro en pantalla → sonido de taladro. Pantalla de
+computador → teclado o click. Revelación del producto → un reveal. Si nada
+justifica un sonido, no va ninguno. El plan acepta `"sfx": "taladro.mp3"` por
+clip justamente para esto.
+
+### 2. El whoosh va solo donde cambia la escena
+El corte de silencios genera muchos jump cuts *dentro del mismo clip*. Ahí en
+pantalla no cambia nada y un whoosh se oye pegado con scotch. `buildReel` marca
+`isSceneChange` cuando el corte viene de otro clip, y `VerticalReel` solo suena
+whoosh ahí. La skill de edición lo dice sin rodeos: **90% de los cortes deben
+ser secos; las transiciones vistosas son condimento, no el plato.**
+
+### 3. Audio opaco
+Nunca uses `_audio/<clip>.wav` como pista del reel: es mono 16 kHz porque lo
+exige whisper y suena a teléfono. La pista buena es `_audio/hq/<clip>.wav`
+(48 kHz estéreo). `buildReel.ts` ya la prefiere y avisa si falta.
+
+### 4. Efectos sintetizados
+Ruido filtrado no suena a whoosh, suena a arena: le falta el barrido de
+frecuencia resonante. Se midió: uno real barre de ~2,9 kHz a ~4,9 kHz en 1,3 s.
+Los efectos se bajan con `npm run sfx`. Para elegir uno nuevo, mide el barrido;
+no te fíes del nombre.
+
+### 5. El mismo sonido repetido
+Suena a máquina. Hay tres whooshes que se rotan variando el volumen.
+
+### Jerarquía de audio (no se negocia)
+Diálogo > música > efectos > ambiente. La música va de cama a volumen bajo y
+**baja sola cuando alguien habla** (ducking, implementado en `VerticalReel`).
+Si la música compite con la voz, pierde la música, siempre.
+
+El render normaliza a **-14 LUFS / -1 dBTP**, el estándar de Reels, TikTok y
+Shorts. Más bajo, la plataforma lo sube y sube también el ruido de fondo.
+
+### El silencio digital es un error, no una pausa
+Un tramo sin ninguna señal se oye como si el video se hubiera roto. Los cortes
+de B-roll no traen voz, así que necesitan sonido propio: el efecto que
+corresponde a la imagen, o la música de cama sonando debajo. Verifícalo con
+`npm run review`, que lista los tramos bajo -40 dBFS.
+
+## Ritmo: acelerar lo que no se mueve
+
+Una toma hablada sobre una imagen quieta (una pantalla de computador) se hace
+larga aunque lo que diga sea bueno. El plan acepta `"speed": 1.15` por clip.
+El tono de voz no cambia porque Remotion usa `atempo`, que estira el tiempo sin
+resamplear. Entre 1.1 y 1.2 no se nota como "acelerado", solo se siente más
+ágil; sobre 1.25 empieza a sonar raro.
 
 ## Música
 
-Ninguna de las carpetas de Drive trae música utilizable: lo único que hay es un
-tema comercial que Content ID marca. Un reel sin música se entrega igual, pero
-avísale a la usuaria. Cuando tenga un track licenciado:
-`npm run reel -- --plan plans/<proyecto>.json --music <ruta>`.
+`npm run sfx` baja una cama musical libre de derechos (`sfx/musica-cama.mp3`) y
+`buildReel` la usa por defecto, a volumen bajo y con ducking bajo la voz.
+
+Se eligió midiendo, no de oído a ciegas: varía solo 6 dB a lo largo del tema, así
+que no salta por encima del diálogo. Las alternativas variaban 21 y 35 dB y
+peleaban con la voz. **Si cambias la música, mide la variación de nivel primero.**
+
+Para usar otra: `npm run reel -- --plan plans/<proyecto>.json --music <ruta>`.
+Nunca uses música comercial: Content ID la marca en Instagram y YouTube. El único
+tema en las carpetas de Drive (Baba O'Riley) está descartado por eso.
 
 ## Honestidad del contenido
 

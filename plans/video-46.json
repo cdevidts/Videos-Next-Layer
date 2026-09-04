@@ -6,7 +6,8 @@
   "ctaSub": "Impresión 3D",
   "accentColor": "#FF8A3D",
   "transitionInFrames": 3,
-  "sfxVolume": 0.24,
+  "sfxVolume": 0.3,
+  "musicVolume": 0.16,
   "clips": [
     {
       "file": "DSCF7524.MOV",
@@ -21,27 +22,34 @@
     {
       "file": "DSCF7536.MOV",
       "startFromSeconds": 4.2,
-      "durationInSeconds": 3.6
+      "durationInSeconds": 3.6,
+      "speed": 1.12
     },
     {
       "file": "DSCF7537.MOV",
       "startFromSeconds": 2.9,
-      "durationInSeconds": 4.4
+      "durationInSeconds": 4.4,
+      "sfx": "teclado.mp3",
+      "speed": 1.15
     },
     {
       "file": "DSCF7537.MOV",
       "startFromSeconds": 10.6,
-      "durationInSeconds": 9.4
+      "durationInSeconds": 9.4,
+      "speed": 1.15
     },
     {
       "file": "DSCF7537.MOV",
       "startFromSeconds": 27.4,
-      "durationInSeconds": 8.2
+      "durationInSeconds": 8.2,
+      "sfx": "reveal.mp3",
+      "speed": 1.1
     },
     {
       "file": "DSCF7537.MOV",
       "startFromSeconds": 38.4,
-      "durationInSeconds": 9.8
+      "durationInSeconds": 9.8,
+      "speed": 1.1
     },
     {
       "file": "DSCF7532.MOV",
@@ -51,6 +59,7 @@
     {
       "file": "DSCF7531.MOV",
       "ignoreSpeech": true,
+      "sfx": "taladro.mp3",
       "caption": "Un taladro y nada más",
       "startFromSeconds": 1.4,
       "durationInSeconds": 2.6
@@ -58,6 +67,7 @@
     {
       "file": "DSCF7530.MOV",
       "ignoreSpeech": true,
+      "sfx": "reveal-final.mp3",
       "caption": "Cada color en su lugar",
       "startFromSeconds": 0.8,
       "durationInSeconds": 3.0

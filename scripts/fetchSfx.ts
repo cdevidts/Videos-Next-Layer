@@ -19,6 +19,14 @@ import path from 'node:path';
 
 const OUT_DIR = 'public/sfx';
 const BASE = 'https://assets.mixkit.co/active_storage/sfx';
+const MUSIC_BASE = 'https://assets.mixkit.co/music';
+
+/**
+ * Cama musical. Se eligió midiendo: "Close Up" varía solo 6 dB a lo largo del
+ * tema, así que no salta por encima de la voz. Las alternativas variaban 21 y
+ * 35 dB y peleaban con el diálogo.
+ */
+const MUSIC = {id: 1167, file: 'musica-cama.mp3', nombre: 'Close Up (Mixkit)'};
 
 /**
  * Elegidos escuchando el barrido de frecuencia de cada uno, no por el nombre.
@@ -26,9 +34,19 @@ const BASE = 'https://assets.mixkit.co/active_storage/sfx';
  * cada corte es lo que hace que un video suene hecho por una máquina.
  */
 const SOUNDS: Array<{id: number; file: string; nombre: string}> = [
+  // Transiciones: tres distintos, se rotan. Solo se usan cuando cambia la
+  // escena de verdad, no en cada corte.
   {id: 1492, file: 'whoosh-1.mp3', nombre: 'Cinematic whoosh fast transition'},
   {id: 1490, file: 'whoosh-2.mp3', nombre: 'Fast whoosh transition'},
   {id: 1493, file: 'whoosh-3.mp3', nombre: 'Swirling whoosh'},
+  // Sonidos que corresponden a lo que se ve en pantalla. Un sonido que no
+  // tiene nada que ver con la imagen se nota como error aunque no se sepa por que.
+  {id: 855, file: 'taladro.mp3', nombre: 'Electrical drill'},
+  {id: 2531, file: 'teclado.mp3', nombre: 'Typing on a laptop keyboard'},
+  {id: 1109, file: 'click.mp3', nombre: 'Select click'},
+  {id: 235, file: 'reveal.mp3', nombre: 'Explainer video game reveal'},
+  {id: 961, file: 'reveal-final.mp3', nombre: 'Musical reveal'},
+  // Puntuacion
   {id: 3005, file: 'pop.mp3', nombre: 'Explainer video pops whoosh light pop'},
   {id: 2903, file: 'impact.mp3', nombre: 'Movie whoosh impact presentation'},
   {id: 2408, file: 'riser.mp3', nombre: 'Storm coming whoosh'},
@@ -52,6 +70,17 @@ const main = async () => {
     console.log(`🔊 ${sound.file}  ← ${sound.nombre}`);
   }
 
+  // Música
+  const musicTarget = path.join(OUT_DIR, MUSIC.file);
+  if (fs.existsSync(musicTarget) && fs.statSync(musicTarget).size > 1000) {
+    console.log(`♻️  ${MUSIC.file}`);
+  } else {
+    const res = await fetch(`${MUSIC_BASE}/${MUSIC.id}/${MUSIC.id}.mp3`);
+    if (!res.ok) throw new Error(`No se pudo bajar la música (${res.status})`);
+    fs.writeFileSync(musicTarget, Buffer.from(await res.arrayBuffer()));
+    console.log(`🎵 ${MUSIC.file}  ← ${MUSIC.nombre}`);
+  }
+
   fs.writeFileSync(
     path.join(OUT_DIR, 'CREDITOS.txt'),
     [
@@ -60,7 +89,8 @@ const main = async () => {
       'No se pueden redistribuir por separado, por eso esta carpeta no va en git.',
       'Los baja scripts/fetchSfx.ts con `npm run sfx`.',
       '',
-      ...SOUNDS.map((s) => `${s.file.padEnd(14)} ${s.nombre}`),
+      ...SOUNDS.map((s) => `${s.file.padEnd(18)} ${s.nombre}`),
+      `${MUSIC.file.padEnd(18)} ${MUSIC.nombre}`,
     ].join('\n') + '\n',
   );
 

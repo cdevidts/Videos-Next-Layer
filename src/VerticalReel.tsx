@@ -233,7 +233,8 @@ const Shot: React.FC<{
   index: number;
   accentColor: string;
   voiceVolume: number;
-}> = ({shot, index, accentColor, voiceVolume}) => {
+  sfxVolume: number;
+}> = ({shot, index, accentColor, voiceVolume, sfxVolume}) => {
   const frame = useCurrentFrame();
   const {durationInFrames, fps, width, height} = useVideoConfig();
 
@@ -259,6 +260,7 @@ const Shot: React.FC<{
         <OffthreadVideo
           src={resolveSrc(shot.src)}
           trimBefore={Math.round(shot.startFromSeconds * fps)}
+          playbackRate={shot.speed ?? 1}
           muted
           style={{
             width,
@@ -275,8 +277,18 @@ const Shot: React.FC<{
         <Audio
           src={resolveSrc(shot.audioSrc)}
           trimBefore={Math.round((shot.audioStartFromSeconds ?? shot.startFromSeconds) * fps)}
+          playbackRate={shot.speed ?? 1}
           volume={voiceVolume}
         />
+      ) : null}
+
+      {/* Sonido que corresponde a la imagen (taladro sobre el taladro, teclado
+          sobre la pantalla del computador). Entra 2 frames antes del corte
+          porque el oído procesa antes que el ojo. */}
+      {shot.sfx ? (
+        <Sequence from={0} durationInFrames={durationInFrames} name={`SFX ${shot.sfx}`}>
+          <Audio src={resolveSrc(`sfx/${shot.sfx}`)} volume={sfxVolume} />
+        </Sequence>
       ) : null}
 
       <Grade accentColor={accentColor} />
@@ -402,6 +414,17 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
 
   const cuts = transitionStarts(shots, fps, transitionInFrames);
 
+  // Frames donde hay voz, para que la música se aparte.
+  const speechRanges: Array<[number, number]> = [];
+  {
+    let cursor = 0;
+    for (const shot of shots) {
+      const largo = shotFrames(shot, fps);
+      if (shot.words?.length) speechRanges.push([cursor, cursor + largo]);
+      cursor += largo - transitionInFrames;
+    }
+  }
+
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
       <TransitionSeries>
@@ -413,6 +436,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
                 index={index}
                 accentColor={accentColor}
                 voiceVolume={voiceVolume}
+                sfxVolume={sfxVolume}
               />
             </TransitionSeries.Sequence>
             {index < shots.length - 1 ? (
@@ -425,30 +449,56 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
         ))}
       </TransitionSeries>
 
-      {musicSrc ? <Audio src={resolveSrc(musicSrc)} volume={musicVolume} /> : null}
+      {/* Cama musical con ducking: baja cuando alguien habla. Sin esto la
+          música pelea con la voz, que siempre manda en la jerarquía de audio. */}
+      {musicSrc ? (
+        <Audio
+          src={resolveSrc(musicSrc)}
+          loop
+          volume={(f) => {
+            const hayVoz = speechRanges.some(([a, b]) => f >= a - 6 && f < b + 6);
+            const base = hayVoz ? musicVolume * 0.35 : musicVolume;
+            // Entrada y salida suaves: un corte seco de música se nota feo.
+            const entrada = interpolate(f, [0, fps], [0, 1], {extrapolateRight: 'clamp'});
+            const salida = interpolate(
+              f,
+              [durationInFrames - fps * 1.5, durationInFrames],
+              [1, 0],
+              {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+            );
+            return base * entrada * salida;
+          }}
+        />
+      ) : null}
 
       {sfx?.riser ? (
         <Sequence durationInFrames={Math.round(fps)} name="SFX riser">
           <Audio src={resolveSrc(sfx.riser)} volume={sfxVolume} />
         </Sequence>
       ) : null}
+      {/* Whoosh solo donde cambia la escena de verdad. En los jump cuts dentro
+          de un mismo clip (los que produce el corte de silencios) no cambia
+          nada en pantalla, y ahí un whoosh suena puesto por reloj — que es
+          exactamente lo que hace que un video parezca editado por una máquina.
+          La skill de edición lo dice directo: 90% de los cortes deben ser secos. */}
       {sfx?.whooshes?.length
-        ? cuts.map((start, index) => {
-            // Se rota entre los whooshes y se varía el volumen, para que dos
-            // cortes seguidos nunca suenen igual.
-            const src = sfx.whooshes![index % sfx.whooshes!.length];
-            const variacion = 0.85 + (index % 3) * 0.1;
-            return (
-              <Sequence
-                key={`whoosh-${index}`}
-                from={Math.max(start - 5, 0)}
-                durationInFrames={Math.round(fps * 1.1)}
-                name={`SFX corte ${index + 1}`}
-              >
-                <Audio src={resolveSrc(src)} volume={sfxVolume * variacion} />
-              </Sequence>
-            );
-          })
+        ? cuts
+            .map((start, index) => ({start, index, shot: shots[index + 1]}))
+            .filter(({shot}) => shot?.isSceneChange)
+            .map(({start, index}) => {
+              const src = sfx.whooshes![index % sfx.whooshes!.length];
+              const variacion = 0.85 + (index % 3) * 0.1;
+              return (
+                <Sequence
+                  key={`whoosh-${index}`}
+                  from={Math.max(start - 5, 0)}
+                  durationInFrames={Math.round(fps * 1.1)}
+                  name={`SFX cambio de escena ${index + 1}`}
+                >
+                  <Audio src={resolveSrc(src)} volume={sfxVolume * variacion} />
+                </Sequence>
+              );
+            })
         : null}
       {sfx?.impact && cta ? (
         <Sequence from={ctaStart} durationInFrames={Math.round(fps)} name="SFX cierre">

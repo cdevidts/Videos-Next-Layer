@@ -39,6 +39,14 @@ type PlanClip = {
   durationInSeconds?: number;
   /** Ignora la voz de este clip aunque exista transcripción. */
   ignoreSpeech?: boolean;
+  /** Efecto que corresponde a lo que se ve, ej. "taladro.mp3". */
+  sfx?: string;
+  /**
+   * Acelera el corte. Sirve para tomas habladas donde en pantalla no pasa nada
+   * (una pantalla de computador quieta). El tono de voz no cambia: Remotion
+   * usa atempo, que estira el tiempo sin resamplear.
+   */
+  speed?: number;
 };
 
 type Plan = {
@@ -162,14 +170,24 @@ const main = () => {
               end: Math.min(Math.max(word.end - range.start, 0.05), range.end - range.start),
             }));
 
+          const speed = item.speed && item.speed > 0 ? item.speed : 1;
           shots.push({
             src,
             startFromSeconds: Number(range.start.toFixed(3)),
-            durationInSeconds: Number((range.end - range.start).toFixed(3)),
+            // Al acelerar, el corte dura menos en pantalla.
+            durationInSeconds: Number(((range.end - range.start) / speed).toFixed(3)),
             label: index === 0 ? item.label : undefined,
-            words,
+            // Los tiempos de las palabras también se comprimen, si no el
+            // karaoke se desincroniza del audio acelerado.
+            words: speed === 1 ? words : words.map((w) => ({
+              text: w.text,
+              start: w.start / speed,
+              end: w.end / speed,
+            })),
             audioSrc,
             audioStartFromSeconds: Number(range.start.toFixed(3)),
+            speed: speed === 1 ? undefined : speed,
+            sfx: index === 0 ? item.sfx : undefined,
           });
         });
         const cut = (windowEnd - windowStart) - ranges.reduce((s, r) => s + (r.end - r.start), 0);
@@ -191,11 +209,22 @@ const main = () => {
       durationInSeconds: Number(duration.toFixed(3)),
       label: item.label,
       caption: item.caption,
+      sfx: item.sfx,
+      speed: item.speed && item.speed !== 1 ? item.speed : undefined,
     });
     console.log(`🎞️  ${item.file} · B-roll ${windowStart}s +${duration.toFixed(2)}s`);
   }
 
   if (!shots.length) throw new Error('El plan no produjo ningún corte.');
+
+  // Un corte es cambio de escena solo si viene de otro clip. Los cortes dentro
+  // del mismo clip son jump cuts del corte de silencios: en pantalla no cambia
+  // nada y no aguantan un whoosh.
+  shots.forEach((shot, i) => {
+    shot.isSceneChange = i === 0 || shot.src !== shots[i - 1].src;
+  });
+  const cambios = shots.filter((s) => s.isSceneChange).length - 1;
+  console.log(`\n🎬 ${shots.length} cortes · ${cambios} cambios de escena (ahí van los whooshes)`);
 
   const transitionInFrames = plan.transitionInFrames ?? 8;
   const totalFrames = reelDurationInFrames(shots, fps, transitionInFrames);
@@ -218,7 +247,10 @@ const main = () => {
     cta: plan.cta,
     ctaSub: plan.ctaSub,
     accentColor: plan.accentColor ?? '#FF8A3D',
-    musicSrc: arg('music') ?? plan.musicSrc,
+    musicSrc:
+      arg('music') ??
+      plan.musicSrc ??
+      (fs.existsSync('public/sfx/musica-cama.mp3') ? 'sfx/musica-cama.mp3' : undefined),
     musicVolume: plan.musicVolume ?? 0.32,
     voiceVolume: 1,
     sfx,
