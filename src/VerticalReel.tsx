@@ -2,8 +2,10 @@ import React from 'react';
 import {
   AbsoluteFill,
   Audio,
+  Easing,
   interpolate,
   OffthreadVideo,
+  random,
   Sequence,
   spring,
   staticFile,
@@ -28,12 +30,39 @@ const GRAIN =
     '<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="220" height="220" filter="url(#n)" opacity="0.55"/></svg>',
   );
 
+/**
+ * Contorno negro por capas de sombra. Es lo que hace que el texto se lea sobre
+ * cualquier fondo sin necesidad de una caja detrás — las cajas son justamente
+ * lo que hacía que esto pareciera una diapositiva.
+ */
+const outline = (size = 4, glow = 26) =>
+  [
+    `${size}px ${size}px 0 #07080C`,
+    `-${size}px -${size}px 0 #07080C`,
+    `${size}px -${size}px 0 #07080C`,
+    `-${size}px ${size}px 0 #07080C`,
+    `0 ${size}px 0 #07080C`,
+    `0 -${size}px 0 #07080C`,
+    `${size}px 0 0 #07080C`,
+    `-${size}px 0 0 #07080C`,
+    `0 ${Math.round(size * 1.5)}px ${glow}px rgba(0,0,0,0.85)`,
+  ].join(', ');
+
 export const resolveSrc = (src: string) => {
   if (/^(https?:)?\/\//.test(src) || src.startsWith('data:')) return src;
   return staticFile(src.replace(/^\/?public\//, '').replace(/^\//, ''));
 };
 
-/** Grano de película: se mueve cada frame para que no se vea estático. */
+/** Rebote con sobrepaso: entra pasado de largo y vuelve. Es la diferencia entre
+ * "el texto aparece" (diapositiva) y "el texto llega" (reel). */
+const pop = (frame: number, fps: number, delay = 0) =>
+  spring({
+    frame: frame - delay,
+    fps,
+    config: {damping: 11, stiffness: 160, mass: 0.55},
+    durationInFrames: 22,
+  });
+
 const Grain: React.FC = () => {
   const frame = useCurrentFrame();
   return (
@@ -42,104 +71,36 @@ const Grain: React.FC = () => {
         backgroundImage: `url("${GRAIN}")`,
         backgroundSize: '220px 220px',
         backgroundPosition: `${(frame * 53) % 220}px ${(frame * 89) % 220}px`,
-        opacity: 0.07,
+        opacity: 0.05,
         mixBlendMode: 'overlay',
       }}
     />
   );
 };
 
-/** Corrección de color: contraste, split-tone cálido/frío y viñeta. */
+/** Grade suave: contraste y calidez sin quemar la imagen ("apacible a la vista"). */
 const Grade: React.FC<{accentColor: string}> = ({accentColor}) => (
   <>
     <AbsoluteFill
       style={{
-        background: `radial-gradient(120% 75% at 50% 0%, ${accentColor}26, rgba(0,0,0,0) 62%)`,
+        background: `radial-gradient(125% 80% at 50% 12%, ${accentColor}1F, rgba(0,0,0,0) 58%)`,
         mixBlendMode: 'soft-light',
       }}
     />
     <AbsoluteFill
       style={{
         background:
-          'radial-gradient(110% 70% at 50% 100%, rgba(10,26,54,0.6), rgba(0,0,0,0) 68%)',
-        mixBlendMode: 'multiply',
-      }}
-    />
-    <AbsoluteFill
-      style={{
-        background:
-          'radial-gradient(78% 62% at 50% 44%, rgba(0,0,0,0) 38%, rgba(0,0,0,0.58) 100%)',
+          'radial-gradient(85% 65% at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.46) 100%)',
       }}
     />
     <Grain />
   </>
 );
 
-/** Chip de sección arriba a la izquierda. */
-const LabelChip: React.FC<{label: string; accentColor: string}> = ({label, accentColor}) => {
-  const frame = useCurrentFrame();
-  const {fps, durationInFrames} = useVideoConfig();
-  const enter = spring({frame: frame - 3, fps, config: {damping: 200}, durationInFrames: 14});
-  const exit = interpolate(frame, [durationInFrames - 12, durationInFrames - 2], [1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-
-  return (
-    <div
-      className="absolute left-14 top-40 flex items-center"
-      style={{
-        opacity: enter * exit,
-        transform: `translateX(${interpolate(enter, [0, 1], [-90, 0])}px)`,
-      }}
-    >
-      <div style={{width: 10, height: 52, backgroundColor: accentColor, borderRadius: 4}} />
-      <span
-        style={{
-          fontFamily: TEXT_FONT,
-          fontSize: 34,
-          fontWeight: 800,
-          letterSpacing: 2,
-          textTransform: 'uppercase',
-          color: 'white',
-          backgroundColor: 'rgba(0,0,0,0.45)',
-          padding: '12px 22px',
-          marginLeft: 14,
-          borderRadius: 10,
-          textShadow: '0 4px 18px rgba(0,0,0,0.6)',
-        }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-};
-
-const CaptionPill: React.FC<{children: React.ReactNode; opacity: number; y: number}> = ({
-  children,
-  opacity,
-  y,
-}) => (
-  <div
-    className="absolute inset-x-0 bottom-0 flex justify-center px-12 pb-52"
-    style={{opacity, transform: `translateY(${y}px)`}}
-  >
-    <div
-      style={{
-        backgroundColor: 'rgba(8,10,16,0.62)',
-        border: '2px solid rgba(255,255,255,0.10)',
-        borderRadius: 26,
-        padding: '20px 34px',
-        maxWidth: 900,
-        backdropFilter: 'blur(6px)',
-      }}
-    >
-      {children}
-    </div>
-  </div>
-);
-
-/** Subtítulos karaoke: la palabra que suena se pinta con el color de acento. */
+/**
+ * Subtítulo karaoke: cada palabra entra con rebote y la que suena se marca con
+ * un resaltador que barre de izquierda a derecha.
+ */
 const KaraokeCaption: React.FC<{shot: ReelShot; accentColor: string}> = ({
   shot,
   accentColor,
@@ -150,98 +111,147 @@ const KaraokeCaption: React.FC<{shot: ReelShot; accentColor: string}> = ({
   const groups = React.useMemo(() => groupWords(shot.words ?? []), [shot.words]);
 
   const activeIndex = groups.findIndex(
-    (group) => seconds >= group[0].start - 0.12 && seconds < group[group.length - 1].end + 0.28,
+    (group) => seconds >= group[0].start - 0.14 && seconds < group[group.length - 1].end + 0.3,
   );
   if (activeIndex === -1) return null;
 
   const group = groups[activeIndex];
-  const enter = interpolate(seconds, [group[0].start - 0.12, group[0].start + 0.05], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+  const groupStartFrame = Math.round((group[0].start - 0.14) * fps);
 
   return (
-    <CaptionPill opacity={enter} y={interpolate(enter, [0, 1], [26, 0])}>
-      <p
-        className="text-center"
-        style={{
-          fontFamily: TEXT_FONT,
-          fontSize: 60,
-          fontWeight: 900,
-          lineHeight: 1.12,
-          margin: 0,
-          textShadow: '0 6px 22px rgba(0,0,0,0.75)',
-        }}
-      >
-        {group.map((word, index) => {
-          const isActive = seconds >= word.start && seconds < word.end + 0.06;
-          return (
+    <div
+      className="absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-12"
+      style={{bottom: 300}}
+    >
+      {group.map((word, index) => {
+        const enter = pop(frame, fps, groupStartFrame + index * 2);
+        const isActive = seconds >= word.start - 0.04 && seconds < word.end + 0.08;
+        // El resaltador barre mientras la palabra suena.
+        const sweep = isActive
+          ? interpolate(seconds, [word.start - 0.04, word.start + 0.12], [0, 1], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+            })
+          : 0;
+
+        return (
+          <span
+            key={`${word.text}-${index}`}
+            style={{
+              position: 'relative',
+              display: 'inline-block',
+              opacity: interpolate(enter, [0, 0.35], [0, 1], {extrapolateRight: 'clamp'}),
+              transform: `scale(${interpolate(enter, [0, 1], [0.55, 1])}) translateY(${interpolate(
+                enter,
+                [0, 1],
+                [26, 0],
+              )}px) rotate(${interpolate(enter, [0, 1], [random(word.text) > 0.5 ? 5 : -5, 0])}deg)`,
+            }}
+          >
             <span
-              key={`${word.text}-${index}`}
               style={{
-                color: isActive ? accentColor : 'white',
-                display: 'inline-block',
-                transform: `scale(${isActive ? 1.06 : 1})`,
-                margin: '0 8px',
+                position: 'absolute',
+                inset: '2px -12px 6px -12px',
+                backgroundColor: accentColor,
+                borderRadius: 8,
+                transform: `scaleX(${sweep})`,
+                transformOrigin: 'left center',
+              }}
+            />
+            <span
+              style={{
+                position: 'relative',
+                fontFamily: TEXT_FONT,
+                fontSize: 66,
+                fontWeight: 900,
+                letterSpacing: -1,
+                color: sweep > 0.5 ? '#07080C' : 'white',
+                textShadow: sweep > 0.5 ? 'none' : outline(4),
               }}
             >
               {word.text.trim()}
             </span>
-          );
-        })}
-      </p>
-    </CaptionPill>
+          </span>
+        );
+      })}
+    </div>
   );
 };
 
+/** Texto de B-roll: entra palabra por palabra, sin caja. */
 const StaticCaption: React.FC<{text: string; accentColor: string}> = ({text, accentColor}) => {
   const frame = useCurrentFrame();
   const {fps, durationInFrames} = useVideoConfig();
-  const enter = spring({frame: frame - 4, fps, config: {damping: 200}, durationInFrames: 16});
-  const exit = interpolate(frame, [durationInFrames - 10, durationInFrames - 1], [1, 0], {
+  const words = text.split(/\s+/).filter(Boolean);
+  const exit = interpolate(frame, [durationInFrames - 8, durationInFrames - 1], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
   return (
-    <CaptionPill opacity={enter * exit} y={interpolate(enter, [0, 1], [40, 0])}>
-      <p
-        className="text-center"
-        style={{
-          fontFamily: TEXT_FONT,
-          fontSize: 58,
-          fontWeight: 800,
-          lineHeight: 1.15,
-          margin: 0,
-          color: 'white',
-          textShadow: '0 6px 22px rgba(0,0,0,0.8)',
-          borderLeft: `8px solid ${accentColor}`,
-          paddingLeft: 22,
-          textAlign: 'left',
-        }}
-      >
-        {text}
-      </p>
-    </CaptionPill>
+    <div
+      className="absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-14"
+      style={{bottom: 300, opacity: exit}}
+    >
+      {words.map((word, index) => {
+        const enter = pop(frame, fps, 3 + index * 2);
+        const highlighted = word.startsWith('*') && word.endsWith('*');
+        const clean = highlighted ? word.slice(1, -1) : word;
+        return (
+          <span
+            key={`${word}-${index}`}
+            style={{
+              display: 'inline-block',
+              fontFamily: TEXT_FONT,
+              fontSize: 62,
+              fontWeight: 900,
+              letterSpacing: -1,
+              color: highlighted ? accentColor : 'white',
+              textShadow: outline(4),
+              opacity: interpolate(enter, [0, 0.35], [0, 1], {extrapolateRight: 'clamp'}),
+              transform: `scale(${interpolate(enter, [0, 1], [0.6, 1])}) translateY(${interpolate(
+                enter,
+                [0, 1],
+                [24, 0],
+              )}px)`,
+            }}
+          >
+            {clean}
+          </span>
+        );
+      })}
+    </div>
   );
 };
 
-/** Un corte: video en cover, zoom lento, golpe de entrada, grade y textos. */
+/**
+ * Un corte. El movimiento nunca se detiene: zoom que alterna de dirección por
+ * corte, más un golpe de escala al entrar para que el corte se sienta.
+ */
 const Shot: React.FC<{
   shot: ReelShot;
+  index: number;
   accentColor: string;
   voiceVolume: number;
-  tickSrc?: string;
-  sfxVolume: number;
-}> = ({shot, accentColor, voiceVolume, tickSrc, sfxVolume}) => {
+}> = ({shot, index, accentColor, voiceVolume}) => {
   const frame = useCurrentFrame();
   const {durationInFrames, fps, width, height} = useVideoConfig();
 
-  const zoom = interpolate(frame, [0, durationInFrames], [1.05, 1.13], {
+  // Alternar la dirección del zoom evita que se sienta repetitivo.
+  const zoomsIn = index % 2 === 0;
+  const zoom = zoomsIn
+    ? interpolate(frame, [0, durationInFrames], [1.04, 1.15], {extrapolateRight: 'clamp'})
+    : interpolate(frame, [0, durationInFrames], [1.15, 1.04], {extrapolateRight: 'clamp'});
+
+  // Golpe de entrada: llega pasado de tamaño y se asienta.
+  const punch = interpolate(frame, [0, 9], [1.09, 1], {
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  });
+  const flash = interpolate(frame, [0, 4], [0.3, 0], {extrapolateRight: 'clamp'});
+  const drift = interpolate(frame, [0, durationInFrames], [0, zoomsIn ? 14 : -14], {
     extrapolateRight: 'clamp',
   });
-  const punch = interpolate(frame, [0, 7], [1.035, 1], {extrapolateRight: 'clamp'});
-  const flash = interpolate(frame, [0, 5], [0.22, 0], {extrapolateRight: 'clamp'});
 
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
@@ -255,8 +265,8 @@ const Shot: React.FC<{
             height,
             objectFit: 'cover',
             objectPosition: 'center',
-            transform: `scale(${zoom * punch})`,
-            filter: 'saturate(1.16) contrast(1.09) brightness(1.02)',
+            transform: `scale(${zoom * punch}) translateX(${drift}px)`,
+            filter: 'saturate(1.14) contrast(1.07) brightness(1.02)',
           }}
         />
       </AbsoluteFill>
@@ -272,13 +282,6 @@ const Shot: React.FC<{
       <Grade accentColor={accentColor} />
       <AbsoluteFill style={{backgroundColor: `rgba(255,255,255,${flash})`}} />
 
-      {tickSrc && !shot.words?.length && shot.caption ? (
-        <Sequence from={4} durationInFrames={8} name="SFX texto">
-          <Audio src={resolveSrc(tickSrc)} volume={sfxVolume * 0.7} />
-        </Sequence>
-      ) : null}
-
-      {shot.label ? <LabelChip label={shot.label} accentColor={accentColor} /> : null}
       {shot.words?.length ? (
         <KaraokeCaption shot={shot} accentColor={accentColor} />
       ) : shot.caption ? (
@@ -288,10 +291,11 @@ const Shot: React.FC<{
   );
 };
 
-/** Gancho: entra palabra por palabra; *lo marcado* va en caja de acento. */
+/** Gancho: las palabras llegan de golpe, escalonadas, con resaltador en lo marcado. */
 const Hook: React.FC<{text: string; accentColor: string}> = ({text, accentColor}) => {
   const frame = useCurrentFrame();
   const {fps, durationInFrames} = useVideoConfig();
+
   const parts = text.split(/(\*[^*]+\*)/).filter(Boolean);
   const words = parts.flatMap((part) => {
     const highlighted = part.startsWith('*') && part.endsWith('*');
@@ -302,103 +306,71 @@ const Hook: React.FC<{text: string; accentColor: string}> = ({text, accentColor}
       .map((word) => ({word, highlighted}));
   });
 
-  const out = interpolate(frame, [durationInFrames - 10, durationInFrames], [1, 0], {
+  const out = interpolate(frame, [durationInFrames - 8, durationInFrames], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const scrim = interpolate(frame, [0, 10, durationInFrames - 10, durationInFrames], [0.6, 0.42, 0.42, 0], {
+  const outScale = interpolate(frame, [durationInFrames - 8, durationInFrames], [1, 1.12], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
   return (
     <AbsoluteFill style={{opacity: out}}>
-      <AbsoluteFill style={{backgroundColor: `rgba(0,0,0,${scrim})`}} />
-      <div className="absolute inset-x-0 top-0 flex flex-wrap justify-center gap-x-6 gap-y-3 px-12 pt-56">
+      <div
+        className="absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-10"
+        style={{top: 210, transform: `scale(${outScale})`}}
+      >
         {words.map(({word, highlighted}, index) => {
-          const enter = spring({
-            frame: frame - index * 3,
-            fps,
-            config: {damping: 200, mass: 0.6},
-            durationInFrames: 18,
+          const enter = pop(frame, fps, index * 4);
+          const sweep = interpolate(enter, [0.4, 1], [0, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
           });
           return (
             <span
               key={`${word}-${index}`}
               style={{
-                fontFamily: DISPLAY_FONT,
-                fontSize: 118,
-                lineHeight: 1.02,
-                textTransform: 'uppercase',
-                color: highlighted ? '#0B0D12' : 'white',
-                backgroundColor: highlighted ? accentColor : 'transparent',
-                padding: highlighted ? '0 16px' : 0,
-                borderRadius: highlighted ? 10 : 0,
-                opacity: enter,
+                position: 'relative',
                 display: 'inline-block',
-                transform: `translateY(${interpolate(enter, [0, 1], [70, 0])}px) rotate(${interpolate(
+                opacity: interpolate(enter, [0, 0.3], [0, 1], {extrapolateRight: 'clamp'}),
+                transform: `scale(${interpolate(enter, [0, 1], [0.4, 1])}) translateY(${interpolate(
                   enter,
                   [0, 1],
-                  [index % 2 === 0 ? -6 : 6, 0],
-                )}deg)`,
-                textShadow: highlighted ? 'none' : '0 10px 34px rgba(0,0,0,0.7)',
+                  [56, 0],
+                )}px) rotate(${interpolate(enter, [0, 1], [index % 2 === 0 ? -8 : 8, 0])}deg)`,
               }}
             >
-              {word}
+              {highlighted ? (
+                <span
+                  style={{
+                    position: 'absolute',
+                    inset: '6px -14px 12px -14px',
+                    backgroundColor: accentColor,
+                    borderRadius: 10,
+                    transform: `scaleX(${sweep})`,
+                    transformOrigin: 'left center',
+                  }}
+                />
+              ) : null}
+              <span
+                style={{
+                  position: 'relative',
+                  fontFamily: DISPLAY_FONT,
+                  fontSize: 124,
+                  lineHeight: 1,
+                  textTransform: 'uppercase',
+                  color: highlighted && sweep > 0.5 ? '#07080C' : 'white',
+                  textShadow: highlighted && sweep > 0.5 ? 'none' : outline(5, 34),
+                }}
+              >
+                {word}
+              </span>
             </span>
           );
         })}
       </div>
     </AbsoluteFill>
-  );
-};
-
-/** Barra de progreso segmentada: un tramo por corte. */
-const Progress: React.FC<{shots: ReelShot[]; accentColor: string; transition: number}> = ({
-  shots,
-  accentColor,
-  transition,
-}) => {
-  const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  const lengths = shots.map(
-    (shot, index) => shotFrames(shot, fps) - (index < shots.length - 1 ? transition : 0),
-  );
-  const total = lengths.reduce((a, b) => a + b, 0);
-
-  let consumed = 0;
-  return (
-    <div className="absolute inset-x-0 bottom-0 flex gap-2 px-6 pb-6">
-      {lengths.map((length, index) => {
-        const start = consumed;
-        consumed += length;
-        const value = interpolate(frame, [start, start + length], [0, 1], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        });
-        return (
-          <div
-            key={index}
-            style={{
-              flex: length / total,
-              height: 10,
-              borderRadius: 999,
-              backgroundColor: 'rgba(255,255,255,0.22)',
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                width: `${value * 100}%`,
-                height: '100%',
-                backgroundColor: accentColor,
-                boxShadow: `0 0 22px ${accentColor}`,
-              }}
-            />
-          </div>
-        );
-      })}
-    </div>
   );
 };
 
@@ -418,14 +390,14 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
   const frame = useCurrentFrame();
   const {durationInFrames, fps} = useVideoConfig();
 
-  const hookFrames = Math.round(fps * 2.4);
-  const ctaFrames = Math.round(fps * 2.2);
+  const hookFrames = Math.round(fps * 2.2);
+  const ctaFrames = Math.round(fps * 2.4);
   const ctaStart = durationInFrames - ctaFrames;
   const ctaIn = spring({
     frame: frame - ctaStart,
     fps,
-    config: {damping: 180, mass: 0.7},
-    durationInFrames: 20,
+    config: {damping: 12, stiffness: 150, mass: 0.6},
+    durationInFrames: 24,
   });
 
   const cuts = transitionStarts(shots, fps, transitionInFrames);
@@ -438,10 +410,9 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
             <TransitionSeries.Sequence durationInFrames={shotFrames(shot, fps)}>
               <Shot
                 shot={shot}
+                index={index}
                 accentColor={accentColor}
                 voiceVolume={voiceVolume}
-                tickSrc={sfx?.tick}
-                sfxVolume={sfxVolume}
               />
             </TransitionSeries.Sequence>
             {index < shots.length - 1 ? (
@@ -456,7 +427,6 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
 
       {musicSrc ? <Audio src={resolveSrc(musicSrc)} volume={musicVolume} /> : null}
 
-      {/* Diseño sonoro: riser de entrada, whoosh en cada corte, golpe en el cierre. */}
       {sfx?.riser ? (
         <Sequence durationInFrames={Math.round(fps)} name="SFX riser">
           <Audio src={resolveSrc(sfx.riser)} volume={sfxVolume} />
@@ -470,7 +440,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
               durationInFrames={Math.round(fps * 0.6)}
               name={`SFX corte ${index + 1}`}
             >
-              <Audio src={resolveSrc(sfx.whoosh as string)} volume={sfxVolume * 0.85} />
+              <Audio src={resolveSrc(sfx.whoosh as string)} volume={sfxVolume * 0.8} />
             </Sequence>
           ))
         : null}
@@ -490,35 +460,26 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: `rgba(6,8,14,${interpolate(ctaIn, [0, 1], [0, 0.82])})`,
+              backgroundColor: `rgba(6,8,14,${interpolate(ctaIn, [0, 1], [0, 0.78])})`,
             }}
           >
             <div
               style={{
-                opacity: ctaIn,
-                transform: `scale(${interpolate(ctaIn, [0, 1], [0.82, 1])})`,
                 textAlign: 'center',
                 padding: '0 70px',
+                transform: `scale(${interpolate(ctaIn, [0, 1], [0.7, 1])})`,
+                opacity: interpolate(ctaIn, [0, 0.3], [0, 1], {extrapolateRight: 'clamp'}),
               }}
             >
-              <div
-                style={{
-                  width: interpolate(ctaIn, [0, 1], [0, 220]),
-                  height: 12,
-                  backgroundColor: accentColor,
-                  margin: '0 auto 34px',
-                  borderRadius: 999,
-                }}
-              />
               <p
                 style={{
                   fontFamily: DISPLAY_FONT,
-                  fontSize: 120,
+                  fontSize: 132,
                   lineHeight: 1,
                   margin: 0,
                   color: 'white',
                   textTransform: 'uppercase',
-                  textShadow: `0 0 70px ${accentColor}88`,
+                  textShadow: outline(5, 40),
                 }}
               >
                 {cta}
@@ -527,10 +488,12 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
                 <p
                   style={{
                     fontFamily: TEXT_FONT,
-                    fontSize: 44,
-                    fontWeight: 700,
-                    marginTop: 26,
-                    color: 'rgba(255,255,255,0.78)',
+                    fontSize: 46,
+                    fontWeight: 800,
+                    letterSpacing: 1,
+                    marginTop: 22,
+                    color: accentColor,
+                    textShadow: outline(3, 20),
                   }}
                 >
                   {ctaSub}
@@ -540,8 +503,6 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
           </AbsoluteFill>
         </Sequence>
       ) : null}
-
-      <Progress shots={shots} accentColor={accentColor} transition={transitionInFrames} />
     </AbsoluteFill>
   );
 };

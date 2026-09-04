@@ -204,6 +204,18 @@ const main = async () => {
       continue;
     }
 
+    // Una transcripción corregida a mano nunca se pisa, ni con --force: el
+    // modelo no puede recuperar lo que un humano ya arregló (jerga, nombres).
+    if (fs.existsSync(target)) {
+      const existing = JSON.parse(fs.readFileSync(target, 'utf8')) as {
+        correctedByHuman?: boolean;
+      };
+      if (existing.correctedByHuman) {
+        console.log(`🔒 ${file} corregido a mano, no se toca`);
+        continue;
+      }
+    }
+
     // Reanudable: lo ya transcrito no se repite salvo --force.
     if (
       !force &&

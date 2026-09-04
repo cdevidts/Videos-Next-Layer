@@ -38,6 +38,14 @@ retome sin perder nada. Para que eso siga siendo cierto:
 5. **No inventes contenido.** Los textos en pantalla tienen que corresponder a lo
    que se ve y se escucha. Si la transcripción salió ininteligible, se marca
    `ignoreSpeech` y se usa el clip mudo; no se rellena con texto inventado.
+6. **Mira todos los clips antes de escribir el plan.** No elijas material por peso
+   de archivo ni por duración: saca frames de cada clip y míralos con `Read`. El
+   primer render de Video 46 salió mal justamente por esto — el clip más pesado
+   (48 s) era el que explicaba todo y quedó fuera por descartarlo sin abrirlo.
+7. **Si whisper devuelve algo raro, puede ser jerga, no ruido.** "once lucas"
+   (chileno: once mil pesos) salió como "once lugar". Antes de descartar un clip
+   por ininteligible, pregunta. Una transcripción corregida a mano se marca con
+   `"correctedByHuman": true` y ya no se vuelve a pisar, ni con `--force`.
 
 ## Flujo
 

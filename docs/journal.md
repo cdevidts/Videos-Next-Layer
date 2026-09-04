@@ -46,6 +46,35 @@ Entradas nuevas abajo, con fecha.
   humana**: dejarlo o suavizarlo editando
   `public/input/video-46/_audio/DSCF7528.json`.
 
+## 2026-09-05 · Video 46 v2: se rehizo entero. El v1 estaba mal por omisión.
+
+La usuaria rechazó el primer render con tres críticas, las tres correctas:
+
+1. **Faltaban 4 de 10 clips.** El v1 se armó bajando a mano los 6 clips *más livianos* por
+   `curl`, saltándose el propio `npm run fetch-drive` del repo. Elegir material por peso de
+   archivo en vez de por contenido es lo que causó todo lo demás. **Regla nueva: nunca elegir
+   clips sin mirarlos.** Extraer frames de todos los clips antes de escribir el plan.
+2. **Se perdió la historia.** DSCF7537 (48 s, 1,2 GB — el más pesado, por eso quedó fuera) es
+   el corazón del video: muestra el diseño en CAD y explica que *diseñó conectores impresos en
+   3D con superficies protuberantes que encajan en agujeros hechos con taladro, para armar
+   cualquier forma de mueble*. Eso es literalmente la propuesta de Next Layer y no estaba.
+   El v1 saltaba del cuaderno al resultado sin el "cómo".
+3. **La gráfica parecía PowerPoint.** Chips numerados `01 · El problema`, pastillas con barra
+   lateral, subrayado bajo el gancho y barra de progreso segmentada: todos elementos de
+   presentación, no de reel. Se eliminaron todos.
+
+## 2026-09-05 · El gancho real lo dijo la usuaria, no el modelo
+
+DSCF7524 dice **"¿Un mueble por once lucas?"** — whisper devolvió *"o muerle así por once
+lugar"* porque no conoce "lucas" (jerga chilena: mil pesos). El v1 marcó ese clip como
+ininteligible y lo usó mudo al final. Era el gancho de precio del video, y el precio se
+repite hablado en DSCF7532 ("son 11 lucas").
+
+Se corrigió la transcripción a mano y ahora abre el reel. Para que no se pierda: los archivos
+de transcripción aceptan `"correctedByHuman": true` y `transcribeClips.ts` **no los pisa ni
+con `--force`**. Si whisper devuelve algo raro en jerga chilena, se corrige a mano y se marca
+con esa bandera.
+
 ## 2026-09-04 · Se evaluaron 3 herramientas externas de video (heygen-com/hyperframes,
 bradautomates/claude-video, browser-use/video-use). Veredicto: una se adoptó, dos no.
 

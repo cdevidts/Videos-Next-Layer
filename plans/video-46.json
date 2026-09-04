@@ -1,49 +1,71 @@
 {
   "project": "video-46",
   "dir": "public/input/video-46/Videos",
-  "hook": "El filamento ya no *cabía*",
+  "hook": "¿Un mueble por *once lucas*?",
   "cta": "Next Layer",
   "ctaSub": "Impresión 3D",
   "accentColor": "#FF8A3D",
-  "transitionInFrames": 8,
-  "sfxVolume": 0.26,
+  "transitionInFrames": 3,
+  "sfxVolume": 0.24,
   "clips": [
     {
-      "file": "DSCF7528.MOV",
-      "label": "01 · El problema",
-      "caption": "Carretes por todos lados"
+      "file": "DSCF7524.MOV",
+      "startFromSeconds": 1.7,
+      "durationInSeconds": 2.8
     },
     {
-      "file": "DSCF7535.MOV",
-      "label": "02 · El plano",
-      "caption": "Primero lo dibujé en el cuaderno",
-      "startFromSeconds": 0.5,
-      "durationInSeconds": 3.2
+      "file": "DSCF7528.MOV",
+      "startFromSeconds": 1.5,
+      "durationInSeconds": 3.4
     },
     {
       "file": "DSCF7536.MOV",
-      "label": "03 · Cero carpintería",
-      "startFromSeconds": 1.5,
-      "durationInSeconds": 8.5
-    },
-    {
-      "file": "DSCF7531.MOV",
-      "label": "04 · Manos a la obra",
-      "caption": "Un taladro, madera y piezas impresas",
-      "startFromSeconds": 1.4,
-      "durationInSeconds": 3.2
-    },
-    {
-      "file": "DSCF7530.MOV",
-      "label": "05 · El resultado",
-      "caption": "Ahora cada color tiene su lugar",
-      "startFromSeconds": 0.8,
+      "startFromSeconds": 4.2,
       "durationInSeconds": 3.6
     },
     {
-      "file": "DSCF7524.MOV",
+      "file": "DSCF7537.MOV",
+      "startFromSeconds": 2.9,
+      "durationInSeconds": 4.4
+    },
+    {
+      "file": "DSCF7537.MOV",
+      "startFromSeconds": 10.6,
+      "durationInSeconds": 9.4
+    },
+    {
+      "file": "DSCF7537.MOV",
+      "startFromSeconds": 27.4,
+      "durationInSeconds": 8.2
+    },
+    {
+      "file": "DSCF7537.MOV",
+      "startFromSeconds": 38.4,
+      "durationInSeconds": 9.8
+    },
+    {
+      "file": "DSCF7532.MOV",
+      "startFromSeconds": 3.6,
+      "durationInSeconds": 5.2
+    },
+    {
+      "file": "DSCF7531.MOV",
       "ignoreSpeech": true,
-      "startFromSeconds": 5.2,
+      "caption": "Un taladro y nada más",
+      "startFromSeconds": 1.4,
+      "durationInSeconds": 2.6
+    },
+    {
+      "file": "DSCF7530.MOV",
+      "ignoreSpeech": true,
+      "caption": "Cada color en su lugar",
+      "startFromSeconds": 0.8,
+      "durationInSeconds": 3.0
+    },
+    {
+      "file": "DSCF7529.MOV",
+      "ignoreSpeech": true,
+      "startFromSeconds": 5.4,
       "durationInSeconds": 3.2
     }
   ]
