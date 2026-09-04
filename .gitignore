@@ -1,0 +1,21 @@
+# dependencias
+node_modules/
+
+# credenciales
+.env
+.env.local
+.env.*.local
+credentials*.json
+client_secret*.json
+service-account*.json
+*.pem
+
+# media descargada y renders
+public/input/
+out/
+.remotion/
+
+# sistema
+.DS_Store
+*.log
+npm-debug.log*

@@ -1,0 +1,47 @@
+{
+  "name": "videos-next-layer",
+  "version": "0.1.0",
+  "description": "Pipeline automatizado de edicion de video vertical (9:16) con Remotion + Google Drive.",
+  "scripts": {
+    "dev": "remotion studio",
+    "preview": "remotion studio",
+    "render": "remotion render VerticalClip out/final.mp4",
+    "fetch-drive": "tsx scripts/fetchDriveClip.ts",
+    "process": "tsx scripts/processClip.ts",
+    "pipeline": "tsx scripts/processClip.ts",
+    "typecheck": "tsc --noEmit",
+    "sample": "remotion render SampleSource public/input/sample.mp4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cdevidts/Videos-Next-Layer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/cdevidts/Videos-Next-Layer/issues"
+  },
+  "homepage": "https://github.com/cdevidts/Videos-Next-Layer#readme",
+  "dependencies": {
+    "@remotion/cli": "^4.0.520",
+    "@remotion/media-utils": "^4.0.520",
+    "@remotion/renderer": "^4.0.520",
+    "@remotion/tailwind-v4": "^4.0.520",
+    "dotenv": "^17.4.2",
+    "googleapis": "^178.0.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remotion": "^4.0.520",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  },
+  "private": true,
+  "type": "module"
+}
