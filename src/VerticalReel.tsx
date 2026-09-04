@@ -460,7 +460,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: `rgba(6,8,14,${interpolate(ctaIn, [0, 1], [0, 0.78])})`,
+              backgroundColor: `rgba(6,8,14,${interpolate(ctaIn, [0, 1], [0, 0.62])})`,
             }}
           >
             <div
