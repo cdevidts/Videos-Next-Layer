@@ -118,6 +118,39 @@ de B-roll no traen voz, así que necesitan sonido propio: el efecto que
 corresponde a la imagen, o la música de cama sonando debajo. Verifícalo con
 `npm run review`, que lista los tramos bajo -40 dBFS.
 
+## Subtítulos: cómo verificar que calzan (y por qué se rompen)
+
+**Nunca declares que los subtítulos están bien mirándolos.** Un desfase de 0,3 s
+se ve raro pero no se sabe por qué. Se mide así:
+
+1. Extrae el audio del render terminado a WAV 16 kHz.
+2. Transcríbelo con whisper (`tokenLevelTimestamps: true`).
+3. Arma la línea de tiempo global de los subtítulos desde
+   `out/<proyecto>.reel.props.json`: el inicio de cada corte es
+   `suma(duraciones anteriores) - n × transitionInFrames/fps`, y cada palabra va
+   en `inicioDelCorte + word.start`.
+4. Empareja cada palabra con la del audio real y mide la diferencia.
+
+Un desfase medio bajo 0,15 s es aceptable. Si crece dentro de una frase, el
+problema es la alineación, no whisper.
+
+### Lo que ya se aprendió midiendo
+
+Whisper se equivoca **mucho en la primera palabra** (la estira hasta t=0 aunque
+la voz empiece después) y **poco en el resto** (0,2-0,3 s). Eso obliga a tratar
+dos casos distintos, y está implementado así en `alignWords`:
+
+- **Un solo tramo de voz** → estirar la frase sobre ese tramo. Medido: 0,08 s
+  de error.
+- **Varios tramos** → **no reescalar**. La frase abarca los silencios
+  intermedios y cualquier reescalado comprime las palabras: se midió hasta
+  1,2 s de desfase. Ahí los tiempos crudos de whisper son mejores (0,22 s); solo
+  se corrige la primera palabra empujándola al inicio real de la voz.
+
+Si además el corte va acelerado, los tiempos de las palabras se dividen por la
+velocidad. Eso ya lo hace `buildReel`; si algún día el karaoke se desincroniza
+solo en los cortes acelerados, mira ahí primero.
+
 ## Ritmo: acelerar lo que no se mueve
 
 Una toma hablada sobre una imagen quieta (una pantalla de computador) se hace

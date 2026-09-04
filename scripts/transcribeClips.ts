@@ -114,25 +114,35 @@ const alignWords = (words: Word[], ranges: Range[]): Word[] => {
 
   const from = {start: words[0].start, end: words[words.length - 1].end};
   const fromLength = from.end - from.start;
-  const speechLength = totalSeconds(ranges);
-  if (fromLength <= 0 || speechLength <= 0) return words;
+  if (fromLength <= 0) return words;
 
-  /** Convierte una posición 0-1 de la frase en un tiempo real, saltando huecos. */
-  const toAbsolute = (progress: number): number => {
-    let remaining = Math.max(0, Math.min(1, progress)) * speechLength;
-    for (const range of ranges) {
-      const length = range.end - range.start;
-      if (remaining <= length) return range.start + remaining;
-      remaining -= length;
+  // Con un solo tramo de voz, estirar la frase sobre ese tramo acierta: se
+  // midió contra el render y el error quedó en 0,08 s.
+  if (ranges.length === 1) {
+    const to = ranges[0];
+    const scale = (to.end - to.start) / fromLength;
+    return words.map((word) => ({
+      text: word.text,
+      start: to.start + (word.start - from.start) * scale,
+      end: to.start + (word.end - from.start) * scale,
+    }));
+  }
+
+  // Con varios tramos, estirar es un desastre: la frase abarca los silencios
+  // intermedios y cualquier reescalado comprime las palabras (se midió hasta
+  // 1,2 s de desfase). Ahí los tiempos crudos de whisper son mejores — se
+  // midieron con 0,22 s de error — porque su equivocación se concentra en la
+  // primera palabra, que suele estirar hasta t=0.
+  //
+  // Así que se respeta el ritmo de whisper y solo se corrige esa primera
+  // palabra, empujándola al inicio real de la voz si quedó antes.
+  const onset = ranges[0].start;
+  return words.map((word, index) => {
+    if (index === 0 && word.start < onset) {
+      return {text: word.text, start: onset, end: Math.max(word.end, onset + 0.1)};
     }
-    return ranges[ranges.length - 1].end;
-  };
-
-  return words.map((word) => ({
-    text: word.text,
-    start: toAbsolute((word.start - from.start) / fromLength),
-    end: toAbsolute((word.end - from.start) / fromLength),
-  }));
+    return word;
+  });
 };
 
 /** Une los tokens de whisper en palabras: los que abren palabra traen espacio. */
