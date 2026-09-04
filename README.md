@@ -81,6 +81,7 @@ Qué hace cada paso:
 | `fonts` | Descarga Anton e Inter a `public/fonts/` y genera `src/fonts.generated.ts`. El Chrome del render no siempre puede salir a fonts.gstatic.com, así que las fuentes viven en el repo. |
 | `sfx` | Sintetiza `whoosh`, `tick`, `riser` e `impact` en `public/sfx/` — sin samples externos, sin problemas de licencia. |
 | `reel` | Normaliza cada fuente a un proxy 1080x1920 H.264 (aplica la rotación de cámara y baja el 4K/HEVC), **corta los silencios** usando la transcripción, arma los props y renderiza. |
+| `review` | Saca 8 frames parejos del render (`npm run review -- renders/video-46-reel.mp4`) y un resumen del nivel de audio, para revisar sin sacar cada frame a mano. |
 
 ## 4. El plan de edición
 

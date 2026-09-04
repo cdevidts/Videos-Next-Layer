@@ -132,3 +132,28 @@ puerto.
 bash scripts/setup-omniroute.sh status    # ver cómo quedó
 bash scripts/setup-omniroute.sh revert    # deshacer todo
 ```
+
+---
+
+## Cómo trabaja `claude-omni` con este repo (para cuando pregunte)
+
+`claude-omni` no es un agente distinto: es el mismo binario de Claude Code, apuntado a otro
+backend de modelo con dos variables de entorno (`ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`) y
+nada más. Tiene las mismas herramientas — Bash, Read, Edit, git — porque es literalmente el mismo
+programa. Por eso trabajar en el repo es idéntico a como se hace con `claude`, no hay nada
+adicional que instalar para eso:
+
+```bash
+git clone https://github.com/cdevidts/Videos-Next-Layer.git   # si no está ya clonado
+cd Videos-Next-Layer
+claude-omni
+```
+
+Si el repo ya está clonado en la máquina, basta `cd` a esa carpeta y correr `claude-omni` ahí. El
+`git push` al final usa las mismas credenciales de git que ya tenga configuradas esa máquina (SSH
+key o `gh auth`) — no depende de OmniRoute para nada de eso.
+
+Lo único distinto entre `claude` y `claude-omni` es la calidad del modelo que responde: modelos
+gratis por detrás rinden peor en trabajo que requiere razonar sobre muchos archivos a la vez
+(alinear timestamps de audio, depurar un fallo de build, diseñar un componente nuevo). Para
+volumen — variantes de copy, renombrar, ajustes chicos al plan de un video — sirve igual de bien.

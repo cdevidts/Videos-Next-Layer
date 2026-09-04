@@ -69,10 +69,30 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
 ## Verificar antes de dar algo por terminado
 
 - `npx tsc --noEmit` limpio.
-- Extraer frames del render y **mirarlos** (`npx remotion ffmpeg -ss <s> -i <mp4>
-  -frames:v 1 out.jpg`). Un render que termina sin error igual puede tener el texto
-  cortado o la fuente caída.
+- `npm run review -- <render.mp4>` — saca 8 frames parejos a `out/review/<nombre>/`
+  y un resumen del nivel de audio en dBFS por ventana. Léelos con `Read`. Un
+  render que termina sin error igual puede tener el texto cortado, la fuente
+  caída o el audio mudo; esto lo pesca sin sacar cada frame a mano.
+  Para mirar un instante puntual con más detalle: `npx remotion ffmpeg -ss <s>
+  -i <mp4> -frames:v 1 out.jpg`.
+- Si el plugin `watch@claude-video` está instalado (`/plugin marketplace add
+  bradautomates/claude-video`), `/watch <archivo o URL>` es otra forma de revisar
+  el resultado. No es parte del pipeline (hay que instalarlo aparte con `/plugin`
+  dentro de una sesión interactiva) y no reemplaza `npm run review`, que no
+  depende de nada externo.
 - Revisar que el audio tenga contenido, no solo que exista la pista.
+
+## El ffmpeg de Remotion es una build recortada
+
+`npx remotion ffmpeg` **no** es un ffmpeg completo: viene compilado solo con los
+filtros que Remotion necesita para su propio encode/decode. Confirmado por
+prueba directa: `fps`, `tile`, `showwavespic` y `drawtext` no existen ahí y
+fallan con `No option name near '...'` (mensaje engañoso, no dice "unknown
+filter"). Sí están disponibles `scale`, `volume`, `concat`, `loudnorm`, `pan`,
+`aformat` y los que ya usa `scripts/lib/media.ts`. Antes de usar un filtro
+nuevo, probarlo suelto primero; si falla así, hay que resolverlo sin ffmpeg
+(ver `rmsWindows` en `scripts/reviewReel.ts` y `transcribeClips.ts` — análisis
+de audio hecho a mano en Node leyendo el WAV, en vez de con un filtro).
 
 ## OmniRoute (plan B cuando se acaban los créditos)
 
