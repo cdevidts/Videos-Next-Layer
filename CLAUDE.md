@@ -68,6 +68,7 @@ npm run transcribe -- --dir public/input/video-46/_audio --model medium --langua
 npm run fonts                                    # una sola vez
 npm run sfx                                      # una sola vez (descarga los efectos)
 npm run check -- --plan plans/video-46.json      # valida el plan antes de renderizar
+npm run captions -- --project video-46           # resincroniza subtitulos (lo hace `reel` solo)
 npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
 ```
 
@@ -80,8 +81,11 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
   a fonts.gstatic.com. Las tipografías viven en `public/fonts/` (`npm run fonts`).
 - **No transcribas B-roll mudo**: el modelo alucina `[BLANK_AUDIO]`, `(música)`.
   `transcribeClips.ts` ya detecta por nivel qué clips tienen voz.
-- **No confíes en los tiempos crudos de whisper**: estira el primer token hasta
-  t=0. Ya se corrigen contra la energía real del audio.
+- **No infieras los tiempos de los subtítulos sobre el audio original.** Se
+  probaron tres formas de alinearlos y todas dejaban desfase (hasta 1,2 s),
+  porque después el audio se corta, se acelera y se monta. `buildReel` arma la
+  pista final y la transcribe (`syncCaptions`): los tiempos salen del audio que
+  realmente se escucha.
 - **No asumas la orientación por `ffprobe`**: los `.MOV` reportan 3840x2160 pero
   son verticales por metadato de rotación.
 - **No metas música comercial.** Ver la entrada de la bitácora sobre Content ID.

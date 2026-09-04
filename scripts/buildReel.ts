@@ -14,6 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {normalize, probe, run} from './lib/media';
+import {syncCaptions} from './syncCaptions';
 import {
   reelDurationInFrames,
   type ReelShot,
@@ -97,7 +98,7 @@ const loadTranscript = (audioDir: string, name: string): Transcript | null => {
   return data.speech?.length ? data : null;
 };
 
-const main = () => {
+const main = async () => {
   const planPath = arg('plan');
   if (!planPath) throw new Error('Falta --plan <archivo.json>');
   const plan = JSON.parse(fs.readFileSync(planPath, 'utf8')) as Plan;
@@ -290,6 +291,13 @@ const main = () => {
   }
 
   const rawOutput = output.replace(/\.mp4$/, '.raw.mp4');
+  // Los subtítulos se resincronizan contra el audio ya montado. Inferir los
+  // tiempos sobre el audio original y después cortarlo y acelerarlo acumula
+  // error: se midió hasta 1,2s de desfase. Acá salen del audio real.
+  if (!flag('skip-captions')) {
+    await syncCaptions(propsFile, 'medium' as never, 'es' as never);
+  }
+
   console.log(`\n🚀 remotion render VerticalReel ${output}`);
   run('npx', [
     'remotion',
@@ -324,10 +332,8 @@ const isMain = process.argv[1]
   : false;
 
 if (isMain) {
-  try {
-    main();
-  } catch (error: unknown) {
+  main().catch((error: unknown) => {
     console.error(`\n❌ ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
-  }
+  });
 }

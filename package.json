@@ -19,7 +19,8 @@
     "status": "tsx scripts/status.ts",
     "review": "tsx scripts/reviewReel.ts",
     "check": "tsx scripts/checkPlan.ts",
-    "skills": "npx -y skills add remotion-dev/skills && npx -y skills add Rajbharti06/Ultimate-Video-Editing-Skills"
+    "skills": "npx -y skills add remotion-dev/skills && npx -y skills add Rajbharti06/Ultimate-Video-Editing-Skills",
+    "captions": "tsx scripts/syncCaptions.ts"
   },
   "repository": {
     "type": "git",

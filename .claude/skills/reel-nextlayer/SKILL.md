@@ -134,22 +134,34 @@ se ve raro pero no se sabe por qué. Se mide así:
 Un desfase medio bajo 0,15 s es aceptable. Si crece dentro de una frase, el
 problema es la alineación, no whisper.
 
-### Lo que ya se aprendió midiendo
+### La solución de fondo: transcribir el audio ya montado
 
-Whisper se equivoca **mucho en la primera palabra** (la estira hasta t=0 aunque
-la voz empiece después) y **poco en el resto** (0,2-0,3 s). Eso obliga a tratar
-dos casos distintos, y está implementado así en `alignWords`:
+Los tiempos de las palabras se infieren sobre el audio *original*, pero después
+ese audio se corta, se acelera y se monta. Cada transformación agrega error, y
+se midió hasta 1,2 s de desfase acumulado.
 
-- **Un solo tramo de voz** → estirar la frase sobre ese tramo. Medido: 0,08 s
-  de error.
-- **Varios tramos** → **no reescalar**. La frase abarca los silencios
-  intermedios y cualquier reescalado comprime las palabras: se midió hasta
-  1,2 s de desfase. Ahí los tiempos crudos de whisper son mejores (0,22 s); solo
-  se corrige la primera palabra empujándola al inicio real de la voz.
+Por eso `buildReel` corre `syncCaptions` antes de renderizar: arma la pista de
+voz exactamente como suena en el reel (mismos cortes, misma velocidad, mismas
+posiciones, con `adelay` + `amix`), la transcribe, y usa esos tiempos. Salen ya
+en la línea de tiempo final, así que no hay nada que inferir ni nada que se
+pueda desfasar. Cuesta una pasada extra de whisper por render y vale la pena.
 
-Si además el corte va acelerado, los tiempos de las palabras se dividen por la
-velocidad. Eso ya lo hace `buildReel`; si algún día el karaoke se desincroniza
-solo en los cortes acelerados, mira ahí primero.
+Se puede saltar con `--skip-captions` si solo estás probando la gráfica.
+
+### Por qué no alcanza con alinear sobre el audio original
+
+Se intentaron tres formas antes de llegar a lo anterior, todas medidas:
+
+| Método | Desfase medio | Peor |
+| --- | --- | --- |
+| Estirar la frase sobre el tramo de voz | 0,45 s | 1,21 s |
+| Repartir sobre la suma de tramos | peor aún | 1,2 s |
+| Según el número de tramos | 0,22 s | 1,07 s |
+| **Transcribir el audio montado** | **lo que mide whisper** | — |
+
+El motivo de fondo: whisper se equivoca **mucho en la primera palabra** (la
+estira hasta t=0 aunque la voz empiece 1,8 s después) y **poco en el resto**
+(0,2-0,3 s). Ninguna transformación lineal arregla las dos cosas a la vez.
 
 ## Ritmo: acelerar lo que no se mueve
 
