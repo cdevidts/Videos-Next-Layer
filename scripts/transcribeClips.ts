@@ -183,11 +183,13 @@ const main = async () => {
   const dir = arg('dir') ?? 'public/input/video-46/_audio';
   const model = (arg('model') ?? 'medium') as WhisperModel;
   const language = (arg('language') ?? 'es') as Language;
-
-  await installWhisperCpp({to: WHISPER_PATH, version: WHISPER_VERSION});
-  await downloadWhisperModel({model, folder: WHISPER_PATH});
+  const force = argv.includes('--force');
 
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.wav')).sort();
+
+  // Primero se decide qué hay que transcribir: si no hay nada pendiente, no se
+  // baja el modelo (son 1,5 GB) ni se compila whisper.
+  const pending: Array<{file: string; inputPath: string; target: string; ranges: Range[]}> = [];
 
   for (const file of files) {
     const inputPath = path.resolve(dir, file);
@@ -202,6 +204,28 @@ const main = async () => {
       continue;
     }
 
+    // Reanudable: lo ya transcrito no se repite salvo --force.
+    if (
+      !force &&
+      fs.existsSync(target) &&
+      fs.statSync(target).mtimeMs >= fs.statSync(inputPath).mtimeMs
+    ) {
+      console.log(`♻️  ${file} ya transcrito (--force para rehacer)`);
+      continue;
+    }
+
+    pending.push({file, inputPath, target, ranges});
+  }
+
+  if (!pending.length) {
+    console.log('\n✅ Nada pendiente de transcribir.');
+    return;
+  }
+
+  await installWhisperCpp({to: WHISPER_PATH, version: WHISPER_VERSION});
+  await downloadWhisperModel({model, folder: WHISPER_PATH});
+
+  for (const {file, inputPath, target, ranges} of pending) {
     console.log(`🎙️  ${file}`);
     const {transcription} = await transcribe({
       inputPath,
@@ -215,7 +239,7 @@ const main = async () => {
 
     const words = alignWords(dropMarkers(tokensToWords(transcription)), ranges);
     const result: ClipTranscript = {
-      file: name,
+      file: file.replace(/\.wav$/, ''),
       language,
       segments: toSegments(words),
       words,

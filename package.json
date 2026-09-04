@@ -15,7 +15,8 @@
     "transcribe": "tsx scripts/transcribeClips.ts",
     "sfx": "tsx scripts/makeSfx.ts",
     "audio": "tsx scripts/extractAudio.ts",
-    "fonts": "tsx scripts/fetchFonts.ts"
+    "fonts": "tsx scripts/fetchFonts.ts",
+    "status": "tsx scripts/status.ts"
   },
   "repository": {
     "type": "git",

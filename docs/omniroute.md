@@ -29,35 +29,42 @@ Lo que **no** resuelve:
 
 El gateway escucha en `localhost`, así que tiene que correr en el mismo equipo donde usas Claude
 Code. En una sesión de Claude Code en la web esto no aplica: el contenedor es efímero y no ve tu
-`localhost`.
+`localhost`. En Windows, corre estos comandos desde WSL o Git Bash.
 
 ```bash
-npm install -g omniroute
-omniroute                    # levanta el gateway en http://localhost:20128
+bash scripts/setup-omniroute.sh install
 ```
 
-Después, una sola vez:
+Eso instala `omniroute`, levanta el gateway y te deja en `http://localhost:20128`. Después, una
+sola vez:
 
-1. Abre `http://localhost:20128` → sección **Endpoints** → genera una API key.
-2. En **Providers**, conecta los proveedores que vayas a usar (API key u OAuth). Arranca con los
-   keyless para probar.
+1. Abre `http://localhost:20128` → **Endpoints** → genera una API key.
+2. Corre `bash scripts/setup-omniroute.sh link --key <TU_KEY>`.
+3. En **Providers**, conecta los proveedores que vayas a usar. Empieza por los que no piden key.
 
-## Conectar Claude Code
+## Cómo queda
 
-OmniRoute expone `/v1/messages` (estilo Anthropic) además de `/v1/chat/completions`. Claude Code se
-apunta con dos variables de entorno:
+El script **no toca tu comando `claude`**. Crea uno nuevo:
+
+| Comando | Qué usa |
+| --- | --- |
+| `claude` | Claude de Anthropic, igual que siempre |
+| `claude-omni` | Mismo Claude Code, enrutado por OmniRoute |
+
+`claude-omni` levanta el gateway solo si está apagado, así que no hay que acordarse de nada. Esto
+es deliberado: si en vez de esto se apunta el `claude` global al gateway y el gateway se cae,
+Claude Code deja de responder sin decir por qué.
 
 ```bash
-export ANTHROPIC_BASE_URL=http://localhost:20128/v1
-export ANTHROPIC_AUTH_TOKEN=<la API key del dashboard>
+bash scripts/setup-omniroute.sh status    # ¿gateway arriba? ¿enlazado cómo?
+bash scripts/setup-omniroute.sh revert    # borra el comando y detiene el gateway
 ```
 
-Para dejarlo permanente hay dos caminos:
+### Si igual lo quieres global
 
-- **Por shell** (afecta solo a las terminales donde lo exportes): agrega esas dos líneas a tu
-  `~/.zshrc` o `~/.bashrc`.
-- **Por Claude Code** (afecta a todas tus sesiones): agrega el bloque `env` en
-  `~/.claude/settings.json`. Haz respaldo del archivo antes de editarlo.
+`bash scripts/setup-omniroute.sh link --key <KEY> --global` escribe `ANTHROPIC_BASE_URL` y
+`ANTHROPIC_AUTH_TOKEN` en `~/.claude/settings.json` (con respaldo `.bak.*`), y entonces **todo**
+`claude` pasa por el gateway. Se deshace con `revert`. Bajo el capó son solo estas dos variables:
 
 ```jsonc
 {
@@ -68,8 +75,7 @@ Para dejarlo permanente hay dos caminos:
 }
 ```
 
-Para volver atrás: borra esas dos claves (o las líneas del shell) y reinicia Claude Code. Con
-`model: "auto"` el gateway elige proveedor solo; para forzar uno, se especifica el modelo.
+Con `model: "auto"` el gateway elige proveedor solo; para forzar uno, se especifica el modelo.
 
 ## Antes de dejarlo prendido para todo
 

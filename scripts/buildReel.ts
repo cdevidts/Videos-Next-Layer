@@ -216,7 +216,11 @@ const main = () => {
 
   fs.mkdirSync('out', {recursive: true});
   const propsFile = path.join('out', `${project}.reel.props.json`);
-  fs.writeFileSync(propsFile, `${JSON.stringify(props, null, 2)}\n`);
+  const propsJson = `${JSON.stringify(props, null, 2)}\n`;
+  const previousProps = fs.existsSync(propsFile)
+    ? fs.readFileSync(propsFile, 'utf8')
+    : null;
+  fs.writeFileSync(propsFile, propsJson);
 
   console.log(
     `\n📐 ${shots.length} cortes · ${totalFrames} frames · ${(totalFrames / fps).toFixed(1)}s → ${propsFile}`,
@@ -226,6 +230,19 @@ const main = () => {
 
   const output = arg('out-file') ?? `renders/${project}-reel.mp4`;
   fs.mkdirSync(path.dirname(output), {recursive: true});
+
+  // Reanudable: si el plan y los props no cambiaron y el render es posterior,
+  // no se vuelve a renderizar (son varios minutos de CPU).
+  const upToDate =
+    previousProps === propsJson &&
+    fs.existsSync(output) &&
+    fs.statSync(output).mtimeMs >= fs.statSync(planPath).mtimeMs;
+
+  if (upToDate && !flag('force')) {
+    console.log(`\n✅ ${output} ya está al día (--force para rehacer)`);
+    return;
+  }
+
   console.log(`\n🚀 remotion render VerticalReel ${output}`);
   run('npx', [
     'remotion',

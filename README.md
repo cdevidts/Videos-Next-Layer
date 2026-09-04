@@ -60,6 +60,7 @@ Copia `.env.example` a `.env` y elige **una** opción.
 ## 3. El flujo completo
 
 ```bash
+npm run status                                   # dónde quedó todo y cuál es el paso que sigue
 npm run fetch-drive -- --list                    # ver proyectos disponibles
 npm run fetch-drive -- --project "Video 46"      # baja todo a public/input/video-46/
 npm run audio -- --dir public/input/video-46     # extrae el audio de cada clip a WAV 16 kHz
@@ -73,6 +74,7 @@ Qué hace cada paso:
 
 | Script | Qué resuelve |
 | --- | --- |
+| `status` | Radiografía del pipeline: qué está hecho, qué falta y el comando que sigue. Se deduce del disco, así que sirve para retomar una sesión cortada. |
 | `fetch-drive` | Descarga el proyecto desde Drive con caché por tamaño y arma el `manifest.json`. |
 | `audio` | Extrae el audio de cada clip a WAV mono 16 kHz (lo que necesita whisper). |
 | `transcribe` | Instala whisper.cpp, detecta qué clips tienen voz (mide el nivel, no transcribe B-roll mudo) y guarda frases + palabras con timestamp. Filtra las marcas que whisper inventa en los silencios (`[BLANK_AUDIO]`, `(música)`). |
@@ -130,7 +132,17 @@ Todas en 1080x1920 @ 30fps. `npm run dev` abre Remotion Studio para revisar y aj
 - **Sonido**: voz original + riser de apertura, whoosh en cada corte e impacto en el cierre.
 - **Progreso**: barra segmentada, un tramo por corte.
 
-## 6. Notas
+## 6. Retomar una sesión cortada
+
+Todos los pasos son reanudables: descargas, proxies, transcripciones y renders se saltan si el
+resultado ya existe y está al día (`--force` para rehacerlos a propósito). Para continuar trabajo
+de otra sesión:
+
+1. `npm run status` — estado real, deducido del disco.
+2. `docs/journal.md` — el *por qué* de las decisiones y qué quedó esperando una decisión humana.
+3. `CLAUDE.md` — las reglas de trabajo del repo.
+
+## 7. Notas
 
 - **FFmpeg/ffprobe** vienen con Remotion (`npx remotion ffmpeg`), no hay que instalar nada aparte.
 - **Los .MOV de cámara** son 4K HEVC 10 bits con rotación en el contenedor: el paso de proxy los
