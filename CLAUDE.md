@@ -79,6 +79,19 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
 
 - **No uses `@remotion/google-fonts`**: el Chrome del render no siempre puede salir
   a fonts.gstatic.com. Las tipografías viven en `public/fonts/` (`npm run fonts`).
+- **Cargar una fuente no es tenerla aplicada.** `document.fonts.add()` deja el set
+  de fuentes en estado "loading" y Chrome no re-resuelve la tipografía de lo que ya
+  calculó hasta que se asienta: se entregó un render con el gancho en Anton y la
+  placa de cierre en la fuente de respaldo, en el mismo video. `src/lib/fonts.ts`
+  ahora espera `document.fonts.ready` antes de `continueRender`. Si ves dos
+  tipografías distintas para el mismo `fontFamily`, no es el CSS: es esa carrera.
+  Para diagnosticarlo, renderiza con `remotion still` una sonda que imprima
+  `document.fonts.check(...)` dentro del propio render — mirar frames a ojo engaña
+  (acá `check()` devolvía `true` mientras el texto salía con la de respaldo).
+- **No metas la placa de marca por HyperFrames.** Se construyó completa y se
+  descartó midiendo: normaliza las tipografías a su set de 18 familias y Anton no
+  está, así que la placa nunca sale en la tipografía de Next Layer. Detalle y
+  evidencia en la bitácora (entrada del 2026-09-05).
 - **No transcribas B-roll mudo**: el modelo alucina `[BLANK_AUDIO]`, `(música)`.
   `transcribeClips.ts` ya detecta por nivel qué clips tienen voz.
 - **No infieras los tiempos de los subtítulos sobre el audio original.** Se

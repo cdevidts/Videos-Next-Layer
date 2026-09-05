@@ -163,6 +163,36 @@ El motivo de fondo: whisper se equivoca **mucho en la primera palabra** (la
 estira hasta t=0 aunque la voz empiece 1,8 s después) y **poco en el resto**
 (0,2-0,3 s). Ninguna transformación lineal arregla las dos cosas a la vez.
 
+## Tipografía: cargarla no es aplicarla
+
+La marca es **Anton** para display y **Inter** para texto, ambas locales en
+`public/fonts/`. Ojo con una trampa que ya costó un render entregado: el gancho
+salió en Anton y la placa de cierre en la fuente de respaldo, **en el mismo
+video**, con el mismo `fontFamily`.
+
+La causa no es el CSS. `document.fonts.add()` deja el set de fuentes del
+documento en estado *loading*, y Chrome no vuelve a resolver la tipografía del
+contenido que ya calculó hasta que ese set se asienta. Lo que se pintó antes se
+queda con la de respaldo. `src/lib/fonts.ts` ahora pide cada familia con
+`document.fonts.load()` y espera `document.fonts.ready` antes de
+`continueRender`.
+
+Para diagnosticar esto **no sirve mirar frames**: se pierde una hora comparando
+grosores de trazo y se llega a conclusiones equivocadas. Renderiza una sonda:
+
+```tsx
+// dentro de la composición, temporal
+<div style={{fontSize: 30, color: '#0f0', background: '#000'}}>
+  {`check=${document.fonts.check('124px Anton')} size=${document.fonts.size}`}
+</div>
+```
+
+y sácala con `npx remotion still <Comp> sonda.png --props=... --frame=<n>`.
+Aviso: `check()` puede devolver `true` mientras el texto igual sale con la
+fuente de respaldo — por eso hay que mirar la sonda **y** el texto en el mismo
+frame, y comparar recortes 1:1 (`ffmpeg -i f.png -vf crop=900:170:x:y`), nunca
+la imagen completa reescalada.
+
 ## Ritmo: acelerar lo que no se mueve
 
 Una toma hablada sobre una imagen quieta (una pantalla de computador) se hace

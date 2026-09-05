@@ -141,3 +141,53 @@ Al construir `reviewReel.ts` se encontró que el ffmpeg que trae Remotion es una
 (`No option name near '...'`, no "unknown filter"). Quedó documentado en CLAUDE.md para no volver a
 perder tiempo con esto. El script terminado extrae 8 frames por `-ss` (ya probado en el resto del
 repo) y mide el nivel de audio en Node leyendo el WAV directo, igual que `transcribeClips.ts`.
+
+## 2026-09-05 · Se probó HyperFrames a fondo (la usuaria pidió meterlo "sí o sí") y se descartó
+## con medición. De paso apareció un bug real de tipografías que llevaba varios renders.
+
+La usuaria pidió explícitamente descargar HyperFrames y video-use y "encontrar dónde encajan bien
+en el sistema". video-use encajó (ver la entrada de corrección de color). HyperFrames no, y esta
+vez el descarte no es de lectura del repo sino de haberlo construido y medido.
+
+**Qué se construyó.** Un proyecto HyperFrames real (`npx hyperframes init`) con la placa de marca
+de cierre: 1080x1920, 2,4 s, fondo transparente, GSAP, para componerla sobre el video en Remotion
+con `<OffthreadVideo transparent>`. Llegó a funcionar de punta a punta: `check` limpio, render a
+WebM/VP9 con alfa (93,4% de píxeles transparentes, verificado decodificando con `libvpx-vp9`), y
+Remotion compositándola bien encima de la última toma.
+
+**Por qué se botó igual.** HyperFrames normaliza las tipografías a su propio set de 18 familias
+para que el render sea determinista. Nuestro `@font-face` local con Anton **nunca se aplica**, y
+no es un problema de rutas: se verificó extrayendo el HTML compilado (`render --debug`) que la
+regla llega intacta, con la woff2 embebida como `data:` URI y byte-a-byte idéntica al archivo de
+`public/fonts/` (mismo SHA-256, 31.356 bytes). Chrome igual cae a la fuente de respaldo. Con el
+stack `"Anton", "Arial Black", sans-serif` caía a Montserrat (HyperFrames mapea `arial black` →
+`montserrat`); dejando solo `"Anton"` cae a DejaVu Serif. Con una familia canónica suya (Archivo
+Black) renderiza perfecto — o sea el mecanismo funciona, simplemente Anton no está disponible.
+`font-display: block` no cambia nada.
+
+Anton es pesada y **condensada**; lo más pesado que trae HyperFrames (Archivo Black) es pesado
+pero **ancho**. La placa de marca no pegaría con el gancho, que es Anton. Una placa de marca que
+no está en la tipografía de la marca no sirve, así que se eliminó `brand/endcard/` y el cableado
+`endcardSrc`. El cierre lo sigue dibujando Remotion, que sí tiene Anton.
+
+**Queda una decisión humana:** si alguna vez conviene autorear las piezas de marca en HTML (para
+poder editarlas en el Studio de HyperFrames sin tocar React), hay que cambiar la tipografía de
+display de todo el reel a una de las que HyperFrames trae — Oswald y League Gothic son las
+condensadas, Archivo Black la pesada. Es una decisión de marca, no técnica.
+
+**El hallazgo que sí valió la pena.** Comparando la placa de HyperFrames contra la de Remotion se
+descubrió que *la de Remotion tampoco estaba en Anton*, y no desde ahora: el render ya entregado
+(`renders/video-46-reel.mp4`, 34,7 s) tiene el gancho en Anton y la placa de cierre en la fuente
+de respaldo. En el mismo video. La causa: `src/lib/fonts.ts` hacía `document.fonts.add(font)` y
+llamaba `continueRender` de inmediato. Agregar una fuente deja el set de fuentes del documento en
+estado "loading", y Chrome no vuelve a resolver la tipografía del contenido que ya calculó hasta
+que ese set se asienta — así que parte del reel salía con Anton y parte no, según qué se hubiera
+pintado primero. Se arregló pidiendo cada familia explícitamente con `document.fonts.load()` y
+esperando `document.fonts.ready` antes de `continueRender`. Verificado a 1:1 sobre el mismo frame:
+la placa de cierre ahora es la misma Anton del gancho.
+
+Moraleja para el próximo agente: **cargar una fuente no es lo mismo que tenerla aplicada**. Si un
+render sale con dos tipografías distintas para el mismo `fontFamily`, no es el CSS — es la carrera
+de carga. Y para diagnosticarlo sirve renderizar una sonda con `remotion still` que imprima
+`document.fonts.check(...)` dentro del propio render; mirar frames a ojo lleva a conclusiones
+equivocadas (acá `check()` decía `true` mientras el texto salía en la fuente de respaldo).
