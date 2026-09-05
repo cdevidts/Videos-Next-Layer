@@ -2,6 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 
+/**
+ * El ffmpeg de Remotion viene recortado: no trae `eq`, `signalstats`, `fps`,
+ * `tile` ni `drawtext`. Si hay un ffmpeg completo en el sistema se usa ese,
+ * porque desbloquea la corrección de color y el análisis. Si no, el pipeline
+ * sigue funcionando: solo se salta lo que necesita esos filtros.
+ */
+export const hasSystemFfmpeg = (): boolean =>
+  spawnSync('ffmpeg', ['-version'], {stdio: 'ignore'}).status === 0;
+
+const ffmpegCommand = (needsFullBuild: boolean): {cmd: string; prefix: string[]} =>
+  needsFullBuild && hasSystemFfmpeg()
+    ? {cmd: 'ffmpeg', prefix: []}
+    : {cmd: 'npx', prefix: ['remotion', 'ffmpeg']};
+
 export type MediaInfo = {
   durationInSeconds: number;
   width: number;
@@ -69,17 +83,44 @@ export const normalize = (
     targetDir,
     `${path.basename(source, path.extname(source))}.mp4`,
   );
-  if (fs.existsSync(target)) return target;
+
+  // Corrección de color para igualar las tomas entre sí, si `npm run color`
+  // ya midió el proyecto. Sin esto el reel salta de oscuro a claro en cada
+  // corte: se midió 82% de dispersión de brillo en Video 46.
+  const colorFile = path.join(targetDir, 'color.json');
+  let colorFilter = '';
+  if (fs.existsSync(colorFile)) {
+    if (hasSystemFfmpeg()) {
+      const {filtros} = JSON.parse(fs.readFileSync(colorFile, 'utf8')) as {
+        filtros: Record<string, string>;
+      };
+      colorFilter = filtros[path.basename(target)] ?? '';
+    } else {
+      console.warn(
+        '⚠️  Hay corrección de color pero falta un ffmpeg completo en el sistema (el de Remotion no trae `eq`). Se genera el proxy sin igualar color.',
+      );
+    }
+  }
+
+  // El proxy se rehace si la corrección de color es posterior a él.
+  const alDia =
+    fs.existsSync(target) &&
+    (!fs.existsSync(colorFile) ||
+      fs.statSync(target).mtimeMs >= fs.statSync(colorFile).mtimeMs);
+  if (alDia) return target;
 
   fs.mkdirSync(targetDir, {recursive: true});
-  run('npx', [
-    'remotion',
-    'ffmpeg',
+  const {cmd, prefix} = ffmpegCommand(colorFilter !== '');
+  run(cmd, [
+    ...prefix,
     '-y',
     '-i',
     source,
     '-vf',
-    "scale='if(gt(iw,ih),-2,1080)':'if(gt(iw,ih),1080,-2)'",
+    [
+      "scale='if(gt(iw,ih),-2,1080)':'if(gt(iw,ih),1080,-2)'",
+      ...(colorFilter ? [colorFilter] : []),
+    ].join(','),
     '-r',
     String(fps),
     '-c:v',
