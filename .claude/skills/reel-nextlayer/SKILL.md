@@ -166,32 +166,51 @@ estira hasta t=0 aunque la voz empiece 1,8 s después) y **poco en el resto**
 ## Tipografía: cargarla no es aplicarla
 
 La marca es **Anton** para display y **Inter** para texto, ambas locales en
-`public/fonts/`. Ojo con una trampa que ya costó un render entregado: el gancho
-salió en Anton y la placa de cierre en la fuente de respaldo, **en el mismo
-video**, con el mismo `fontFamily`.
+`public/fonts/`. Antes de dar por bueno cualquier render:
 
-La causa no es el CSS. `document.fonts.add()` deja el set de fuentes del
-documento en estado *loading*, y Chrome no vuelve a resolver la tipografía del
-contenido que ya calculó hasta que ese set se asienta. Lo que se pintó antes se
-queda con la de respaldo. `src/lib/fonts.ts` ahora pide cada familia con
-`document.fonts.load()` y espera `document.fonts.ready` antes de
-`continueRender`.
-
-Para diagnosticar esto **no sirve mirar frames**: se pierde una hora comparando
-grosores de trazo y se llega a conclusiones equivocadas. Renderiza una sonda:
-
-```tsx
-// dentro de la composición, temporal
-<div style={{fontSize: 30, color: '#0f0', background: '#000'}}>
-  {`check=${document.fonts.check('124px Anton')} size=${document.fonts.size}`}
-</div>
+```bash
+npm run fonts-check
 ```
 
-y sácala con `npx remotion still <Comp> sonda.png --props=... --frame=<n>`.
-Aviso: `check()` puede devolver `true` mientras el texto igual sale con la
-fuente de respaldo — por eso hay que mirar la sonda **y** el texto en el mismo
-frame, y comparar recortes 1:1 (`ffmpeg -i f.png -vf crop=900:170:x:y`), nunca
-la imagen completa reescalada.
+Abre el mismo Chrome que usa Remotion, mide una muestra con cada familia y con
+dos fuentes de respaldo distintas, y falla si los anchos coinciden. Es la única
+prueba que no se puede engañar.
+
+### Por qué existe ese comando
+
+Se entregaron varios reels con **toda** la gráfica en la fuente de respaldo del
+sistema. Ni el gancho, ni los subtítulos, ni la placa de cierre estaban en Anton
+o Inter. Ningún render falló ni advirtió nada.
+
+La causa: `fetchFonts.ts` emparejaba mal el comentario `/* latin */` del CSS de
+Google con su bloque `@font-face` y guardó el subconjunto **latin-ext** de Anton
+— acentos y letras raras, ni una A-Z. Y el síntoma es traicionero, porque la
+fuente **carga perfecto**:
+
+- `document.fonts.check('124px Anton')` → `true`
+- `document.fonts.status` → `loaded`
+- `document.fonts.size` → cuenta todas las variantes
+
+Solo que sin las letras, Chrome cae al respaldo carácter por carácter.
+
+### Cómo diagnosticar algo así
+
+1. **No confíes en `document.fonts.check()`.** Miente en este caso exacto.
+2. **No compares grosores de trazo a ojo entre frames.** Se pierde una hora y se
+   llega a conclusiones equivocadas: dos recortes del mismo render, tomados a
+   distinta altura sobre fondos distintos, parecen tipografías distintas.
+3. **Sácalo de Remotion.** Renderiza el `.woff2` suelto en un Chromium con una
+   línea de referencia al lado (`--headless --screenshot`). Si sale igual que
+   `serif`, el archivo es el problema, no el código.
+4. **Mide, no mires.** Un ancho de texto idéntico al del respaldo es prueba
+   concluyente de que la familia no se está usando.
+
+### Efecto en la gráfica
+
+Anton es condensada: las palabras quedan bastante más juntas que con cualquier
+respaldo. Si cambias la tipografía, revisa los resaltadores naranjos — con el
+espaciado viejo las cajas de dos palabras contiguas se tocaban y se leían como
+una sola.
 
 ## Ritmo: acelerar lo que no se mueve
 
@@ -229,6 +248,8 @@ npm run fetch-drive -- --project "Video 46"      # baja el proyecto de Drive
 npm run audio -- --dir public/input/video-46     # 16 kHz (whisper) + hq/ 48 kHz (reel)
 npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
 npm run fonts && npm run sfx                     # una sola vez cada uno
+npm run fonts-check                              # ¿las fuentes se aplican de verdad?
+npm run color -- --dir public/input/video-46     # iguala el color entre tomas
 npm run check -- --plan plans/video-46.json      # valida el plan (rápido)
 npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
 npm run review -- renders/video-46-reel.mp4      # frames + niveles de audio

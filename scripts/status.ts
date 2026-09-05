@@ -101,9 +101,20 @@ const main = () => {
 
   console.log('\n════ ESTADO DEL PIPELINE ════\n');
 
+  // Que exista fonts.generated.ts no basta: ya pasó que apuntara a archivos
+  // .woff2 sin las letras del alfabeto y todo el reel saliera con la fuente de
+  // respaldo, sin un solo error. Acá se comprueba que los archivos existan;
+  // que además se apliquen lo dice `npm run fonts-check`.
+  const fuentesOk = (() => {
+    if (!fs.existsSync('src/fonts.generated.ts')) return false;
+    const generado = fs.readFileSync('src/fonts.generated.ts', 'utf8');
+    const archivos = [...generado.matchAll(/"file":\s*"([^"]+)"/g)].map((m) => m[1]);
+    return archivos.length > 0 && archivos.every((f) => fs.existsSync(path.join('public', f)));
+  })();
+
   const globals = [
-    ['tipografías', fs.existsSync('src/fonts.generated.ts'), 'npm run fonts'],
-    ['efectos de sonido', fs.existsSync('public/sfx/whoosh.wav'), 'npm run sfx'],
+    ['tipografías', fuentesOk, 'npm run fonts (después: npm run fonts-check)'],
+    ['efectos de sonido', fs.existsSync('public/sfx/whoosh-1.mp3'), 'npm run sfx'],
     ['credenciales Drive', fs.existsSync('.env'), 'copiar .env.example a .env (ver README §2)'],
     ['whisper.cpp', fs.existsSync('whisper.cpp'), 'se instala solo en el primer npm run transcribe'],
   ] as const;

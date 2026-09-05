@@ -120,7 +120,7 @@ const KaraokeCaption: React.FC<{shot: ReelShot; accentColor: string}> = ({
 
   return (
     <div
-      className="absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-12"
+      className="absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-7 gap-y-1 px-12"
       style={{bottom: 300}}
     >
       {group.map((word, index) => {
@@ -151,7 +151,11 @@ const KaraokeCaption: React.FC<{shot: ReelShot; accentColor: string}> = ({
             <span
               style={{
                 position: 'absolute',
-                inset: '2px -12px 6px -12px',
+                // El resaltador sobresale poco a los lados: con Anton/Inter de
+                // verdad las palabras quedan más juntas que con la fuente de
+                // respaldo, y con -12px las cajas de dos palabras contiguas se
+                // tocaban y se leían como una sola.
+                inset: '2px -9px 6px -9px',
                 backgroundColor: accentColor,
                 borderRadius: 8,
                 transform: `scaleX(${sweep})`,
@@ -343,7 +347,7 @@ const Hook: React.FC<{text: string; accentColor: string}> = ({text, accentColor}
   return (
     <AbsoluteFill style={{opacity: out}}>
       <div
-        className="absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-10"
+        className="absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 px-10"
         style={{top: 210, transform: `scale(${outScale})`}}
       >
         {words.map(({word, highlighted}, index) => {
@@ -370,7 +374,7 @@ const Hook: React.FC<{text: string; accentColor: string}> = ({text, accentColor}
                 <span
                   style={{
                     position: 'absolute',
-                    inset: '6px -14px 12px -14px',
+                    inset: '6px -11px 12px -11px',
                     backgroundColor: accentColor,
                     borderRadius: 10,
                     transform: `scaleX(${sweep})`,

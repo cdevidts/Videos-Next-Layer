@@ -21,7 +21,8 @@
     "check": "tsx scripts/checkPlan.ts",
     "skills": "npx -y skills add remotion-dev/skills && npx -y skills add Rajbharti06/Ultimate-Video-Editing-Skills",
     "captions": "tsx scripts/syncCaptions.ts",
-    "color": "tsx scripts/matchColor.ts"
+    "color": "tsx scripts/matchColor.ts",
+    "fonts-check": "tsx scripts/checkFonts.ts"
   },
   "repository": {
     "type": "git",

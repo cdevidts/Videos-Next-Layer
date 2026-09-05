@@ -175,19 +175,49 @@ poder editarlas en el Studio de HyperFrames sin tocar React), hay que cambiar la
 display de todo el reel a una de las que HyperFrames trae — Oswald y League Gothic son las
 condensadas, Archivo Black la pesada. Es una decisión de marca, no técnica.
 
-**El hallazgo que sí valió la pena.** Comparando la placa de HyperFrames contra la de Remotion se
-descubrió que *la de Remotion tampoco estaba en Anton*, y no desde ahora: el render ya entregado
-(`renders/video-46-reel.mp4`, 34,7 s) tiene el gancho en Anton y la placa de cierre en la fuente
-de respaldo. En el mismo video. La causa: `src/lib/fonts.ts` hacía `document.fonts.add(font)` y
-llamaba `continueRender` de inmediato. Agregar una fuente deja el set de fuentes del documento en
-estado "loading", y Chrome no vuelve a resolver la tipografía del contenido que ya calculó hasta
-que ese set se asienta — así que parte del reel salía con Anton y parte no, según qué se hubiera
-pintado primero. Se arregló pidiendo cada familia explícitamente con `document.fonts.load()` y
-esperando `document.fonts.ready` antes de `continueRender`. Verificado a 1:1 sobre el mismo frame:
-la placa de cierre ahora es la misma Anton del gancho.
+**El hallazgo que sí valió la pena, y es grande.** Comparando la placa de HyperFrames contra la
+de Remotion apareció algo peor que lo que se estaba buscando: **ninguna de las tipografías del
+proyecto se estaba aplicando**. Ni Anton ni Inter. Todo el reel — gancho, subtítulos, placa de
+cierre — llevaba varios renders saliendo en la fuente de respaldo del sistema, y ningún render
+había fallado ni advertido nada.
 
-Moraleja para el próximo agente: **cargar una fuente no es lo mismo que tenerla aplicada**. Si un
-render sale con dos tipografías distintas para el mismo `fontFamily`, no es el CSS — es la carrera
-de carga. Y para diagnosticarlo sirve renderizar una sonda con `remotion still` que imprima
-`document.fonts.check(...)` dentro del propio render; mirar frames a ojo lleva a conclusiones
-equivocadas (acá `check()` decía `true` mientras el texto salía en la fuente de respaldo).
+La causa está en `scripts/fetchFonts.ts`. El CSS de Google Fonts trae un bloque `@font-face` por
+subconjunto, precedido de un comentario (`/* latin */`). El código emparejaba mal ese comentario
+con su bloque — lo buscaba *dentro* del bloque en vez de antes — y quedaba corrido en uno: para
+Anton guardó el subconjunto **latin-ext**, que cubre U+0100-02BA (acentos y letras raras) y **no
+tiene ni una A-Z**. De Inter guardó cuatro archivos con nombres distintos que eran el mismo
+archivo (mismo MD5).
+
+Lo traicionero es el síntoma: la fuente carga perfecto. `document.fonts.check('124px Anton')`
+devuelve `true`, el estado queda en `loaded`, `document.fonts.size` cuenta las 5 variantes. Solo
+que al no tener las letras, Chrome cae a la de respaldo carácter por carácter. Se perdió bastante
+rato persiguiendo esto como si fuera una carrera de carga (se probó `document.fonts.ready`, se
+probó cambiar la API `FontFace` por reglas `@font-face` de verdad — ninguna de las dos era el
+problema, aunque la segunda quedó porque igual es más robusta). Lo que lo destrabó fue salirse de
+Remotion: renderizar el `.woff2` del repo en un Chromium suelto, al lado del que sirve gstatic en
+ese momento. El del repo salía serif; el de gstatic salía Anton.
+
+Ahora `fetchFonts.ts` elige el bloque por su `unicode-range` — se queda con el que cubre U+0041,
+la "A" — en vez de confiar en el comentario, detecta cuándo Google sirve una sola woff2 variable
+para varios pesos (la nombra `-var-`, no miente con un peso), y falla si una familia queda sin
+variante utilizable.
+
+Y como este bug sobrevivió tantos renders justamente porque nada lo verificaba, se agregó
+`npm run fonts-check` (`scripts/checkFonts.ts`): abre **el mismo Chrome que usa Remotion**, mide
+"HANDGLOVES abcdefg 0123" con la familia y con dos respaldos distintos, y falla si los anchos
+coinciden. Una fuente que no se aplica mide exactamente igual que su respaldo; no hay forma de
+que eso pase inadvertido. Medido después de arreglar: Anton 1021,5 px contra 1307,1 px de antes
+— o sea antes se estaba dibujando algo 28% más ancho, que es exactamente lo que uno esperaría de
+una grotesca cualquiera en vez de una condensada.
+
+Efecto secundario en la gráfica: con Anton de verdad las palabras quedan bastante más juntas, y
+los resaltadores naranjos de dos palabras contiguas se tocaban y se leían como una sola caja. Se
+subió la separación (`gap-x-8` en el gancho, `gap-x-7` en los subtítulos) y se achicó cuánto
+sobresale el resaltador a los lados.
+
+Moraleja para el próximo agente: **cargar una fuente no es lo mismo que tenerla aplicada, y
+`document.fonts.check()` no sirve para distinguirlo** — devuelve `true` con una fuente que no
+tiene ni una letra de las que necesitas. Lo único que no miente es medir texto: corre
+`npm run fonts-check`. Y si algo se ve raro dentro de Remotion, sácalo de Remotion: media hora
+comparando grosores de trazo en frames no vale un minuto de renderizar el archivo suelto en un
+Chromium y mirarlo al lado del original.

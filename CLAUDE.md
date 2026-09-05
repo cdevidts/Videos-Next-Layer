@@ -65,7 +65,7 @@ npm run fetch-drive -- --list                    # proyectos disponibles en Driv
 npm run fetch-drive -- --project "Video 46"      # descarga a public/input/video-46/
 npm run audio -- --dir public/input/video-46     # audio a WAV 16 kHz
 npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
-npm run fonts                                    # una sola vez
+npm run fonts && npm run fonts-check             # una sola vez, y verifica
 npm run sfx                                      # una sola vez (descarga los efectos)
 npm run check -- --plan plans/video-46.json      # valida el plan antes de renderizar
 npm run captions -- --project video-46           # resincroniza subtitulos (lo hace `reel` solo)
@@ -79,15 +79,15 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
 
 - **No uses `@remotion/google-fonts`**: el Chrome del render no siempre puede salir
   a fonts.gstatic.com. Las tipografías viven en `public/fonts/` (`npm run fonts`).
-- **Cargar una fuente no es tenerla aplicada.** `document.fonts.add()` deja el set
-  de fuentes en estado "loading" y Chrome no re-resuelve la tipografía de lo que ya
-  calculó hasta que se asienta: se entregó un render con el gancho en Anton y la
-  placa de cierre en la fuente de respaldo, en el mismo video. `src/lib/fonts.ts`
-  ahora espera `document.fonts.ready` antes de `continueRender`. Si ves dos
-  tipografías distintas para el mismo `fontFamily`, no es el CSS: es esa carrera.
-  Para diagnosticarlo, renderiza con `remotion still` una sonda que imprima
-  `document.fonts.check(...)` dentro del propio render — mirar frames a ojo engaña
-  (acá `check()` devolvía `true` mientras el texto salía con la de respaldo).
+- **Cargar una fuente no es tenerla aplicada, y `document.fonts.check()` no sirve
+  para saberlo.** Se entregaron varios renders con TODA la gráfica en la fuente de
+  respaldo: `fetchFonts.ts` había guardado el subconjunto latin-ext de Anton, que
+  no trae ni una A-Z. La fuente cargaba perfecto (`check()` = `true`, estado
+  `loaded`) y Chrome igual caía al respaldo carácter por carácter, sin un solo
+  error. Lo único que no miente es medir texto: **corre `npm run fonts-check`**,
+  que abre el Chrome de Remotion y falla si una familia mide igual que su
+  respaldo. Y si algo se ve raro dentro de Remotion, sácalo de Remotion: renderiza
+  el `.woff2` suelto en un Chromium al lado del original.
 - **No metas la placa de marca por HyperFrames.** Se construyó completa y se
   descartó midiendo: normaliza las tipografías a su set de 18 familias y Anton no
   está, así que la placa nunca sale en la tipografía de Next Layer. Detalle y
@@ -119,6 +119,8 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
 - `npm run check -- --plan <plan>` sin problemas. Son 2 segundos y evita
   descubrir a los 15 minutos que faltaba un archivo.
 - `npx tsc --noEmit` limpio.
+- `npm run fonts-check` en verde. Una tipografía caída no rompe el render: sale
+  todo en la de respaldo, sin errores, y solo se nota comparando con la marca.
 - `npm run review -- <render.mp4>` — saca 8 frames parejos a `out/review/<nombre>/`
   y un resumen del nivel de audio en dBFS por ventana. Léelos con `Read`. Un
   render que termina sin error igual puede tener el texto cortado, la fuente
