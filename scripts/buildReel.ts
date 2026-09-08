@@ -56,6 +56,8 @@ type Plan = {
   hook: string;
   cta?: string;
   ctaSub?: string;
+  /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
+  finalOverlaySrc?: string;
   accentColor?: string;
   musicSrc?: string;
   musicVolume?: number;
@@ -244,11 +246,22 @@ const main = async () => {
     console.warn('⚠️  No hay efectos en public/sfx/. Corre `npm run sfx`.');
   }
 
+  // El cierre lo dibuja HyperFrames si el asset existe; si no, Remotion cae al
+  // cierre de texto y el pipeline sigue funcionando sin HyperFrames instalado.
+  const finalOverlaySrc =
+    plan.finalOverlaySrc && fs.existsSync(path.join('public', plan.finalOverlaySrc))
+      ? plan.finalOverlaySrc
+      : undefined;
+  if (plan.finalOverlaySrc && !finalOverlaySrc) {
+    console.warn(`⚠️  Falta public/${plan.finalOverlaySrc}. Corre \`npm run cierre\`. Se usa el cierre de texto.`);
+  }
+
   const props: VerticalReelProps = {
     shots,
     hook: plan.hook,
     cta: plan.cta,
     ctaSub: plan.ctaSub,
+    finalOverlaySrc,
     accentColor: plan.accentColor ?? '#FF8A3D',
     musicSrc:
       arg('music') ??

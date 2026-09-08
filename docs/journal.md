@@ -221,3 +221,59 @@ tiene ni una letra de las que necesitas. Lo único que no miente es medir texto:
 `npm run fonts-check`. Y si algo se ve raro dentro de Remotion, sácalo de Remotion: media hora
 comparando grosores de trazo en frames no vale un minuto de renderizar el archivo suelto en un
 Chromium y mirarlo al lado del original.
+
+## 2026-09-05 (tarde) · Se rehizo el tercio final. Y se corrigió el veredicto sobre
+## HyperFrames de la entrada anterior: estaba mal, y la evidencia que lo sostenía era inválida.
+
+Verónica revisó el render v6: "el tercio final no es de video viral. tiene subtítulos que no son
+de audio del video, sonidos fuera de lugar y le falta dinamismo de grand reveal". Los tres puntos
+eran correctos y cada uno tenía una causa distinta.
+
+**Primero, la corrección importante.** La entrada anterior concluyó que HyperFrames no puede
+renderizar Anton y por eso no servía para la placa de marca. Eso es **falso**. La prueba se hizo
+copiando `public/fonts/Anton-400-normal.woff2` al proyecto de HyperFrames — o sea el archivo
+latin-ext sin letras A-Z, el mismo bug que después apareció en Remotion. HyperFrames caía al
+respaldo por la misma razón que caía Remotion. Repetida la prueba con la fuente arreglada,
+HyperFrames renderiza Anton perfecto. Lección: cuando una herramienta y tu propio código fallan
+igual, sospecha del insumo que comparten antes de culpar a la herramienta.
+
+**Subtítulos que nadie dice.** Los clips 9 y 10 son mudos (sin transcripción) y llevaban
+`caption: "Un taladro y nada más"` y `"Cada color en su lugar"` — texto inventado, con el mismo
+estilo visual que los subtítulos hablados, así que se leen como si alguien los dijera. Van contra
+la regla 5 de CLAUDE.md. Se eliminaron.
+
+Lo que los puso ahí fue un aviso de `checkPlan`: "sin voz y sin `caption`, van Xs de pantalla sin
+texto". Un aviso que empuja a rellenar con texto inventado es peor que no tener aviso, así que se
+reescribió: ahora solo avisa sobre huecos de más de 3,5 s, nunca sobre el último corte si el
+cierre va montado encima, y el mensaje dice explícitamente "no le inventes un subtítulo".
+
+**Sonido fuera de lugar.** El clip 9 tenía `taladro.mp3`. Hay un taladro en ese plano — pero entra
+en cuadro recién a los 3,3 s y la ventana del plan empieza en 1,4 s, así que el sonido sonaba dos
+segundos antes que su objeto. Se sacó. Y en el corte del reveal sonaban a la vez el whoosh de
+cambio de escena y el swell: `VerticalReel` ahora omite el whoosh en el último corte cuando ese
+corte trae su propio efecto — un whoosh corto encima de un swell largo se oyen peleando por el
+mismo instante, justo donde el video tiene que respirar.
+
+**Falta de reveal.** El problema estructural: el último corte duraba 3,4 s y la placa de cierre
+entraba a 1,0 s de empezado, con velo oscuro encima. O sea el mueble terminado se veía un segundo.
+Ahora el corte dura 4,6 s y el cierre se monta **desde el inicio del último corte**, no desde los
+últimos segundos de la línea de tiempo (`ultimoCorte` en `VerticalReel`), con la gráfica entrando
+recién a los 0,45 s.
+
+**El cierre nuevo (`brand/cierre/`, HyperFrames → WebM/VP9 con alfa, 4,6 s).** Responde la pregunta
+del gancho: el gancho pregunta "¿Un mueble por once lucas?" y el reveal contesta con un sello
+`$11.000` que aterriza sobre el mueble, con la bajada "TABLAS + CONECTORES IMPRESOS" — las dos
+cosas que él dice y que están en pantalla, nada inventado. A los 2,55 s el precio sale **hacia
+arriba** y la marca entra **desde abajo**: el vector de salida define el de entrada, así se lee
+como un solo movimiento y no como dos placas pegadas. El velo oscuro entra solo para la marca;
+durante el precio el mueble se ve limpio, porque tapar el reveal justo en el reveal es matarlo.
+
+Dos cosas que costaron y conviene saber:
+- `top:980` sin unidades es una regla CSS inválida. Los dos grupos se fueron al borde superior y
+  quedaron encimados. El `check` de HyperFrames lo pescó como `canvas_overflow`; el contact sheet
+  lo mostró de inmediato. **Sacar snapshots antes de renderizar paga solo.**
+- Encadenar tres tweens de GSAP sobre la misma propiedad para hacer el rebote del sello se pisa en
+  los bordes (`overlapping_gsap_tweens`). Un solo tween con `back.out(1.5)` hace el mismo
+  asentamiento y no se pisa con nada.
+
+Queda pendiente lo de siempre: `DSCF7534` y `DSCF7535` sin mirar.

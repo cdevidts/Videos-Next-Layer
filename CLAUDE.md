@@ -66,6 +66,7 @@ npm run fetch-drive -- --project "Video 46"      # descarga a public/input/video
 npm run audio -- --dir public/input/video-46     # audio a WAV 16 kHz
 npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
 npm run fonts && npm run fonts-check             # una sola vez, y verifica
+npm run cierre                                   # placa de cierre (HyperFrames -> webm con alfa)
 npm run sfx                                      # una sola vez (descarga los efectos)
 npm run check -- --plan plans/video-46.json      # valida el plan antes de renderizar
 npm run captions -- --project video-46           # resincroniza subtitulos (lo hace `reel` solo)
@@ -88,10 +89,11 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
   que abre el Chrome de Remotion y falla si una familia mide igual que su
   respaldo. Y si algo se ve raro dentro de Remotion, sácalo de Remotion: renderiza
   el `.woff2` suelto en un Chromium al lado del original.
-- **No metas la placa de marca por HyperFrames.** Se construyó completa y se
-  descartó midiendo: normaliza las tipografías a su set de 18 familias y Anton no
-  está, así que la placa nunca sale en la tipografía de Next Layer. Detalle y
-  evidencia en la bitácora (entrada del 2026-09-05).
+- **El cierre lo dibuja HyperFrames, no React.** `brand/cierre/index.html` se
+  renderiza a un WebM/VP9 con alfa (`npm run cierre`) y Remotion lo compone sobre
+  el último corte con `<OffthreadVideo transparent>`. Sí carga Anton: hubo una
+  sesión que concluyó lo contrario, pero medía con el archivo de fuente roto.
+  Si falta el `.webm`, `buildReel` avisa y cae al cierre de texto.
 - **No transcribas B-roll mudo**: el modelo alucina `[BLANK_AUDIO]`, `(música)`.
   `transcribeClips.ts` ya detecta por nivel qué clips tienen voz.
 - **No infieras los tiempos de los subtítulos sobre el audio original.** Se

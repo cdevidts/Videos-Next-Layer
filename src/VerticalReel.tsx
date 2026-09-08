@@ -408,6 +408,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
   hook,
   cta,
   ctaSub,
+  finalOverlaySrc,
   accentColor = '#FF8A3D',
   musicSrc,
   musicVolume = 0.35,
@@ -433,13 +434,18 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
 
   // Frames donde hay voz, para que la música se aparte.
   const speechRanges: Array<[number, number]> = [];
+  // Frame en que arranca el último corte: ahí va el cierre prerenderizado, para
+  // que la gráfica esté montada sobre el reveal completo y no sobre el final de
+  // la línea de tiempo (que caía a un segundo de haber empezado la toma).
+  let ultimoCorte = 0;
   {
     let cursor = 0;
-    for (const shot of shots) {
+    shots.forEach((shot, index) => {
       const largo = shotFrames(shot, fps);
       if (shot.words?.length) speechRanges.push([cursor, cursor + largo]);
+      if (index === shots.length - 1) ultimoCorte = cursor;
       cursor += largo - transitionInFrames;
-    }
+    });
   }
 
   return (
@@ -502,6 +508,10 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
         ? cuts
             .map((start, index) => ({start, index, shot: shots[index + 1]}))
             .filter(({shot}) => shot?.isSceneChange)
+            // El corte del reveal se lo queda su propio sonido. Un whoosh corto
+            // encima de un swell largo se oyen como dos cosas peleando por el
+            // mismo instante, justo donde el video tiene que respirar.
+            .filter(({index}) => !(index === cuts.length - 1 && shots[shots.length - 1]?.sfx))
             .map(({start, index}) => {
               const src = sfx.whooshes![index % sfx.whooshes!.length];
               const variacion = 0.85 + (index % 3) * 0.1;
@@ -527,7 +537,20 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
         <Hook text={hook} accentColor={accentColor} />
       </Sequence>
 
-      {cta ? (
+      {finalOverlaySrc ? (
+        /* Cierre diseñado en HyperFrames y prerenderizado con alfa: el sello de
+           precio responde la pregunta del gancho sobre el reveal, y de ahí pasa
+           a la placa de marca. Va desde el inicio del último corte para que el
+           mueble se vea limpio los primeros cuadros. */
+        <Sequence from={ultimoCorte} name="Cierre (HyperFrames)">
+          <OffthreadVideo
+            src={resolveSrc(finalOverlaySrc)}
+            transparent
+            muted
+            style={{width: '100%', height: '100%', objectFit: 'cover'}}
+          />
+        </Sequence>
+      ) : cta ? (
         <Sequence from={ctaStart} name="Cierre">
           <AbsoluteFill
             style={{

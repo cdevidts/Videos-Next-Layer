@@ -50,6 +50,14 @@ export type VerticalReelProps = {
   hook: string;
   cta?: string;
   ctaSub?: string;
+  /**
+   * Cierre prerenderizado con canal alfa (WebM/VP9), relativo a public/. Lo
+   * produce HyperFrames desde `brand/cierre/index.html` — ver `npm run cierre`.
+   * Se compone sobre el ÚLTIMO corte completo, no sobre los últimos segundos:
+   * el reveal necesita empezar limpio y la gráfica entra encima cuando toca.
+   * Si no está, se dibuja el cierre de texto de siempre con `cta`/`ctaSub`.
+   */
+  finalOverlaySrc?: string;
   accentColor?: string;
   /** Música opcional (relativa a public/). */
   musicSrc?: string;

@@ -34,6 +34,8 @@ type Plan = {
   dir: string;
   hook: string;
   cta?: string;
+  /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
+  finalOverlaySrc?: string;
   clips: PlanClip[];
 };
 
@@ -70,6 +72,7 @@ const main = () => {
 
   for (const [i, clip] of (plan.clips ?? []).entries()) {
     const etiqueta = `clip ${i + 1} (${clip.file})`;
+    const esUltimo = i === (plan.clips ?? []).length - 1;
     const source = path.resolve(plan.dir, clip.file);
     usados.add(clip.file);
 
@@ -93,12 +96,20 @@ const main = () => {
       );
     }
 
-    // Un clip mudo sin texto es tiempo muerto en pantalla.
+    // Un clip mudo y largo sin nada encima es tiempo muerto. Pero ojo: este
+    // aviso ya empujó una vez a rellenar B-roll con texto inventado ("Un
+    // taladro y nada más" sobre un plano sin taladro), que es peor que el
+    // silencio y va contra la regla de no inventar contenido. Así que solo
+    // avisa cuando el hueco es largo de verdad, y nunca sobre el último corte
+    // si el cierre de HyperFrames ya va montado encima.
     const nombre = path.basename(clip.file, path.extname(clip.file));
     const tieneTranscripcion = fs.existsSync(path.join(audioDir, `${nombre}.json`));
     const usaVoz = tieneTranscripcion && !clip.ignoreSpeech;
-    if (!usaVoz && !clip.caption) {
-      avisos.push(`${etiqueta}: sin voz y sin \`caption\`. Van ${dur}s de pantalla sin texto.`);
+    const loCubreElCierre = esUltimo && Boolean(plan.finalOverlaySrc);
+    if (!usaVoz && !clip.caption && !loCubreElCierre && dur > 3.5) {
+      avisos.push(
+        `${etiqueta}: ${dur}s mudos y sin texto. Si no hay nada que decir de verdad, córtalo más corto; no le inventes un subtítulo.`,
+      );
     }
 
     // El audio del reel tiene que salir de la pista HQ, no de la de whisper.

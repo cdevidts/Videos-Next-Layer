@@ -22,7 +22,8 @@
     "skills": "npx -y skills add remotion-dev/skills && npx -y skills add Rajbharti06/Ultimate-Video-Editing-Skills",
     "captions": "tsx scripts/syncCaptions.ts",
     "color": "tsx scripts/matchColor.ts",
-    "fonts-check": "tsx scripts/checkFonts.ts"
+    "fonts-check": "tsx scripts/checkFonts.ts",
+    "cierre": "npm --prefix brand/cierre run check && npm --prefix brand/cierre run render -- --format webm -q high -o ../../public/brand/cierre.webm"
   },
   "repository": {
     "type": "git",

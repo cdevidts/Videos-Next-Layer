@@ -118,6 +118,24 @@ de B-roll no traen voz, así que necesitan sonido propio: el efecto que
 corresponde a la imagen, o la música de cama sonando debajo. Verifícalo con
 `npm run review`, que lista los tramos bajo -40 dBFS.
 
+## Texto en pantalla: si nadie lo dice, no es un subtítulo
+
+Un clip de B-roll mudo con texto en el mismo estilo que los subtítulos hablados
+se lee como si alguien lo estuviera diciendo. Ya pasó: sobre un plano de bobinas
+de filamento decía "Un taladro y nada más" — nadie lo dice, y encima no había
+taladro en cuadro. Verónica lo pescó de inmediato.
+
+Las opciones honestas para B-roll son tres, en este orden:
+
+1. **Nada.** La música y el ritmo sostienen 2-3 s sin problema.
+2. **Una gráfica que se vea como gráfica** — el cierre de HyperFrames, un sello,
+   un número. Distinta del subtítulo, para que nadie la confunda con voz.
+3. **Cortarlo más corto.** Si el plano no aguanta sin texto, sobra plano.
+
+Lo que no es opción es escribirle un subtítulo a algo que nadie dijo.
+`checkPlan` avisa de huecos largos, pero ese aviso no es permiso para inventar:
+el mensaje mismo lo dice.
+
 ## Subtítulos: cómo verificar que calzan (y por qué se rompen)
 
 **Nunca declares que los subtítulos están bien mirándolos.** Un desfase de 0,3 s
@@ -212,6 +230,49 @@ respaldo. Si cambias la tipografía, revisa los resaltadores naranjos — con el
 espaciado viejo las cajas de dos palabras contiguas se tocaban y se leían como
 una sola.
 
+## El cierre: HyperFrames, no React
+
+La placa de cierre se autorea en HTML (`brand/cierre/index.html`), se renderiza
+a un WebM/VP9 **con canal alfa** (`npm run cierre`) y Remotion la compone encima
+del último corte con `<OffthreadVideo transparent>`. La ventaja no es técnica:
+es que la pieza de marca se diseña una vez, se previsualiza en el Studio de
+HyperFrames sin tocar React, y se reusa igual en todos los videos.
+
+Sí carga Anton. Si lees en algún lado que HyperFrames no puede con nuestras
+tipografías, está desactualizado: esa conclusión salió de probar con el archivo
+de fuente roto (ver la sección de tipografía).
+
+### Lo que hace que el cierre funcione
+
+**Va desde el inicio del último corte, no desde el final de la línea de tiempo.**
+Este es el error que hacía que el reveal no existiera: el cierre entraba a 1 s de
+empezada la toma del producto terminado, con velo oscuro encima. El mueble se
+veía un segundo. En `VerticalReel` el cierre arranca en `ultimoCorte`, y la
+gráfica dentro del propio HTML espera ~0,45 s antes de aparecer.
+
+**El velo entra solo para la marca.** Durante el sello de precio el producto se
+ve limpio. Oscurecer el reveal justo en el reveal es matarlo.
+
+**El vector de salida define el de entrada.** El precio se va hacia arriba y la
+marca entra desde abajo: se lee como un solo movimiento continuo en vez de dos
+placas pegadas una tras otra.
+
+**El texto sale de lo que se dice.** El gancho pregunta un precio; el reveal lo
+contesta con ese mismo precio. Nada de copy inventado (ver más abajo).
+
+### Trampas ya pisadas
+
+- `top:980` **sin unidades** es CSS inválido: el bloque se va al borde superior.
+  El `check` lo reporta como `canvas_overflow`. Saca siempre snapshots
+  (`npx hyperframes snapshot --at ...`) y mira el contact sheet antes de
+  renderizar — cuesta segundos y pesca esto de inmediato.
+- Encadenar varios tweens de GSAP sobre la misma propiedad para hacer un rebote
+  se pisa en los bordes (`overlapping_gsap_tweens`). Un solo tween con
+  `back.out(1.5)` da el mismo asentamiento.
+- GSAP va **local** en el proyecto, no por CDN: un CDN inalcanzable no da error,
+  deja la composición en timeout de navegación.
+- Las fuentes van embebidas como `data:` URI con `font-display: block`.
+
 ## Ritmo: acelerar lo que no se mueve
 
 Una toma hablada sobre una imagen quieta (una pantalla de computador) se hace
@@ -249,6 +310,7 @@ npm run audio -- --dir public/input/video-46     # 16 kHz (whisper) + hq/ 48 kHz
 npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
 npm run fonts && npm run sfx                     # una sola vez cada uno
 npm run fonts-check                              # ¿las fuentes se aplican de verdad?
+npm run cierre                                   # placa de cierre (HyperFrames -> webm con alfa)
 npm run color -- --dir public/input/video-46     # iguala el color entre tomas
 npm run check -- --plan plans/video-46.json      # valida el plan (rápido)
 npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
