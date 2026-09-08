@@ -71,6 +71,8 @@ npm run sfx                                      # una sola vez (descarga los ef
 npm run check -- --plan plans/video-46.json      # valida el plan antes de renderizar
 npm run captions -- --project video-46           # resincroniza subtitulos (lo hace `reel` solo)
 npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
+npm run watch -- renders/video-46-reel.mp4      # ver Y escuchar el resultado (frames + guion)
+npm run sync -- --render renders/video-46-reel.mp4   # desfase de audio y subtitulos
 ```
 
 Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook`,
@@ -123,6 +125,14 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
 - `npx tsc --noEmit` limpio.
 - `npm run fonts-check` en verde. Una tipografía caída no rompe el render: sale
   todo en la de respaldo, sin errores, y solo se nota comparando con la marca.
+- **`npm run watch -- <render.mp4>`** — lo más importante de esta lista. Deja en
+  `out/watch/<nombre>/GUION.md` una fila por instante con **lo que se escucha**,
+  el nivel y el frame. Léelo de corrido y abre los frames: es la única forma de
+  juzgar si el sonido corresponde a la imagen y si el subtítulo corresponde a la
+  voz. Revisando sin esto se entregaron subtítulos inventados y un taladro
+  sonando sobre un plano sin taladro.
+- `npm run sync -- --render <render.mp4>` — mide desfase de audio y subtítulos
+  contra la fuente. Un desfase no se ve en un frame ni en un gráfico de niveles.
 - `npm run review -- <render.mp4>` — saca 8 frames parejos a `out/review/<nombre>/`
   y un resumen del nivel de audio en dBFS por ventana. Léelos con `Read`. Un
   render que termina sin error igual puede tener el texto cortado, la fuente

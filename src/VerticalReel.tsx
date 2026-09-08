@@ -63,6 +63,18 @@ const pop = (frame: number, fps: number, delay = 0) =>
     durationInFrames: 22,
   });
 
+/**
+ * Fundido corto en los dos extremos de un corte. Devuelve 0->1 en los primeros
+ * `n` frames y 1->0 en los últimos `n`. Es lo que evita que dos cortes suenen
+ * encimados durante el cross-fade, y de paso mata los clics del empalme.
+ */
+const bordes = (frame: number, total: number, n: number) => {
+  if (n <= 0) return 1;
+  const entrada = interpolate(frame, [0, n], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const salida = interpolate(frame, [total - n, total], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  return Math.min(entrada, salida);
+};
+
 const Grain: React.FC = () => {
   const frame = useCurrentFrame();
   return (
@@ -238,7 +250,8 @@ const Shot: React.FC<{
   accentColor: string;
   voiceVolume: number;
   sfxVolume: number;
-}> = ({shot, index, accentColor, voiceVolume, sfxVolume}) => {
+  fadeFrames: number;
+}> = ({shot, index, accentColor, voiceVolume, sfxVolume, fadeFrames}) => {
   const frame = useCurrentFrame();
   const {durationInFrames, fps, width, height} = useVideoConfig();
 
@@ -262,7 +275,8 @@ const Shot: React.FC<{
       });
 
   // Golpe de entrada: llega pasado de tamaño y se asienta.
-  const punch = interpolate(frame, [0, 9], [1.09, 1], {
+  // El primer corte entra con más golpe: es el que decide si alguien se queda.
+  const punch = interpolate(frame, [0, index === 0 ? 14 : 9], [index === 0 ? 1.22 : 1.09, 1], {
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
@@ -295,7 +309,13 @@ const Shot: React.FC<{
           src={resolveSrc(shot.audioSrc)}
           trimBefore={Math.round((shot.audioStartFromSeconds ?? shot.startFromSeconds) * fps)}
           playbackRate={shot.speed ?? 1}
-          volume={voiceVolume}
+          /* En una TransitionSeries los dos cortes están montados durante el
+             cross-fade, así que sin esto suenan LAS DOS VOCES a la vez unos
+             100 ms en cada empalme. Con 11 empalmes eso es un eco/tartamudeo
+             constante que se percibe como "el audio está desfasado" aunque la
+             sincronía esté perfecta. Acá cada corte entra y sale con un fundido
+             del largo de la transición, así que en el solape suman uno. */
+          volume={(f) => voiceVolume * bordes(f, durationInFrames, fadeFrames)}
         />
       ) : null}
 
@@ -304,7 +324,19 @@ const Shot: React.FC<{
           porque el oído procesa antes que el ojo. */}
       {shot.sfx ? (
         <Sequence from={0} durationInFrames={durationInFrames} name={`SFX ${shot.sfx}`}>
-          <Audio src={resolveSrc(`sfx/${shot.sfx}`)} volume={sfxVolume} />
+          <Audio
+            src={resolveSrc(`sfx/${shot.sfx}`)}
+            /* Un riser que empieza a volumen pleno no es un riser, es un ruido
+               que aparece. Tiene que CRECER hacia el corte que viene: eso es lo
+               que hace que el corte siguiente se sienta ganado y no puesto. */
+            volume={(f) =>
+              /riser|swell/.test(shot.sfx as string)
+                ? sfxVolume * interpolate(f, [0, durationInFrames - 1], [0.18, 1], {
+                    extrapolateRight: 'clamp',
+                  })
+                : sfxVolume * bordes(f, durationInFrames, 3)
+            }
+          />
         </Sequence>
       ) : null}
 
@@ -351,7 +383,7 @@ const Hook: React.FC<{text: string; accentColor: string}> = ({text, accentColor}
         style={{top: 210, transform: `scale(${outScale})`}}
       >
         {words.map(({word, highlighted}, index) => {
-          const enter = pop(frame, fps, index * 4);
+          const enter = pop(frame, fps, index * 2);
           const sweep = interpolate(enter, [0.4, 1], [0, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
@@ -460,6 +492,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
                 accentColor={accentColor}
                 voiceVolume={voiceVolume}
                 sfxVolume={sfxVolume}
+                fadeFrames={transitionInFrames}
               />
             </TransitionSeries.Sequence>
             {index < shots.length - 1 ? (
@@ -495,8 +528,17 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
       ) : null}
 
       {sfx?.riser ? (
-        <Sequence durationInFrames={Math.round(fps)} name="SFX riser">
-          <Audio src={resolveSrc(sfx.riser)} volume={sfxVolume} />
+        /* El riser de apertura dura hasta el PRIMER CORTE y crece hacia él. Antes
+           duraba 1 s fijo y moría en medio del gancho, sin nada que lo recibiera:
+           un riser que no desemboca en un corte se oye como un ruido suelto. */
+        <Sequence durationInFrames={cuts[0] ?? Math.round(fps)} name="SFX riser">
+          <Audio
+            src={resolveSrc(sfx.riser)}
+            volume={(f) =>
+              sfxVolume *
+              interpolate(f, [0, (cuts[0] ?? fps) - 1], [0.15, 1], {extrapolateRight: 'clamp'})
+            }
+          />
         </Sequence>
       ) : null}
       {/* Whoosh solo donde cambia la escena de verdad. En los jump cuts dentro

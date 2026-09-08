@@ -277,3 +277,62 @@ Dos cosas que costaron y conviene saber:
   asentamiento y no se pisa con nada.
 
 Queda pendiente lo de siempre: `DSCF7534` y `DSCF7535` sin mirar.
+
+## 2026-09-08 · "¿Hay algo en lo que tú no te fijas?" — sí, había: no estaba viendo el video.
+
+Verónica devolvió el render v7 con una crítica de método, no de resultado: *"tú estás uniendo
+piezas del puzzle para sacar una película general del video, y en realidad no creo que lo estés
+viendo, porque si lo vieras como yo, sabrías automáticamente las cosas que no están buenas"*.
+Tenía razón. La revisión era `npm run review`: 8 frames parejos y un gráfico de dBFS. Con eso se
+puede juzgar la gráfica y nada más — no dice qué se está diciendo en cada frame, ni si el sonido
+que suena corresponde a lo que se ve. Los dos errores que ella pescó de inmediato (subtítulos
+inventados, sonido de taladro sin taladro) son invisibles con ese método y obvios mirando el video.
+
+**Lo que se construyó: `npm run watch`.** Transcribe el render y deja, en `out/watch/<nombre>/`,
+un `GUION.md` que es una fila por instante con el tiempo, **lo que se escucha ahí**, el nivel en
+dBFS y el frame correspondiente. Se lee de corrido como un guion y los frames se abren con `Read`.
+Muestreo denso (0,75 s) en los primeros 15 s, que es donde se gana o se pierde al espectador.
+
+La idea viene de las skills de "watch video" que hay dando vueltas
+([claude-watch](https://github.com/alexlarcheveque/claude-watch),
+[claude-video-vision](https://github.com/jordanrendric/claude-video-vision)). Se implementó dentro
+del repo en vez de instalarlas porque son envoltorios de ffmpeg + whisper sobre cosas que este
+proyecto ya tiene, y así no se agrega código de terceros con permisos totales al pipeline.
+
+Leído el primer `GUION.md` aparecieron de inmediato dos cosas que ningún frame suelto mostraba:
+- **El gancho**: a los 0,2 s solo se ha dicho "¿Un mueble". La pregunta completa tarda 2,2 s.
+- **El final: 9 segundos seguidos sin una sola palabra** (27→36 s), a −36/−30 dBFS. Un cuarto del
+  video sin voz. Y peor: las tres tomas finales son *el mismo rincón con el mismo dinosaurio* —
+  a los 27,2 s y a los 31,2 s se ve prácticamente lo mismo. No faltaba gráfica; no pasaba nada.
+
+## El desfase de audio: no existía, y perseguirlo enseñó algo
+
+Verónica reportó que el audio no calzaba con la boca. Se midió todo:
+
+| qué | resultado |
+| --- | --- |
+| audio de cada corte contra su fuente | −22 a −56 ms |
+| video (prueba controlada, frame exacto) | ±1 frame (33 ms) |
+| subtítulos contra la voz del render | 33 ms de mediana |
+| pistas del contenedor | ambas en 0,000 |
+| boca en el instante de cada palabra | calza |
+
+No hay desfase técnico. Pero en el camino **mi primer instrumento dio +0,2 a +0,6 s de falso
+desfase** en los cortes acelerados, y casi me manda a "arreglar" un bug inexistente. Dos causas:
+(1) `VerticalReel` mete un golpe de escala de 9 cuadros al empezar cada corte, que es movimiento
+que el proxy no tiene; (2) para comparar hay que remuestrear el proxy a 30/velocidad fps y eso
+mete ±40 ms de jitter. Lo que lo destrabó fue una composición de prueba **sin efectos**, comparando
+el frame exacto: ahí `trimBefore` + `playbackRate` aciertan siempre.
+
+`npm run sync` quedó con la lección adentro: mide el AUDIO contra la fuente y el invariante del
+plan (imagen y sonido tienen que pedir el mismo instante), y **no** intenta medir el video por
+correlación. Medir mal es peor que no medir.
+
+**Lo que sí sonaba mal**, y explica la percepción:
+- En una `TransitionSeries` los dos cortes están montados durante el cross-fade, así que sonaban
+  **las dos voces a la vez** ~100 ms en cada empalme. Con 11 empalmes es un eco constante. Ahora
+  cada corte entra y sale con un fundido del largo de la transición.
+- Los cortes de una misma frase iban a 1,1 / 1,15 / 1,2 / 1,25 según el clip. El tempo de la voz
+  subía y bajaba dentro de la misma idea y sonaba procesada. Ahora todo lo hablado va a 1,15.
+- Los dos risers empezaban a volumen pleno. Un riser que no crece y no desemboca en un corte se
+  oye como un ruido que aparece. Ahora crecen y el de apertura termina justo en el primer corte.

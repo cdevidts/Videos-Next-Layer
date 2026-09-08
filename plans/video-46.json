@@ -12,12 +12,14 @@
     {
       "file": "DSCF7524.MOV",
       "startFromSeconds": 1.7,
-      "durationInSeconds": 2.8
+      "durationInSeconds": 2.8,
+      "speed": 1.15
     },
     {
       "file": "DSCF7528.MOV",
       "startFromSeconds": 1.5,
-      "durationInSeconds": 3.4
+      "durationInSeconds": 3.4,
+      "speed": 1.15
     },
     {
       "file": "DSCF7536.MOV",
@@ -30,13 +32,13 @@
       "startFromSeconds": 4.6,
       "durationInSeconds": 2.9,
       "sfx": "teclado.mp3",
-      "speed": 1.2
+      "speed": 1.15
     },
     {
       "file": "DSCF7537.MOV",
       "startFromSeconds": 12.4,
       "durationInSeconds": 6.9,
-      "speed": 1.25
+      "speed": 1.15
     },
     {
       "file": "DSCF7537.MOV",
@@ -49,26 +51,20 @@
       "file": "DSCF7537.MOV",
       "startFromSeconds": 39.9,
       "durationInSeconds": 8.4,
-      "speed": 1.25
+      "speed": 1.15
     },
     {
       "file": "DSCF7532.MOV",
       "startFromSeconds": 3.6,
       "durationInSeconds": 5.2,
-      "speed": 1.1
-    },
-    {
-      "file": "DSCF7531.MOV",
-      "ignoreSpeech": true,
-      "startFromSeconds": 1.4,
-      "durationInSeconds": 2.0
+      "speed": 1.15
     },
     {
       "file": "DSCF7530.MOV",
       "ignoreSpeech": true,
       "sfx": "riser-final.mp3",
       "startFromSeconds": 0.8,
-      "durationInSeconds": 2.6
+      "durationInSeconds": 1.6
     },
     {
       "file": "DSCF7529.MOV",

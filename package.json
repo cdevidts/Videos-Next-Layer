@@ -23,7 +23,9 @@
     "captions": "tsx scripts/syncCaptions.ts",
     "color": "tsx scripts/matchColor.ts",
     "fonts-check": "tsx scripts/checkFonts.ts",
-    "cierre": "npm --prefix brand/cierre run check && npm --prefix brand/cierre run render -- --format webm -q high -o ../../public/brand/cierre.webm"
+    "cierre": "npm --prefix brand/cierre run check && npm --prefix brand/cierre run render -- --format webm -q high -o ../../public/brand/cierre.webm",
+    "sync": "tsx scripts/checkSync.ts",
+    "watch": "tsx scripts/watchReel.ts"
   },
   "repository": {
     "type": "git",

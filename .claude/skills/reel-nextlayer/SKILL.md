@@ -11,6 +11,31 @@ Instagram/TikTok, y salen de clips crudos de cámara que viven en Google Drive.
 No es contenido de Cero Trade. Si el copy empieza a hablar de energía o trading,
 te equivocaste de marca.
 
+## Antes que nada: mira el video, no los frames
+
+**`npm run watch -- <render.mp4>`** deja en `out/watch/<nombre>/GUION.md` una fila
+por instante con el tiempo, **lo que se escucha ahí**, el nivel en dBFS y el
+frame. Léelo de corrido como un guion y abre con `Read` los frames que te llamen
+la atención.
+
+Esto no es opcional ni un extra: es la diferencia entre revisar un video y
+adivinarlo. Sacar frames sueltos y un gráfico de niveles deja pasar todo lo que
+importa — si el sonido corresponde a la imagen, si el subtítulo corresponde a la
+voz, si el ritmo se cae. Ya se entregaron ediciones con un taladro sonando sobre
+un plano sin taladro y con subtítulos que nadie dice; las dos las pescó la
+usuaria en un segundo y ninguna era visible con el método viejo.
+
+La primera vez que se corrió sobre este proyecto, el guion mostró en dos
+renglones dos cosas que ninguna revisión anterior había visto:
+
+- a los 0,2 s solo se ha dicho *"¿Un mueble"* — el gancho se come la ventana de
+  decisión completa;
+- **9 segundos seguidos sin una sola palabra** al final, y las tres tomas
+  finales eran el mismo rincón con el mismo dinosaurio.
+
+Y **`npm run sync`** mide el desfase de audio y de subtítulos. Un desfase no se
+ve en un frame ni en un gráfico de niveles: hay que medirlo.
+
 ## El orden correcto de trabajo
 
 Saltarse el paso 1 es el error más caro que se ha cometido en este repo.
@@ -26,8 +51,8 @@ Saltarse el paso 1 es el error más caro que se ha cometido en este repo.
 3. **Escribe el guion en `plans/<proyecto>.json`**, no en la conversación.
 4. **Valida antes de renderizar**: `npm run check -- --plan plans/<proyecto>.json`.
    Un render son ~15 minutos; la validación son 2 segundos.
-5. **Renderiza, revisa con `npm run review` y mira los frames.** Un render que
-   termina sin error igual puede tener texto cortado o audio mudo.
+5. **Renderiza y revísalo con `npm run watch` + `npm run sync`.** No con frames
+   sueltos: eso ya dejó pasar sonidos sin sentido y subtítulos inventados.
 
 ## Qué hace que un reel funcione
 
@@ -68,7 +93,7 @@ Lo que sí funciona, ya implementado en `src/VerticalReel.tsx`:
 
 ## Sonido: donde más se nota lo amateur
 
-Cinco errores ya cometidos acá, los cinco detectados de oído por la usuaria.
+Ocho errores ya cometidos acá, todos detectados de oído por la usuaria.
 Ninguno se puede repetir.
 
 ### 1. El sonido tiene que corresponder a lo que se ve
@@ -103,6 +128,24 @@ no te fíes del nombre.
 
 ### 5. El mismo sonido repetido
 Suena a máquina. Hay tres whooshes que se rotan variando el volumen.
+
+### 6. Un riser tiene que crecer y desembocar en algo
+Un riser a volumen constante es un ruido que aparece. Tiene que subir hacia el
+corte que viene: eso es lo que hace que el corte se sienta ganado. Si termina
+en medio de un plano, sin nada que lo reciba, sobra. `VerticalReel` le pone la
+rampa solo, pero el corte tiene que estar donde el riser termina.
+
+### 7. El cross-fade encima las dos voces
+En una `TransitionSeries` los dos cortes están montados durante la transición,
+así que sin fundido suenan **las dos pistas a la vez** ~100 ms en cada empalme.
+Con 11 empalmes es un eco constante que se percibe como "el audio está
+desfasado" aunque la sincronía esté perfecta. Cada corte entra y sale con un
+fundido del largo de la transición.
+
+### 8. La velocidad no puede saltar dentro de una misma idea
+Los cortes de una frase iban a 1,1 / 1,15 / 1,2 / 1,25 según el clip de origen.
+El tempo de la voz sube y baja dentro de la misma frase y suena procesada. Una
+sola velocidad para todo lo hablado.
 
 ### Jerarquía de audio (no se negocia)
 Diálogo > música > efectos > ambiente. La música va de cama a volumen bajo y
