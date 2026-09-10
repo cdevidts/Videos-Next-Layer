@@ -336,3 +336,37 @@ correlación. Medir mal es peor que no medir.
   subía y bajaba dentro de la misma idea y sonaba procesada. Ahora todo lo hablado va a 1,15.
 - Los dos risers empezaban a volumen pleno. Un riser que no crece y no desemboca en un corte se
   oye como un ruido que aparece. Ahora crecen y el de apertura termina justo en el primer corte.
+
+## 2026-09-10 · Se instaló el plugin `codex@openai-codex`, declarado a nivel de proyecto
+
+Verónica pidió instalarlo "para poder usarla siempre", pasando los slash commands
+(`/plugin marketplace add …`, `/plugin install …`, `/reload-plugins`, `/codex:setup`).
+Esos son comandos de la CLI, no herramientas que un agente pueda ejecutar — pero **sí existe
+la ruta no interactiva**, que además es la que sirve para el "siempre":
+
+```bash
+claude plugin marketplace add openai/codex-plugin-cc --scope project
+claude plugin install codex@openai-codex --scope project -y
+```
+
+Con `--scope project` la declaración queda en `.claude/settings.json`, que está versionado. Ese
+archivo es lo único que persiste: **el contenedor remoto se recicla**, así que instalar a nivel
+de usuario (el default) se pierde con la sesión. Ahora cualquier sesión nueva sobre este repo
+levanta el plugin sola.
+
+`/codex:setup` resultó ser solo un archivo de comando que le indica al agente qué script correr,
+así que se ejecutó a mano:
+`node "$CLAUDE_PLUGIN_ROOT/scripts/codex-companion.mjs" setup --json`. Pidió el CLI de Codex,
+que se instaló (`npm install -g @openai/codex`, v0.154.0).
+
+**Queda pendiente y no lo puede hacer un agente: `codex login`.** Necesita la cuenta de OpenAI de
+una persona. Sin eso el plugin está instalado pero sus comandos no pueden correr. Y como el CLI
+vive en el contenedor, en cada sesión remota nueva hay que repetir el `npm install -g` y el login;
+lo que no hay que repetir nunca más es la declaración del marketplace.
+
+El plugin aporta `/codex:review`, `/codex:adversarial-review`, `/codex:rescue`, `/codex:transfer`,
+`/codex:status`, `/codex:result` y `/codex:cancel` — Codex como segunda opinión sobre el código.
+
+También sigue pendiente, de la sesión anterior: **qué dice exactamente en DSCF7529**. Whisper
+entiende "y que nada yo me meto muerecito de aquí, así que ¡hasta luego!", que suena a jerga mal
+transcrita. Si se confirma, ese cierre hablado arregla los ~6 s finales sin voz del reel.

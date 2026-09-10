@@ -139,12 +139,32 @@ Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook
   caída o el audio mudo; esto lo pesca sin sacar cada frame a mano.
   Para mirar un instante puntual con más detalle: `npx remotion ffmpeg -ss <s>
   -i <mp4> -frames:v 1 out.jpg`.
-- Si el plugin `watch@claude-video` está instalado (`/plugin marketplace add
-  bradautomates/claude-video`), `/watch <archivo o URL>` es otra forma de revisar
-  el resultado. No es parte del pipeline (hay que instalarlo aparte con `/plugin`
-  dentro de una sesión interactiva) y no reemplaza `npm run review`, que no
-  depende de nada externo.
+- Si el plugin `watch@claude-video` está instalado, `/watch <archivo o URL>` es
+  otra forma de revisar el resultado. No es parte del pipeline y no reemplaza
+  `npm run watch`, que no depende de nada externo.
 - Revisar que el audio tenga contenido, no solo que exista la pista.
+
+## Plugins declarados en el proyecto
+
+`.claude/settings.json` (versionado) declara el marketplace y los plugins que
+este repo usa, así que **cualquier sesión nueva los tiene sin instalar nada**.
+Hoy está `codex@openai-codex` (marketplace `openai/codex-plugin-cc`), que aporta
+`/codex:review`, `/codex:adversarial-review`, `/codex:rescue`, `/codex:transfer`
+y `/codex:status` — revisión de código con Codex como segunda opinión.
+
+Ojo: el plugin necesita el CLI de Codex y una sesión iniciada. El CLI se instala
+con `npm install -g @openai/codex`; el login (`codex login`) lo tiene que hacer
+una persona, con su cuenta de OpenAI. **Un contenedor remoto se recicla**, así
+que el CLI y el login hay que rehacerlos en cada sesión remota nueva; lo único
+que persiste es la declaración en `.claude/settings.json`.
+
+Para agregar otro plugin al proyecto, no uses `/plugin` (es interactivo y muere
+con el contenedor):
+
+```bash
+claude plugin marketplace add <owner/repo> --scope project
+claude plugin install <plugin>@<marketplace> --scope project -y
+```
 
 ## El ffmpeg de Remotion es una build recortada
 
