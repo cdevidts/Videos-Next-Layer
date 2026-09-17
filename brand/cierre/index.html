@@ -52,8 +52,8 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="cierre" data-duration="4.6" data-width="1080" data-height="1920">
-      <div id="capa" class="clip" data-start="0" data-duration="4.6">
+    <div id="root" data-composition-id="cierre" data-duration="3.4" data-width="1080" data-height="1920">
+      <div id="capa" class="clip" data-start="0" data-duration="3.4">
         <div id="velo" class="clip"></div>
 
         <div id="tag-sin">SIN SER CARPINTERO</div>
@@ -91,28 +91,28 @@
 
       // 0,00-0,35  el mueble respira. El reveal es la toma, no la grafica.
       // 0,35       entra la esquina de arriba: abre el movimiento por el borde.
-      tl.to('#tag-sin', {x: 0, opacity: 1, duration: 0.34, ease: 'power3.out'}, 0.35)
-        // 0,50  aterriza el precio. back.out hace el asentamiento del sello en
+      tl.to('#tag-sin', {x: 0, opacity: 1, duration: 0.30, ease: 'power3.out'}, 0.18)
+        // 0,32  aterriza el precio. back.out hace el asentamiento del sello en
         //       un solo tween; encadenar varios sobre scale se pisa en los bordes.
-        .to('#precio', {scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.52, ease: 'back.out(1.5)'}, 0.50)
-        .to('#barra-precio', {scaleX: 1, duration: 0.28, ease: 'power3.out'}, 0.78)
-        .to('#bajada-precio', {y: 0, opacity: 1, duration: 0.32, ease: 'power2.out'}, 0.92)
-        // 1,10  la esquina de abajo cierra la diagonal con la de arriba.
-        .to('#tag-taladro', {x: 0, opacity: 1, duration: 0.34, ease: 'power3.out'}, 1.10)
+        .to('#precio', {scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.48, ease: 'back.out(1.5)'}, 0.32)
+        .to('#barra-precio', {scaleX: 1, duration: 0.26, ease: 'power3.out'}, 0.58)
+        .to('#bajada-precio', {y: 0, opacity: 1, duration: 0.30, ease: 'power2.out'}, 0.70)
+        // 0,86  la esquina de abajo cierra la diagonal con la de arriba.
+        .to('#tag-taladro', {x: 0, opacity: 1, duration: 0.30, ease: 'power3.out'}, 0.86)
 
-        // 2,60  todo se va HACIA ARRIBA. Las esquinas salen por donde entraron,
+        // 1,85  todo se va HACIA ARRIBA. Las esquinas salen por donde entraron,
         //       cada una a su borde: el cuadro se vacia hacia afuera, no se apaga.
-        .to('#tag-sin',     {x: -560, opacity: 0, duration: 0.34, ease: 'power3.in'}, 2.60)
-        .to('#tag-taladro', {x:  560, opacity: 0, duration: 0.34, ease: 'power3.in'}, 2.64)
-        .to('#precio-grupo',{y: -200, scale: 0.86, opacity: 0, duration: 0.42, ease: 'power3.in'}, 2.60)
+        .to('#tag-sin',     {x: -560, opacity: 0, duration: 0.32, ease: 'power3.in'}, 1.85)
+        .to('#tag-taladro', {x:  560, opacity: 0, duration: 0.32, ease: 'power3.in'}, 1.89)
+        .to('#precio-grupo',{y: -200, scale: 0.86, opacity: 0, duration: 0.40, ease: 'power3.in'}, 1.85)
 
-        .to('#velo', {opacity: 1, duration: 0.50, ease: 'power2.out'}, 2.66)
-        .to('#marca-grupo', {opacity: 1, duration: 0.01}, 2.80)
-        .to('#barra-marca', {scaleX: 1, duration: 0.30, ease: 'power3.out'}, 2.82)
+        .to('#velo', {opacity: 1, duration: 0.45, ease: 'power2.out'}, 1.90)
+        .to('#marca-grupo', {opacity: 1, duration: 0.01}, 2.04)
+        .to('#barra-marca', {scaleX: 1, duration: 0.28, ease: 'power3.out'}, 2.06)
         // La marca sube desde abajo: continua el movimiento que dejo el precio.
-        .to('#marca', {y: 0, scale: 1, opacity: 1, duration: 0.50, ease: 'power3.out'}, 2.86)
-        .to('#bajada-marca', {y: 0, opacity: 1, duration: 0.36, ease: 'power2.out'}, 3.08);
-      // 3,45-4,60  quieto. Nada de vibrar por vibrar.
+        .to('#marca', {y: 0, scale: 1, opacity: 1, duration: 0.46, ease: 'power3.out'}, 2.10)
+        .to('#bajada-marca', {y: 0, opacity: 1, duration: 0.34, ease: 'power2.out'}, 2.30);
+      // 2,65-3,40  quieto. Nada de vibrar por vibrar.
     </script>
   </body>
 </html>

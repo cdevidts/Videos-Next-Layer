@@ -42,6 +42,7 @@ const FPS = 30;
 type Word = {text: string; start: number; end: number};
 type Shot = {
   src: string;
+  wordsLocked?: boolean;
   startFromSeconds: number;
   durationInSeconds: number;
   words?: Word[];
@@ -149,6 +150,7 @@ export const syncCaptions = async (propsFile: string, model: WhisperModel, langu
 
   // Cada palabra vuelve al corte donde cae, con tiempos relativos a ese corte.
   let reasignadas = 0;
+  let bloqueados = 0;
   props.shots.forEach((shot, index) => {
     if (!shot.words?.length) return;
     const desde = starts[index];
@@ -163,15 +165,57 @@ export const syncCaptions = async (propsFile: string, model: WhisperModel, langu
         start: Math.max(w.start - desde, 0),
         end: Math.min(Math.max(w.end - desde, 0.05), shot.durationInSeconds),
       }));
-    if (suyas.length) {
-      shot.words = suyas;
-      reasignadas += suyas.length;
+    if (!suyas.length) return;
+
+    if (shot.wordsLocked) {
+      // Texto humano, tiempos medidos. Las dos mitades importan:
+      //
+      // El TEXTO no se puede retranscribir — whisper vuelve a oír "y que" donde
+      // dice "IKEA?" y la corrección se perdería en cada render, sin aviso.
+      // Pero los TIEMPOS escritos a mano tampoco sirven: se midieron 1,2 s de
+      // desfase en la línea corregida, exactamente el problema que la corrección
+      // venía a arreglar.
+      //
+      // Así que se conserva el texto de la persona y se le pegan los tiempos que
+      // whisper midió sobre el audio montado, repartiendo por índice. Eso
+      // preserva las pausas reales (una pausa dramática entre "IKEA?" y "NADA"
+      // sobrevive, cosa que un reparto proporcional aplastaría) y aguanta que la
+      // cantidad de palabras no coincida: "IKEA?" es una palabra y whisper la
+      // oye como dos.
+      const humanas = shot.words;
+      const h0 = humanas[0].start;
+      const h1 = humanas[humanas.length - 1].end;
+      const s0 = suyas[0].start;
+      const s1 = suyas[suyas.length - 1].end;
+      const largoH = h1 - h0;
+      const largoS = s1 - s0;
+      // El ritmo interno del texto humano se respeta tal cual — ahí va la pausa
+      // dramática entre "IKEA?" y "NADA", que cualquier reparto parejo aplasta.
+      // Solo se ancla el arranque al inicio de voz medido, y se reescala si los
+      // dos largos se parecen. Si whisper devolvió muy poco en este corte
+      // (pasa cuando el tramo es corto o hay música encima) no se reescala:
+      // estirar contra una medición pobre es peor que no tocar nada.
+      const escala =
+        largoH > 0.2 && largoS / largoH > 0.6 && largoS / largoH < 1.6 ? largoS / largoH : 1;
+      shot.words = humanas.map((palabra) => ({
+        text: palabra.text,
+        start: Math.max(s0 + (palabra.start - h0) * escala, 0),
+        end: Math.min(s0 + (palabra.end - h0) * escala, shot.durationInSeconds),
+      }));
+      bloqueados += humanas.length;
+      return;
     }
+
+    shot.words = suyas;
+    reasignadas += suyas.length;
   });
 
   fs.writeFileSync(propsFile, `${JSON.stringify(props, null, 2)}\n`);
   fs.rmSync(tmpDir, {recursive: true, force: true});
-  console.log(`✅ ${reasignadas} palabras resincronizadas contra el audio real → ${propsFile}`);
+  console.log(
+    `✅ ${reasignadas} palabras resincronizadas contra el audio real → ${propsFile}` +
+      (bloqueados ? ` (${bloqueados} con texto corregido a mano, retimadas)` : ''),
+  );
 };
 
 const isMain = process.argv[1]

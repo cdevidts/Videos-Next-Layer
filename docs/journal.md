@@ -370,3 +370,54 @@ El plugin aporta `/codex:review`, `/codex:adversarial-review`, `/codex:rescue`, 
 También sigue pendiente, de la sesión anterior: **qué dice exactamente en DSCF7529**. Whisper
 entiende "y que nada yo me meto muerecito de aquí, así que ¡hasta luego!", que suena a jerga mal
 transcrita. Si se confirma, ese cierre hablado arregla los ~6 s finales sin voz del reel.
+
+## 2026-09-17 · Versión final. El clip que estaba marcado `ignoreSpeech` tenía el mejor remate.
+
+Verónica dijo qué decía DSCF7529: **"IKEA? NADA, yo me armé este mueblecito de aquí"**. Whisper
+oía "y que nada yo me meto muerecito de aquí" — "y que" era literalmente *IKEA*. Por esa
+transcripción el clip estaba marcado `ignoreSpeech` y el final llevaba seis segundos mudos. Es la
+segunda vez que pasa exactamente lo mismo ("once lugar" era "once lucas"): **lo que whisper no
+entiende suele ser lo mejor del material**.
+
+En el clip dice la línea de frente y **gira señalando el mueble** justo en "este mueblecito de
+aquí", así que el reveal lo hace él. El final quedó partido en dos: la línea con subtítulos
+(3,38→6,08 del clip) y una cola sobre el mueble ya presentado donde aterriza la gráfica. El "así
+que, hasta luego" que sigue se dejó fuera: el reel cierra en "aquí".
+
+### La cadena para que una corrección humana sobreviva
+
+Corregir `_audio/<clip>.json` no basta. `syncCaptions` transcribe el render y **reescribe los
+props**, así que cada render volvía a pisar la corrección con lo que whisper entiende mal. Y esto
+ya estaba pasando sin que nadie lo notara: el gancho tenía `correctedByHuman: true` con "once
+lucas" desde hace sesiones, y el video entregado decía **"11 lucas"**.
+
+Ahora: `correctedByHuman` → `buildReel` marca el corte con `wordsLocked` → `syncCaptions` conserva
+el TEXTO humano. Los TIEMPOS sí salen de la medición, porque los escritos a mano quedaron con 1,2 s
+de desfase — justo el problema que la corrección venía a arreglar. Se ancla el arranque al inicio
+de voz medido y se reescala solo si los dos largos se parecen; así la pausa dramática entre
+"IKEA?" y "NADA" (0,97 s) sobrevive, cosa que un reparto parejo aplastaría.
+
+### Dos trampas nuevas, las dos ya con guardia
+
+1. **`npm run captions` suelto no es idempotente.** La segunda corrida lee como "ritmo humano" lo
+   que la primera ya retimó. La primera versión de esto colapsó las 9 palabras de la línea en el
+   mismo instante — el subtítulo aparecía de golpe, entero. Los tiempos humanos viven en
+   `_audio/<clip>.json` y quien los devuelve a los props es `buildReel`, así que para rehacer
+   subtítulos va siempre el ciclo completo.
+2. **Un subtítulo apelmazado no es un desfase**, así que ninguna medición de sincronía lo pesca.
+   `npm run sync` ahora falla si un corte tiene muchas palabras y pocos instantes distintos.
+
+### Verificado antes de entregar
+
+| | |
+| --- | --- |
+| tipografías aplicadas de verdad | ✅ Anton 1021,5 px / Inter 1378,7 px |
+| audio de cada corte vs su fuente | ✅ peor 0,054 s (tope 0,08) |
+| subtítulos vs la voz del render | ✅ mediana 0,055 s (tope 0,15) |
+| subtítulos apelmazados | ✅ ninguno |
+| pistas del contenedor | ✅ ambas en 0,000 |
+| silencio digital | ✅ mínimo −36 dBFS |
+| texto en pantalla = lo que se dice | ✅ "once lucas" e "IKEA? NADA…" |
+| velocidad | ✅ 1,15 pareja en todo lo hablado |
+
+34,2 s. Sigue pendiente mirar `DSCF7531`, `DSCF7534` y `DSCF7535` antes de descartarlos.

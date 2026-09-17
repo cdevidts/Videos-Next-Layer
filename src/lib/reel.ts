@@ -33,6 +33,13 @@ export type ReelShot = {
   sfx?: string;
   /** Velocidad de reproducción. El tono de voz no cambia: Remotion usa atempo. */
   speed?: number;
+  /**
+   * true cuando el texto viene de una transcripción corregida a mano. `syncCaptions`
+   * no lo vuelve a transcribir: si lo hiciera, whisper devolvería otra vez lo que
+   * entendió mal y la corrección humana se perdería en cada render. Los tiempos
+   * de esas palabras salen del archivo corregido, no del audio montado.
+   */
+  wordsLocked?: boolean;
 };
 
 export type ReelSfx = {

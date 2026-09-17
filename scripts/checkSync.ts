@@ -186,6 +186,24 @@ const main = async () => {
     console.log(`\n   peor ${Math.max(...desfases.map(Math.abs)).toFixed(3)}s · tope ${TOPE_AV}s`);
   }
 
+  // --- 1b. Subtítulos apelmazados ---------------------------------------
+  // Un corte donde todas las palabras arrancan en el mismo instante se ve como
+  // un bloque de texto que aparece de golpe y se ilumina entero. No es un
+  // desfase, así que ninguna medición de sincronía lo pesca; hay que buscarlo
+  // aparte. Pasó al retimar un texto corregido a mano contra una medición
+  // pobre: las 9 palabras quedaron en el mismo tiempo.
+  for (const [i, shot] of props.shots.entries()) {
+    const w = shot.words ?? [];
+    if (w.length < 3) continue;
+    const distintos = new Set(w.map((x) => x.start.toFixed(2))).size;
+    if (distintos <= Math.max(1, Math.floor(w.length / 4))) {
+      console.log(
+        `   ❌ corte ${i}: ${w.length} palabras pero solo ${distintos} instante(s) distinto(s). El subtítulo aparece de golpe.`,
+      );
+      fallos++;
+    }
+  }
+
   // --- 2. Subtítulos -------------------------------------------------------
   if (!argv.includes('--skip-subs')) {
     const {downloadWhisperModel, installWhisperCpp, transcribe} = await import(

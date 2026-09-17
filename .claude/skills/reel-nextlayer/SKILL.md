@@ -179,6 +179,40 @@ Lo que no es opción es escribirle un subtítulo a algo que nadie dijo.
 `checkPlan` avisa de huecos largos, pero ese aviso no es permiso para inventar:
 el mensaje mismo lo dice.
 
+## Jerga: lo que whisper no entiende suele ser lo mejor del video
+
+Dos veces en este proyecto whisper devolvió basura y dos veces era la mejor línea:
+
+| whisper entendió | en realidad decía |
+| --- | --- |
+| "once lugar" | **"once lucas"** — el gancho del video |
+| "y que nada yo me meto muerecito de aquí" | **"IKEA? NADA, yo me armé este mueblecito de aquí"** — el remate |
+
+La segunda estuvo a punto de perderse: el clip estaba marcado `ignoreSpeech` y
+el final quedó mudo 9 segundos por eso. **Si una transcripción no tiene sentido,
+pregunta antes de descartar el clip.**
+
+Para corregir: edita `_audio/<clip>.json`, pon el texto bueno con sus tiempos y
+agrega `"correctedByHuman": true`. Esa bandera tiene que llegar hasta el final —
+`buildReel` marca el corte con `wordsLocked` y `syncCaptions` lo salta. Sin eso,
+`syncCaptions` retranscribe el render, whisper vuelve a oír mal, y la corrección
+se pierde **en cada render y sin aviso**.
+
+## Ojo: `npm run captions` suelto no es idempotente
+
+`syncCaptions` **escribe sobre los props**. Para un corte con texto corregido a
+mano, la segunda corrida lee como "ritmo humano" lo que la primera ya retimó, y
+el resultado se degrada corrida a corrida — la primera vez colapsó las 9
+palabras de una línea en el mismo instante.
+
+Los tiempos humanos viven en `_audio/<clip>.json`, y quien los devuelve a los
+props es `buildReel`. Así que para rehacer subtítulos, **siempre el ciclo
+completo**: `npm run reel` (o `--dry-run` y después `npm run captions`). Nunca
+`npm run captions` dos veces seguidas sobre los mismos props.
+
+`npm run sync` ahora falla si un corte tiene muchas palabras y pocos instantes
+distintos, que es la firma de ese colapso.
+
 ## Subtítulos: cómo verificar que calzan (y por qué se rompen)
 
 **Nunca declares que los subtítulos están bien mirándolos.** Un desfase de 0,3 s

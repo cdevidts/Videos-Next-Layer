@@ -54,9 +54,13 @@ retome sin perder nada. Para que eso siga siendo cierto:
    primer render de Video 46 salió mal justamente por esto — el clip más pesado
    (48 s) era el que explicaba todo y quedó fuera por descartarlo sin abrirlo.
 7. **Si whisper devuelve algo raro, puede ser jerga, no ruido.** "once lucas"
-   (chileno: once mil pesos) salió como "once lugar". Antes de descartar un clip
-   por ininteligible, pregunta. Una transcripción corregida a mano se marca con
-   `"correctedByHuman": true` y ya no se vuelve a pisar, ni con `--force`.
+   (chileno: once mil pesos) salió como "once lugar"; "IKEA" salió como "y que".
+   Las dos veces el clip parecía inservible y era el mejor material del video.
+   Antes de descartar un clip por ininteligible, **pregunta**.
+   Una transcripción corregida a mano se marca con `"correctedByHuman": true`.
+   Esa bandera viaja: `buildReel` marca el corte con `wordsLocked` y
+   `syncCaptions` **no lo vuelve a transcribir**. Sin esa cadena, cada render
+   pisaba la corrección con lo que whisper vuelve a entender mal, en silencio.
 
 ## Flujo
 

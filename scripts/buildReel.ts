@@ -70,6 +70,8 @@ type Plan = {
 type Transcript = {
   words: ReelWord[];
   speech: Array<{start: number; end: number}>;
+  /** Transcripción arreglada por una persona: no se vuelve a transcribir nunca. */
+  correctedByHuman?: boolean;
 };
 
 const VIDEO_EXTENSIONS = ['.mp4', '.mov', '.m4v', '.webm', '.mkv'];
@@ -191,6 +193,7 @@ const main = async () => {
             audioStartFromSeconds: Number(range.start.toFixed(3)),
             speed: speed === 1 ? undefined : speed,
             sfx: index === 0 ? item.sfx : undefined,
+            wordsLocked: transcript.correctedByHuman || undefined,
           });
         });
         const cut = (windowEnd - windowStart) - ranges.reduce((s, r) => s + (r.end - r.start), 0);
