@@ -45,13 +45,17 @@
       "startFromSeconds": 29.8,
       "durationInSeconds": 4.5,
       "sfx": "reveal.mp3",
-      "speed": 1.15
+      "speed": 1.15,
+      "allowMidWordCut": true,
+      "notaCorte": "Entra por la mitad de una palabra a proposito: es un corte rapido. Revisado con Veronica el 2026-09-21."
     },
     {
       "file": "DSCF7537.MOV",
       "startFromSeconds": 39.9,
       "durationInSeconds": 8.4,
-      "speed": 1.15
+      "speed": 1.15,
+      "allowMidWordCut": true,
+      "notaCorte": "Entra por la mitad de una palabra a proposito: es un corte rapido. Revisado con Veronica el 2026-09-21."
     },
     {
       "file": "DSCF7532.MOV",
