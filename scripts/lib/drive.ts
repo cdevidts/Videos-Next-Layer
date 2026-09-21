@@ -6,6 +6,15 @@ import {GoogleAuth, OAuth2Client} from 'google-auth-library';
 
 export const DRIVE_SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
 
+/**
+ * Scope aparte para subir. El de lectura es el default a propósito: bajar
+ * material es lo que hace el pipeline todo el día, y subir es algo que pasa una
+ * vez por video. `drive.file` es el mínimo que sirve — solo toca archivos que
+ * creó esta app —; si la carpeta de destino no la creó ella y Drive responde
+ * 403, hay que subir a `https://www.googleapis.com/auth/drive`.
+ */
+export const DRIVE_WRITE_SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+
 export const FOLDER_MIME = 'application/vnd.google-apps.folder';
 export const SHORTCUT_MIME = 'application/vnd.google-apps.shortcut';
 
@@ -65,7 +74,9 @@ const readServiceAccountKey = (raw: string): Record<string, unknown> => {
  * refresh token (útil cuando la carpeta está compartida con tu cuenta personal
  * y no puedes compartirla con la Service Account).
  */
-export const getDriveClient = async (): Promise<drive_v3.Drive> => {
+export const getDriveClient = async (
+  scopes: string[] = DRIVE_SCOPES,
+): Promise<drive_v3.Drive> => {
   const serviceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
@@ -75,7 +86,7 @@ export const getDriveClient = async (): Promise<drive_v3.Drive> => {
     const credentials = readServiceAccountKey(serviceAccountKey);
     const auth = new GoogleAuth({
       credentials: credentials as never,
-      scopes: DRIVE_SCOPES,
+      scopes,
       clientOptions: process.env.GOOGLE_IMPERSONATE_USER
         ? {subject: process.env.GOOGLE_IMPERSONATE_USER}
         : undefined,
@@ -90,7 +101,7 @@ export const getDriveClient = async (): Promise<drive_v3.Drive> => {
   }
 
   if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    const auth = new GoogleAuth({scopes: DRIVE_SCOPES});
+    const auth = new GoogleAuth({scopes});
     return google.drive({version: 'v3', auth: await auth.getClient() as never});
   }
 

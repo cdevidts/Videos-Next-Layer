@@ -7,6 +7,7 @@
     "preview": "remotion studio",
     "render": "remotion render VerticalClip out/final.mp4",
     "fetch-drive": "tsx scripts/fetchDriveClip.ts",
+    "publish-drive": "tsx scripts/publishDrive.ts",
     "process": "tsx scripts/processClip.ts",
     "pipeline": "tsx scripts/processClip.ts",
     "typecheck": "tsc --noEmit",
