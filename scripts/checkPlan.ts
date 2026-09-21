@@ -28,7 +28,12 @@ type PlanClip = {
   startFromSeconds?: number;
   durationInSeconds?: number;
   ignoreSpeech?: boolean;
+  /** Escape para cortar a propósito por la mitad de una palabra. */
+  allowMidWordCut?: boolean;
 };
+
+type Palabra = {text: string; start: number; end: number};
+type Transcripcion = {words?: Palabra[]; speech?: {start: number; end: number}[]};
 type Plan = {
   project?: string;
   dir: string;
@@ -103,7 +108,8 @@ const main = () => {
     // avisa cuando el hueco es largo de verdad, y nunca sobre el último corte
     // si el cierre de HyperFrames ya va montado encima.
     const nombre = path.basename(clip.file, path.extname(clip.file));
-    const tieneTranscripcion = fs.existsSync(path.join(audioDir, `${nombre}.json`));
+    const transcripcionPath = path.join(audioDir, `${nombre}.json`);
+    const tieneTranscripcion = fs.existsSync(transcripcionPath);
     const usaVoz = tieneTranscripcion && !clip.ignoreSpeech;
     const loCubreElCierre = esUltimo && Boolean(plan.finalOverlaySrc);
     if (!usaVoz && !clip.caption && !loCubreElCierre && dur > 3.5) {
@@ -117,6 +123,80 @@ const main = () => {
       problemas.push(
         `${etiqueta}: falta \`_audio/hq/${nombre}.wav\`. Sin eso el reel usa la pista de 16 kHz y suena opaco. Corre \`npm run audio\`.`,
       );
+    }
+
+    // --- La ventana no puede partir una palabra por la mitad ----------------
+    // Se entregó un render donde "mueblecito" sonaba "muebleci": la frase
+    // terminaba en 6,56s y la ventana cerraba en 6,08s. Mirando frames no se
+    // nota; escuchando sí, y era lo último que se oía del video.
+    //
+    // La comparación NO es contra los bordes de la ventana. `buildReel` corta
+    // silencios: el corte real cae en el borde del tramo con voz, y ese borde
+    // lo puso el detector de energía, que por construcción está en silencio.
+    // Solo es peligroso el borde que puso la ventana, o sea cuando la ventana
+    // recorta un tramo de voz por dentro. Comparar contra la ventana cruda da
+    // falsos positivos en cadena, porque whisper estira la última palabra de
+    // cada segmento hasta el borde del segmento ("conectores" dura 3,86s, con
+    // medio segundo de silencio adentro).
+    if (tieneTranscripcion) {
+      let transcripcion: Transcripcion = {};
+      try {
+        transcripcion = JSON.parse(fs.readFileSync(transcripcionPath, 'utf8')) as Transcripcion;
+      } catch {
+        problemas.push(`${etiqueta}: \`${transcripcionPath}\` no es JSON válido.`);
+      }
+      const fin = inicio + dur;
+      const palabras = transcripcion.words ?? [];
+
+      if (usaVoz && !clip.allowMidWordCut) {
+        // 50 ms de tolerancia: whisper no clava el borde de la palabra al
+        // milisegundo y un roce no se escucha.
+        const MARGEN = 0.05;
+        const parte = (t: number) => palabras.find((p) => p.start + MARGEN < t && t < p.end - MARGEN);
+
+        for (const tramo of transcripcion.speech ?? []) {
+          // Mismo filtro que buildReel: un tramo demasiado corto no llega a ser
+          // un corte, así que no hay nada que partir.
+          if (Math.min(tramo.end, fin) - Math.max(tramo.start, inicio) < 0.8) continue;
+
+          // Cortar el final de una frase siempre está mal: la palabra se
+          // escucha a medias y no hay ninguna lectura en que eso sume.
+          if (tramo.end > fin) {
+            const palabra = parte(fin);
+            if (palabra) {
+              problemas.push(
+                `${etiqueta}: la ventana cierra en ${fin.toFixed(2)}s, por la mitad de "${palabra.text}" (${palabra.start}–${palabra.end}s). ` +
+                  `Así se escucha cortada. Llega hasta ${(palabra.end + 0.15).toFixed(2)}s o marca \`"allowMidWordCut": true\`.`,
+              );
+            }
+          }
+          // Entrar por la mitad de una palabra a veces es un corte rápido
+          // buscado, así que avisa en vez de bloquear.
+          if (tramo.start < inicio) {
+            const palabra = parte(inicio);
+            if (palabra) {
+              avisos.push(
+                `${etiqueta}: la ventana abre en ${inicio}s, por la mitad de "${palabra.text}" (${palabra.start}–${palabra.end}s). ` +
+                  `Si no es un corte rápido a propósito, empieza en ${palabra.start}s.`,
+              );
+            }
+          }
+        }
+      }
+
+      // Un clip marcado como mudo que en realidad tapa voz: así casi se pierde
+      // el remate de Video 46, descartado por una transcripción mala.
+      if (clip.ignoreSpeech) {
+        const tapada = (transcripcion.speech ?? [])
+          .map((r) => Math.min(r.end, fin) - Math.max(r.start, inicio))
+          .reduce((max, s) => Math.max(max, s), 0);
+        if (tapada > 0.6) {
+          avisos.push(
+            `${etiqueta}: está marcado \`ignoreSpeech\` pero la ventana tapa ${tapada.toFixed(1)}s de voz. ` +
+              'Escúchala antes de darla por muda: puede ser jerga mal transcrita, no ruido.',
+          );
+        }
+      }
     }
   }
 

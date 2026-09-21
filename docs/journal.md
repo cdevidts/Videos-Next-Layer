@@ -421,3 +421,66 @@ de voz medido y se reescala solo si los dos largos se parecen; así la pausa dra
 | velocidad | ✅ 1,15 pareja en todo lo hablado |
 
 34,2 s. Sigue pendiente mirar `DSCF7531`, `DSCF7534` y `DSCF7535` antes de descartarlos.
+
+---
+
+## Video 46 · "muebleci" — la ventana cortaba la última palabra
+
+Veronica escuchó lo que ninguna revisión había pescado: la frase final sonaba **"este muebleci"**.
+No era el render ni el montaje. La ventana del plan cerraba en **6,08 s** del clip y la palabra
+"mueblecito" va de **5,80 a 6,28 s**: el corte caía justo por la mitad.
+
+El origen fue confiar en la transcripción de whisper para decidir dónde termina la frase. Whisper
+oía *"me meto muerecito de aquí, así que hasta luego"*. Medido sobre la envolvente de energía en
+ventanas de 20 ms, la realidad es otra:
+
+| tramo | lo que se dice |
+| --- | --- |
+| 3,52–4,08 | IKEA? |
+| 4,28–4,84 | NADA, |
+| 5,10–5,56 | yo me armé |
+| **5,62–6,56** | **este mueblecito de aquí** |
+| 6,56 en adelante | silencio (−57 a −65 dBFS) |
+
+El "así que, hasta luego" **no existe**: es "de aquí" mal transcrito. La ventana quedó 3,35→6,75
+(la voz entera más margen) y la cola con la gráfica arranca en 6,75. El cierre de HyperFrames pasó
+de 3,4 a 3,2 s para calzar con esa cola; la última animación termina en 2,64 s, así que el remate
+de marca igual se mantiene 0,56 s en pantalla.
+
+### La guardia: un corte no puede partir una palabra
+
+`npm run check` ahora mide esto, porque es exactamente lo que no se ve mirando frames.
+
+Lo que costó afinar fue **contra qué comparar**. Comparar los bordes crudos de la ventana daba seis
+falsos positivos en cadena: whisper **estira la última palabra de cada segmento hasta el borde del
+segmento** ("conectores" figura durando 3,86 s, con medio segundo de silencio adentro). Y no hacía
+falta: `buildReel` corta silencios, así que el corte real cae en el borde del tramo que detectó el
+medidor de energía, y ese borde está en silencio por construcción. **El único borde peligroso es el
+que pone la ventana**, o sea cuando la ventana recorta un tramo de voz por dentro.
+
+Con esa regla quedan solo hallazgos reales:
+
+- **cerrar** una ventana por la mitad de una palabra → error, frena el render. No hay lectura en que
+  escuchar media palabra sume. Reproducido contra el plan viejo: lo habría frenado.
+- **abrir** una ventana por la mitad de una palabra → aviso. A veces es un corte rápido buscado.
+  Hoy avisa en los clips 6 y 7 (entran en "superfi|cies" y "cual|quier"). Son reales, pero cambian
+  material ya aprobado, así que quedan **a decisión de Veronica**, no tocados.
+- `"allowMidWordCut": true` silencia ambos cuando el corte es a propósito.
+
+De paso, un clip marcado `ignoreSpeech` cuya ventana tapa más de 0,6 s de voz ahora avisa: así casi
+se pierde el remate de este mismo video.
+
+### Verificado antes de entregar
+
+| | |
+| --- | --- |
+| tipografías aplicadas de verdad | ✅ Anton 1021,5 px / Inter 1378,7 px |
+| audio de cada corte vs su fuente | ✅ peor 0,054 s (tope 0,08) |
+| subtítulos vs la voz del render | ✅ mediana 0,055 s (tope 0,15) |
+| la última palabra entera | ✅ decae −14 → −20 → −35 → −47 dBFS en 120 ms, no es un tajo |
+| `npm run watch` | ✅ en 31,2 s se oye "mueblecito de aquí" completo |
+| cierre calzado con su corte | ✅ 96 frames = 3,2 s exactos |
+| `npx tsc --noEmit` | ✅ |
+
+34,5 s. Sigue pendiente mirar `DSCF7531`, `DSCF7534` y `DSCF7535` antes de descartarlos, y decidir
+qué hacer con las dos entradas por la mitad de palabra.

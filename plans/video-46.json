@@ -68,16 +68,16 @@
     },
     {
       "file": "DSCF7529.MOV",
-      "startFromSeconds": 3.3,
-      "durationInSeconds": 2.78,
+      "startFromSeconds": 3.35,
+      "durationInSeconds": 3.4,
       "speed": 1.15
     },
     {
       "file": "DSCF7529.MOV",
       "ignoreSpeech": true,
       "sfx": "swell-reveal.mp3",
-      "startFromSeconds": 6.1,
-      "durationInSeconds": 3.5
+      "startFromSeconds": 6.75,
+      "durationInSeconds": 3.2
     }
   ],
   "finalOverlaySrc": "brand/cierre.webm"
