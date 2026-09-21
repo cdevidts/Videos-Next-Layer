@@ -484,3 +484,81 @@ se pierde el remate de este mismo video.
 
 34,5 s. Sigue pendiente mirar `DSCF7531`, `DSCF7534` y `DSCF7535` antes de descartarlos, y decidir
 qué hacer con las dos entradas por la mitad de palabra.
+
+---
+
+## Video 46 · versión extendida: entran los tres clips que nunca se habían mirado
+
+Veronica: *"yo siempre quise que estos clips también estuvieran… la idea era que fuera dentro del
+mismo video y ahí se muestra mucho mejor el proceso"*. Tenía razón y el error es mío: la regla de
+mirar todos los clips antes de escribir el plan estaba escrita desde el primer render fallido y
+igual no la seguí. `DSCF7531`, `DSCF7534` y `DSCF7535` llevaban semanas en disco sin abrirse.
+
+Lo que había adentro:
+
+| clip | qué es | audio medido |
+| --- | --- | --- |
+| `DSCF7534` (11 s) | Otra pieza, él de pie explicando con un **cuaderno de planos** | voz |
+| `DSCF7535` (4 s) | El cuaderno en primer plano: medidas, "Tipos uniones", el despiece | −64 dBFS, mudo |
+| `DSCF7531` (6 s) | Travelling por la repisa: **bobinas de filamento** | −65 dBFS, mudo |
+
+El cuaderno es el hallazgo. El video *afirmaba* "los conectores que diseñé"; ahora se **ve**:
+"Mueble cómoda Roja" con las medidas, y la página del despiece con *"Tenemos 9,6 m madera"*,
+3 grandes / 6 chicas y la aritmética a mano.
+
+### La transcripción de DSCF7534 estaba mal de dos formas
+
+Venía marcada `correctedByHuman: true`, así que por regla no se toca sin preguntar. Pero al medir
+la envolvente no cuadraba, y re-transcribiendo **solo la región limpia** (4,30–9,70 s, aislada en
+un WAV aparte) aparecieron dos errores:
+
+1. Ponía *"Fui a comprar las tablas"* en **2,54–4,46 s**, que es silencio medido (−53 a −63 dBFS).
+   Whisper corrió la frase hacia atrás hasta el borde del segmento — el mismo vicio que ya había
+   dado seis falsos positivos en la guardia de cortes.
+2. Inventaba ***"Y eso es todo"*** al final. En la región limpia no aparece: la frase termina en
+   "…lo que quería hacer".
+
+Sin esto el subtítulo habría arrancado en "primero," (las palabras anteriores caían fuera del tramo
+con voz y `buildReel` filtra por punto medio), o habría mostrado texto que nadie dijo.
+
+**Lección nueva: `correctedByHuman` no garantiza que esté bien, solo que alguien lo tocó.** Cuando
+los tiempos no cuadran con la energía, la forma de saber es transcribir el tramo limpio aislado,
+no volver a correr whisper sobre el clip entero — el clip entero es justo lo que produce el error.
+
+Los primeros 2,54 s son una **indicación fuera de cámara** (−26/−36 dBFS contra −15 del hablado:
+10 dB = lejos del micrófono). El plan arranca en 4,2 s y ese tramo queda fuera, pero no se borró:
+sigue en el archivo con una nota. **Queda preguntarle a Veronica qué se dice ahí.**
+
+### Dónde entran, y por qué ahí
+
+El orden es causal, no decorativo:
+
+- `DSCF7534` + `DSCF7535` van **después** de "lo voy a hacer con la impresora del depot" y **antes**
+  de "tenía que hacerle unos cortes a las tablas": compró las tablas → anotó todo → recién ahí
+  cortó. El insert del cuaderno cae encima de esa frase.
+- `DSCF7531` va justo después de "…y unos conectores **de plástico**" → corte a las bobinas de
+  filamento. El sonido no se inventa: es B-roll mudo con la cama de música y un `click` en el
+  cuaderno, nada de taladros sobre planos sin taladro.
+
+De 34,5 s a **44,9 s**. Es largo para un reel; se aguanta porque los dos inserts mudos funcionan
+como respiro entre bloques hablados, no como relleno.
+
+### Verificado antes de entregar
+
+| | |
+| --- | --- |
+| tipografías aplicadas de verdad | ✅ Anton 1021,5 px / Inter 1378,7 px |
+| audio de cada corte vs su fuente | ✅ peor 0,054 s (tope 0,08) |
+| subtítulos vs la voz del render | ✅ mediana 0,104 s (tope 0,15) |
+| inserts mudos sin subtítulo inventado | ✅ cuaderno y filamento van sin texto |
+| sin hoyos de audio | ✅ los tramos mudos van a −24/−44 dBFS, nunca silencio digital |
+| texto bloqueado sobrevivió | ✅ el subtítulo dice "tablas" donde whisper oye "talas" |
+| `npm run check` | ✅ sin avisos: ya no queda material sin usar |
+
+### `npm run publish-drive`
+
+Bajar de Drive era un comando y subir no existía. Ahora sí, con el scope de escritura separado del
+de lectura (`drive.file`, el mínimo) y subida en streaming — googleapis hace resumable solo con un
+stream, que es lo único que aguanta 43 MB. **No se pudo probar contra Drive**: un contenedor remoto
+no tiene `.env`, así que falta `DRIVE_PUBLISH_FOLDER_ID` y credenciales con permiso de escritura.
+El conector de Drive del agente no sirve para esto: sube como base64 dentro de la llamada.

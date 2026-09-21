@@ -35,10 +35,30 @@
       "speed": 1.15
     },
     {
+      "file": "DSCF7534.MOV",
+      "startFromSeconds": 4.2,
+      "durationInSeconds": 5.4,
+      "speed": 1.15,
+      "notaCorte": "Arranca en 4,2s a proposito: los primeros 2,54s son una indicacion fuera de camara, 10 dB mas baja. La linea util va de 4,48 a 9,38."
+    },
+    {
+      "file": "DSCF7535.MOV",
+      "sfx": "click.mp3",
+      "startFromSeconds": 0.2,
+      "durationInSeconds": 3.4,
+      "notaCorte": "Insert mudo del cuaderno: pagina de medidas, vuelta de hoja, y el despiece (9,6 m de madera). Medido en -64 dBFS: mudo de verdad, sin subtitulo inventado."
+    },
+    {
       "file": "DSCF7537.MOV",
       "startFromSeconds": 12.4,
       "durationInSeconds": 6.9,
       "speed": 1.15
+    },
+    {
+      "file": "DSCF7531.MOV",
+      "startFromSeconds": 0.4,
+      "durationInSeconds": 3.0,
+      "notaCorte": "B-roll mudo (-65 dBFS): bobinas de filamento. Va justo despues de 'unos conectores de plastico'."
     },
     {
       "file": "DSCF7537.MOV",
