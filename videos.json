@@ -1,0 +1,45 @@
+{
+  "drive": {
+    "raiz": "1ZlHAzBLG40AgwH_Umh-YOCd4M1BGurzt",
+    "nota": "Carpeta raiz compartida 'cualquiera con el link': se lista y se baja SIN credenciales. Una subcarpeta por video ('Video 41', 'Video 43'...).",
+    "estructura": {
+      "Videos": "LOS CLIPS RAW. Es la unica carpeta con clips; si viene vacia, el proyecto no esta listo.",
+      "Sonido": "Voces en off (Sonido/Audios), musica (Sonido/Musica) y efectos (Sonido/SFX). Las voces en off van sobre clips sin audio relevante: B-roll o planos donde no se habla a camara.",
+      "Proyecto": "Proyectos de Premiere u otro editor. No se usa, pero si tiene archivos es senal de que alguien ya lo edito a mano.",
+      "Archivos": "Vacia en todos los proyectos a la fecha.",
+      "Export": "Vacia en todos los proyectos a la fecha, incluido el 46 ya entregado: no sirve como senal de entregado."
+    }
+  },
+  "videos": {
+    "Video 46": {
+      "slug": "video-46",
+      "estado": "entregado",
+      "plan": "plans/video-46.json",
+      "render": "renders/video-46-reel.mp4",
+      "entregado": "2026-09-21",
+      "clipsEnDrive": 10,
+      "nota": "Subido a Drive por Veronica. No re-renderizar."
+    },
+    "Video 45": {
+      "slug": "video-45",
+      "estado": "pendiente",
+      "clipsEnDrive": 11,
+      "nota": "Proyecto/ tiene NL45.prproj: se edito en Premiere. Confirmar con Veronica antes de hacerlo de nuevo. Es el unico con un archivo en Sonido/."
+    },
+    "Video 44": {
+      "slug": "video-44",
+      "estado": "pendiente",
+      "clipsEnDrive": 2
+    },
+    "Video 43": {
+      "slug": "video-43",
+      "estado": "pendiente",
+      "clipsEnDrive": 1
+    },
+    "Video 41": {
+      "slug": "video-41",
+      "estado": "pendiente",
+      "clipsEnDrive": 2
+    }
+  }
+}
