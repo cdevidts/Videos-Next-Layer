@@ -56,6 +56,12 @@ type PlanClip = {
   /** false: la voz suena pero el subtítulo no se dibuja (el gancho ya dice lo mismo). */
   subtitulos?: boolean;
   /**
+   * Segundos que el corte sigue DESPUÉS de la última palabra, en vez de
+   * cortarse en el silencio. Para un silencio que es parte del chiste (la
+   * pausa incómoda antes del remate). Topa con la ventana y con el clip.
+   */
+  pausaDespues?: number;
+  /**
    * Voz en off de Sonido/ que suena sobre este clip, relativa a la carpeta del
    * proyecto (ej. "Sonido/Audios/VO1.wav"). Para B-roll o planos donde no se
    * habla a cámara. Los subtítulos salen de su transcripción.
@@ -123,7 +129,16 @@ type Plan = {
   musicVolume?: number;
   sfxVolume?: number;
   transitionInFrames?: number;
-  /** Silencio máximo tolerado dentro de un tramo con voz. */
+  /**
+   * false: sin nada de la marca — ni cierre (HyperFrames o de texto), ni el
+   * tinte azul del grade. Se decide por video, no por género.
+   */
+  marca?: boolean;
+  /**
+   * "fija": el plano queda como se grabó — sin zoom, golpe de entrada, destello
+   * ni deriva. Se decide por video.
+   */
+  camara?: 'fija';
   clips: PlanClip[];
 };
 
@@ -323,6 +338,18 @@ const main = async () => {
         }))
         .filter((range) => range.end - range.start >= MIN_SHOT_SECONDS);
 
+      if (ranges.length && item.pausaDespues) {
+        const ultimo = ranges[ranges.length - 1];
+        const hasta = Math.min(ultimo.end + item.pausaDespues, windowEnd);
+        if (hasta - ultimo.end < item.pausaDespues - 0.05) {
+          console.warn(
+            `⚠️  ${item.file}: pausa de ${(hasta - ultimo.end).toFixed(2)}s, no ${item.pausaDespues}s — ` +
+              `la ${windowEnd >= info.durationInSeconds - 0.01 ? 'toma' : 'ventana'} termina en ${windowEnd.toFixed(2)}s.`,
+          );
+        }
+        ultimo.end = hasta;
+      }
+
       if (ranges.length) {
         const pendientes = [...(item.overlays ?? [])];
         for (const [index, range] of ranges.entries()) {
@@ -465,9 +492,10 @@ const main = async () => {
   const [riser] = revealManual ? [] : tomar(son.riser, 'riser', 2).filter((r) => r.id !== riserApertura?.id);
   const [impact] = revealManual ? [] : tomar(son.impacto, 'impact', 1, true);
 
-  const sfx = whooshes.length || riserApertura || riser || impact
-    ? {whooshes, riserApertura, riser, impact}
-    : undefined;
+  // Siempre presente, aunque vaya vacío: si falta, Remotion lo completa con el
+  // default de Root.tsx (whooshes + riser de ejemplo) y suenan igual. Pasó en
+  // el Video 41 con todo el sonido en "ninguno".
+  const sfx = {whooshes, riserApertura, riser, impact};
   if (!whooshes.length && son.transiciones !== 'ninguno') {
     console.warn('⚠️  No hay whooshes en el catálogo. Corre `npm run sfx-catalog`.');
   }
@@ -484,26 +512,36 @@ const main = async () => {
   // Un plan con "cierre" trae sus propios textos: se renderiza (si falta o
   // quedó viejo) a public/cierres/<proyecto>.webm. Los planes anteriores
   // siguen usando el `finalOverlaySrc` que tenían.
-  const cierrePropio = plan.cierre && !flag('dry-run') ? asegurarCierre(planPath) : undefined;
-  const pedido = cierrePropio ?? plan.finalOverlaySrc;
+  const conMarca = plan.marca !== false;
+  if (!conMarca && (plan.cierre || plan.finalOverlaySrc || plan.cta)) {
+    console.warn('⚠️  "marca": false manda sobre "cierre", "finalOverlaySrc" y "cta": el reel sale sin cierre.');
+  }
+  const cierrePropio = conMarca && plan.cierre && !flag('dry-run') ? asegurarCierre(planPath) : undefined;
+  const pedido = conMarca ? (cierrePropio ?? plan.finalOverlaySrc) : undefined;
   const finalOverlaySrc = pedido && fs.existsSync(path.join('public', pedido)) ? pedido : undefined;
-  if (plan.finalOverlaySrc && !finalOverlaySrc) {
+  if (conMarca && plan.finalOverlaySrc && !finalOverlaySrc) {
     console.warn(`⚠️  Falta public/${plan.finalOverlaySrc}. Corre \`npm run cierre\`. Se usa el cierre de texto.`);
   }
+  // "ninguna" = sin cama musical. Sin el campo, la de siempre.
+  const musica = arg('music') ?? plan.musicSrc;
 
   const props: VerticalReelProps = {
     shots,
     hook: plan.hook,
-    cta: plan.cta,
-    ctaSub: plan.ctaSub,
+    // Vacíos explícitos: si faltan, Remotion completa con los defaults de
+    // Root.tsx ("Next Layer") y el cierre de texto aparece igual.
+    cta: conMarca ? plan.cta : '',
+    ctaSub: conMarca ? plan.ctaSub : '',
     finalOverlaySrc,
+    conMarca,
+    camaraFija: plan.camara === 'fija',
     accentColor: plan.accentColor ?? '#FF6600',
     primaryColor: plan.primaryColor ?? '#0047AB',
     secondaryColor: plan.secondaryColor ?? '#00D4FF',
     musicSrc:
-      arg('music') ??
-      plan.musicSrc ??
-      (fs.existsSync('public/sfx/musica-cama.mp3') ? 'sfx/musica-cama.mp3' : undefined),
+      musica === 'ninguna'
+        ? ''
+        : musica ?? (fs.existsSync('public/sfx/musica-cama.mp3') ? 'sfx/musica-cama.mp3' : undefined),
     musicVolume: plan.musicVolume ?? 0.32,
     voiceVolume: 1,
     sfx,

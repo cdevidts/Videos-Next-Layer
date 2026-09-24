@@ -50,6 +50,8 @@ type Shot = {
   audioSrc?: string;
   words?: Word[];
   speed?: number;
+  /** La voz suena pero el subtítulo no se dibuja: no hay nada que medir. */
+  hideCaptions?: boolean;
 };
 
 const ff = (args: string[], capture = true): Buffer => {
@@ -193,7 +195,7 @@ const main = async () => {
   // aparte. Pasó al retimar un texto corregido a mano contra una medición
   // pobre: las 9 palabras quedaron en el mismo tiempo.
   for (const [i, shot] of props.shots.entries()) {
-    const w = shot.words ?? [];
+    const w = shot.hideCaptions ? [] : (shot.words ?? []);
     if (w.length < 3) continue;
     const distintos = new Set(w.map((x) => x.start.toFixed(2))).size;
     if (distintos <= Math.max(1, Math.floor(w.length / 4))) {
@@ -205,7 +207,12 @@ const main = async () => {
   }
 
   // --- 2. Subtítulos -------------------------------------------------------
-  if (!argv.includes('--skip-subs')) {
+  // Solo los que se dibujan: medir los de un corte con `subtitulos: false` daba
+  // un ❌ por texto que nadie ve (Video 41).
+  const dibujados = props.shots.some((s) => !s.hideCaptions && s.words?.length);
+  if (!dibujados && !argv.includes('--skip-subs')) {
+    console.log('\n💬 El reel no dibuja subtítulos: no hay sincronía de subtítulos que medir.');
+  } else if (!argv.includes('--skip-subs')) {
     const {downloadWhisperModel, installWhisperCpp, transcribe} = await import(
       '@remotion/install-whisper-cpp'
     );
@@ -241,7 +248,7 @@ const main = async () => {
     const esperadas: Array<{text: string; t: number}> = [];
     let c2 = 0;
     for (const shot of props.shots) {
-      for (const w of shot.words ?? []) {
+      for (const w of shot.hideCaptions ? [] : (shot.words ?? [])) {
         esperadas.push({text: limpiar(w.text), t: c2 + (w.start + w.end) / 2});
       }
       c2 += shot.durationInSeconds - T;

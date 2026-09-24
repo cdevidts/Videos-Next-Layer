@@ -9,6 +9,7 @@
   "transitionInFrames": 3,
   "sfxVolume": 0.3,
   "musicVolume": 0.16,
+  "_interruptores": "Defaults que el plan puede apagar si ESTE video lo pide (se decide video a video, no por genero): \"hook\": \"\" sin texto de gancho; \"transitionInFrames\": 0 corte seco; \"camara\": \"fija\" sin zoom ni golpe de entrada; \"marca\": false sin cierre ni tinte de marca; \"musicSrc\": \"ninguna\" sin cama musical.",
   "clips": [
     {
       "file": "CLIP_HABLADO.MOV",
@@ -36,7 +37,9 @@
       ],
       "_overlays": "UNO de icon/sticker/photo por entrada. 'word' lo engancha al instante en que se dice. pos: left | right | lower | center | top. sfx de entrada automatico; 'ninguno' lo quita. x/y (% del cuadro) clavan el elemento en un punto exacto para senalar algo que se ve; se calibran sobre el RENDER con grilla, no sobre el proxy.",
       "subtitulos": false,
-      "_subtitulos": "false = la voz suena pero no se dibuja el subtitulo. Para cuando el gancho ya pone esas mismas palabras en grande."
+      "_subtitulos": "false = la voz suena pero no se dibuja el subtitulo. Para cuando el gancho ya pone esas mismas palabras en grande.",
+      "pausaDespues": 1,
+      "_pausaDespues": "Segundos que el corte sigue despues de la ultima palabra en vez de cortarse en el silencio (una pausa incomoda antes del remate). Topa con el final de la toma y avisa cuanto dio."
     },
     {
       "file": "CLIP_BROLL.MOV",

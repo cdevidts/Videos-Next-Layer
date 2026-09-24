@@ -67,8 +67,12 @@ const main = () => {
   console.log(`\n🔍 ${planPath}\n`);
 
   // --- Gancho -------------------------------------------------------------
-  if (!plan.hook?.trim()) {
-    problemas.push('El plan no tiene gancho. Los primeros 1,5s deciden si alguien sigue viendo.');
+  if (plan.hook === '') {
+    // Vacío a propósito: el video engancha por lo que se dice o se ve (una
+    // línea de comedia que ya es el título). Se avisa, no se frena.
+    avisos.push('Sin texto de gancho ("hook": ""): el primer 1,5 s tiene que enganchar solo con la toma.');
+  } else if (!plan.hook?.trim()) {
+    problemas.push('El plan no tiene gancho. Los primeros 1,5s deciden si alguien sigue viendo. Si va sin texto a propósito, "hook": "".');
   } else {
     const palabras = plan.hook.replace(/\*/g, '').split(/\s+/).length;
     if (palabras > 8) {

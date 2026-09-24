@@ -108,6 +108,14 @@ Lo que sí funciona, ya implementado en `src/VerticalReel.tsx`:
 - Zoom que alterna de dirección por corte, más un golpe de escala al entrar
 - Cortes secos de ~3 frames en vez de disolvencias
 
+Todo eso es el default, no una obligación. Cuando un video pide otra cosa, el
+plan lo apaga: `"camara": "fija"` (sin zoom, golpe, destello ni deriva),
+`"transitionInFrames": 0` (corte seco), `"hook": ""` (sin texto de gancho),
+`"marca": false` (sin cierre ni tinte de marca), `"musicSrc": "ninguna"`, y
+`"pausaDespues"` en un clip para dejar correr un silencio que es parte del
+chiste. El Video 41 (un chiste) salió así porque Veronica lo pidió para ESE
+video; **no es una regla para la comedia** — eso lo deciden ellos, video a video.
+
 ### La capa gráfica: se baja, y se elige para este video
 
 Footage + subtítulo y nada más se ve plano al lado de un reel editado. Lo que

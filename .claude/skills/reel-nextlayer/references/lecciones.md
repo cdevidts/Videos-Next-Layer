@@ -120,6 +120,13 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
 
 ## Herramientas
 
+- **Un prop que falta no es un prop vacío.** Remotion mezcla los props del render
+  con los `defaultProps` de `Root.tsx`: lo que `buildReel` deja `undefined` sale
+  del ejemplo. En el Video 41 sin marca y con todo el sonido en `"ninguno"`, el
+  cierre decía "Next Layer" (`cta`) y sonaban whooshes y un riser (`sfx`). Para
+  apagar algo se manda vacío (`''`, `[]`), nunca ausente — y se verifica midiendo
+  el audio por tramo, no leyendo el plan.
+
 - **El ffmpeg de Remotion es recortado**: sin `fps`, `tile`, `drawtext`, `pad`,
   `hstack`, `showwavespic`, y falla con `No option name near '...'` (no dice
   "unknown filter"). Sí trae `scale`, `volume`, `concat`, `loudnorm`, `pan`,

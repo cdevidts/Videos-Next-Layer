@@ -99,14 +99,16 @@ const Grain: React.FC = () => {
  * final. Va en `soft-light` y a 1F (12 %) justo porque el material es madera y
  * un mueble rojo: más azul que eso los vuelve grises.
  */
-const Grade: React.FC<{primaryColor: string}> = ({primaryColor}) => (
+const Grade: React.FC<{primaryColor: string; conMarca: boolean}> = ({primaryColor, conMarca}) => (
   <>
-    <AbsoluteFill
-      style={{
-        background: `radial-gradient(125% 80% at 50% 12%, ${primaryColor}1F, rgba(0,0,0,0) 58%)`,
-        mixBlendMode: 'soft-light',
-      }}
-    />
+    {conMarca ? (
+      <AbsoluteFill
+        style={{
+          background: `radial-gradient(125% 80% at 50% 12%, ${primaryColor}1F, rgba(0,0,0,0) 58%)`,
+          mixBlendMode: 'soft-light',
+        }}
+      />
+    ) : null}
     <AbsoluteFill
       style={{
         background:
@@ -261,6 +263,8 @@ const Shot: React.FC<{
   voiceVolume: number;
   sfxVolume: number;
   fadeFrames: number;
+  camaraFija: boolean;
+  conMarca: boolean;
 }> = ({
   shot,
   index,
@@ -270,6 +274,8 @@ const Shot: React.FC<{
   voiceVolume,
   sfxVolume,
   fadeFrames,
+  camaraFija,
+  conMarca,
 }) => {
   const frame = useCurrentFrame();
   const {durationInFrames, fps, width, height} = useVideoConfig();
@@ -285,7 +291,9 @@ const Shot: React.FC<{
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const zoom = zoomsIn
+  const zoom = camaraFija
+    ? 1
+    : zoomsIn
     ? interpolate(frame, [0, durationInFrames], [1.03, 1.03 + recorrido], {
         extrapolateRight: 'clamp',
       })
@@ -295,14 +303,18 @@ const Shot: React.FC<{
 
   // Golpe de entrada: llega pasado de tamaño y se asienta.
   // El primer corte entra con más golpe: es el que decide si alguien se queda.
-  const punch = interpolate(frame, [0, index === 0 ? 14 : 9], [index === 0 ? 1.22 : 1.09, 1], {
-    extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
-  });
-  const flash = interpolate(frame, [0, 4], [0.3, 0], {extrapolateRight: 'clamp'});
-  const drift = interpolate(frame, [0, durationInFrames], [0, zoomsIn ? 14 : -14], {
-    extrapolateRight: 'clamp',
-  });
+  const punch = camaraFija
+    ? 1
+    : interpolate(frame, [0, index === 0 ? 14 : 9], [index === 0 ? 1.22 : 1.09, 1], {
+        extrapolateRight: 'clamp',
+        easing: Easing.out(Easing.cubic),
+      });
+  const flash = camaraFija ? 0 : interpolate(frame, [0, 4], [0.3, 0], {extrapolateRight: 'clamp'});
+  const drift = camaraFija
+    ? 0
+    : interpolate(frame, [0, durationInFrames], [0, zoomsIn ? 14 : -14], {
+        extrapolateRight: 'clamp',
+      });
 
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
@@ -359,7 +371,7 @@ const Shot: React.FC<{
         </Sequence>
       ) : null}
 
-      <Grade primaryColor={primaryColor} />
+      <Grade primaryColor={primaryColor} conMarca={conMarca} />
       <AbsoluteFill style={{backgroundColor: `rgba(255,255,255,${flash})`}} />
 
       {shot.overlays?.map((overlay, i) => (
@@ -473,6 +485,8 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
   sfx,
   sfxVolume = 0.32,
   transitionInFrames = DEFAULT_TRANSITION_FRAMES,
+  conMarca = true,
+  camaraFija = false,
 }) => {
   const frame = useCurrentFrame();
   const {durationInFrames, fps} = useVideoConfig();
@@ -521,10 +535,14 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
                 secondaryColor={secondaryColor}
                 voiceVolume={voiceVolume}
                 sfxVolume={sfxVolume}
-                fadeFrames={transitionInFrames}
+                /* Corte seco (sin transición): igual 1 frame de fundido de voz
+                   en cada borde, si no el empalme suena como un clic. */
+                fadeFrames={Math.max(transitionInFrames, 1)}
+                camaraFija={camaraFija}
+                conMarca={conMarca}
               />
             </TransitionSeries.Sequence>
-            {index < shots.length - 1 ? (
+            {index < shots.length - 1 && transitionInFrames > 0 ? (
               <TransitionSeries.Transition
                 presentation={fade()}
                 timing={linearTiming({durationInFrames: transitionInFrames})}
@@ -611,9 +629,11 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
             })
         : null}
 
-      <Sequence durationInFrames={hookFrames} name="Gancho">
-        <Hook text={hook} accentColor={accentColor} />
-      </Sequence>
+      {hook?.trim() ? (
+        <Sequence durationInFrames={hookFrames} name="Gancho">
+          <Hook text={hook} accentColor={accentColor} />
+        </Sequence>
+      ) : null}
 
       {finalOverlaySrc ? (
         /* Cierre diseñado en HyperFrames y prerenderizado con alfa: el sello de

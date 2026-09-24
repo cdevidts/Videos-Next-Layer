@@ -682,3 +682,39 @@ tope), `watch` escucha "¡Cinco cosas sobre mí!", `GRAFICA.jpg` con los cinco n
 su objeto.
 
 **Pendiente**: que Veronica lo apruebe → `videos.json` "entregado". Queda en "en-curso".
+
+### Video 41, versión 2: sin animaciones, sin marca
+
+Veronica: "saca todas las animaciones ... no va brandeado ... deja una pausa un poco
+incómoda después de *mí* (un segundo, dos mejor) ... y córtalo sin nada". Y explícito:
+**no es una regla para la comedia** — se decide video a video.
+
+**Montaje (5,6 s)**: "cinco cosas sobre mí" → ~0,9 s de silencio de sala (se queda
+apuntándose y baja los brazos) → corte seco al cenital, 3,2 s, fin. Sin gancho de
+texto, sin números, sin zoom ni golpe de entrada, sin whoosh/riser/golpe, sin música,
+sin cierre.
+
+**La pausa**: pidió 1 s o mejor 2; la toma termina en 13,0 s y "mí" en 12,05 s, así
+que da ~0,9 s. No hay otra toma de esa línea con más cola (la A dice "cuatro").
+
+**Lo que se agregó al sistema** (interruptores por plan, el default no cambia):
+`"camara": "fija"`, `"marca": false` (sin cierre ni tinte; manda sobre `cierre`),
+`"musicSrc": "ninguna"`, `"hook": ""` (check avisa en vez de frenar),
+`"transitionInFrames": 0` (corte seco, con 1 frame de fundido de voz para que no
+haga clic) y `pausaDespues` por clip. Documentado en la plantilla y en la skill como
+opciones, no como regla de género.
+
+**Descartado**: sonido directo en el plano cenital — en esa ventana mide −61 dB, es
+silencio igual. Un subtítulo estático "5 cosas sobre mí" para quien lo ve sin sonido:
+queda como pregunta, ella pidió sacar todo.
+
+**Pescado al verificar** (medir el audio por tramo, no leer el plan): con todo el
+sonido en "ninguno", `buildReel` dejaba `sfx` sin definir y Remotion lo rellenaba con
+el ejemplo de `Root.tsx` — sonaban un whoosh y un riser que el plan no pedía. Ahora
+`sfx` va siempre, vacío si hace falta (misma familia que el `cta` "Next Layer").
+Y `sync` daba ❌ midiendo subtítulos que no se dibujan (`subtitulos: false`): ahora
+los salta. Quedó: solo la voz, la pausa con su tono de sala (−55 dB, sin bombeo del
+loudnorm), el cenital en silencio. check, tsc, fonts-check y sync en verde (audio
+−0,056 s); `watch` escucha "Cinco cosas sobre mí." y después nada.
+
+**Pendiente**: aprobación de Veronica → `videos.json` "entregado".

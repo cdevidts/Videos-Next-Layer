@@ -124,6 +124,13 @@ export type VerticalReelProps = {
   accentColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
+  /**
+   * false: sin nada de marca — sin cierre, sin CTA, sin el tinte del color de
+   * marca en el grade. No todos los videos van brandeados; se decide por video.
+   */
+  conMarca?: boolean;
+  /** true: los cortes no se mueven (sin zoom, sin golpe de entrada, sin destello). */
+  camaraFija?: boolean;
   /** Música opcional (relativa a public/). */
   musicSrc?: string;
   musicVolume?: number;
