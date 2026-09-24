@@ -35,14 +35,42 @@ const audioDir = path.join(projectDir, '_audio');
 const hqDir = path.join(audioDir, 'hq');
 fs.mkdirSync(hqDir, {recursive: true});
 
-const files = fs
-  .readdirSync(clipsDir)
-  .filter((f) => VIDEO_EXTENSIONS.includes(path.extname(f).toLowerCase()))
-  .sort();
+const AUDIO_EXTENSIONS = ['.wav', '.mp3', '.m4a', '.aac', '.aif', '.aiff', '.flac', '.ogg'];
 
-for (const file of files) {
-  const name = path.basename(file, path.extname(file));
-  const source = path.join(clipsDir, file);
+/**
+ * Voces en off: todo lo de Sonido/ que no esté en Musica/ ni SFX/. Llevan el
+ * prefijo `vo__` para que un "VO1.wav" nunca pise el audio de un clip y para
+ * que se reconozcan de un vistazo en _audio/. La música y los efectos no se
+ * extraen acá: no se transcriben, whisper les inventa letra.
+ */
+const vocesEnOff = (dir: string): string[] => {
+  if (!fs.existsSync(dir)) return [];
+  const salida: string[] = [];
+  for (const e of fs.readdirSync(dir, {withFileTypes: true})) {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) {
+      if (/^(musica|música|music|sfx)$/i.test(e.name)) continue;
+      salida.push(...vocesEnOff(full));
+    } else if ([...AUDIO_EXTENSIONS, ...VIDEO_EXTENSIONS].includes(path.extname(e.name).toLowerCase())) {
+      salida.push(full);
+    }
+  }
+  return salida;
+};
+
+const files: Array<{name: string; source: string}> = [
+  ...fs
+    .readdirSync(clipsDir)
+    .filter((f) => VIDEO_EXTENSIONS.includes(path.extname(f).toLowerCase()))
+    .sort()
+    .map((f) => ({name: path.basename(f, path.extname(f)), source: path.join(clipsDir, f)})),
+  ...vocesEnOff(path.join(projectDir, 'Sonido')).map((f) => ({
+    name: `vo__${path.basename(f, path.extname(f))}`,
+    source: f,
+  })),
+];
+
+for (const {name, source} of files) {
 
   // Para whisper: mono 16 kHz.
   const speechTarget = path.join(audioDir, `${name}.wav`);

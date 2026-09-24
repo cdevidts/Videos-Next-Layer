@@ -27,3 +27,8 @@ public/sfx/
 .agents/
 .claude/skills/remotion-*
 .claude/skills/ultimate-video-editor
+
+# Assets bajados que no se redistribuyen (el indice/catalogo SI va en git)
+public/assets/sfx/*.mp3
+public/assets/lottie/
+public/assets/photos/

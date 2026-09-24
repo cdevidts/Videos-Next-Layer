@@ -69,6 +69,8 @@ export type Manifiesto = {
   archivos: ArchivoManifiesto[];
   ignorado: string[];
   compuerta: {ok: boolean; problemas: string[]};
+  /** Lo escribe `npm run digest`: la otra mitad de la compuerta, "se pueden ver todos". */
+  digest?: {generado: string; hojas: number};
 };
 
 export const leerRegistro = (): Registro => JSON.parse(fs.readFileSync(REGISTRO, 'utf8')) as Registro;

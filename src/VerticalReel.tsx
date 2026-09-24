@@ -15,6 +15,7 @@ import {
 import {TransitionSeries, linearTiming} from '@remotion/transitions';
 import {fade} from '@remotion/transitions/fade';
 import {DISPLAY_FONT, TEXT_FONT} from './lib/fonts';
+import {EfectoEn, ganancia, Overlay} from './Overlays';
 import {
   DEFAULT_TRANSITION_FRAMES,
   groupWords,
@@ -90,12 +91,19 @@ const Grain: React.FC = () => {
   );
 };
 
-/** Grade suave: contraste y calidez sin quemar la imagen ("apacible a la vista"). */
-const Grade: React.FC<{accentColor: string}> = ({accentColor}) => (
+/**
+ * Grade suave: contraste y calidez sin quemar la imagen ("apacible a la vista").
+ *
+ * El tinte de arriba va con el azul principal de la marca, no con el acento. Es
+ * lo que hace que el azul esté presente en todo el video y no solo en la placa
+ * final. Va en `soft-light` y a 1F (12 %) justo porque el material es madera y
+ * un mueble rojo: más azul que eso los vuelve grises.
+ */
+const Grade: React.FC<{primaryColor: string}> = ({primaryColor}) => (
   <>
     <AbsoluteFill
       style={{
-        background: `radial-gradient(125% 80% at 50% 12%, ${accentColor}1F, rgba(0,0,0,0) 58%)`,
+        background: `radial-gradient(125% 80% at 50% 12%, ${primaryColor}1F, rgba(0,0,0,0) 58%)`,
         mixBlendMode: 'soft-light',
       }}
     />
@@ -248,10 +256,21 @@ const Shot: React.FC<{
   shot: ReelShot;
   index: number;
   accentColor: string;
+  primaryColor: string;
+  secondaryColor: string;
   voiceVolume: number;
   sfxVolume: number;
   fadeFrames: number;
-}> = ({shot, index, accentColor, voiceVolume, sfxVolume, fadeFrames}) => {
+}> = ({
+  shot,
+  index,
+  accentColor,
+  primaryColor,
+  secondaryColor,
+  voiceVolume,
+  sfxVolume,
+  fadeFrames,
+}) => {
   const frame = useCurrentFrame();
   const {durationInFrames, fps, width, height} = useVideoConfig();
 
@@ -323,25 +342,29 @@ const Shot: React.FC<{
           sobre la pantalla del computador). Entra 2 frames antes del corte
           porque el oído procesa antes que el ojo. */}
       {shot.sfx ? (
-        <Sequence from={0} durationInFrames={durationInFrames} name={`SFX ${shot.sfx}`}>
+        <Sequence from={0} durationInFrames={durationInFrames} name={`SFX ${shot.sfx.id ?? shot.sfx.src}`}>
           <Audio
-            src={resolveSrc(`sfx/${shot.sfx}`)}
+            src={resolveSrc(shot.sfx.src)}
             /* Un riser que empieza a volumen pleno no es un riser, es un ruido
                que aparece. Tiene que CRECER hacia el corte que viene: eso es lo
                que hace que el corte siguiente se sienta ganado y no puesto. */
             volume={(f) =>
-              /riser|swell/.test(shot.sfx as string)
-                ? sfxVolume * interpolate(f, [0, durationInFrames - 1], [0.18, 1], {
+              shot.sfx?.rol === 'riser'
+                ? sfxVolume * ganancia(shot.sfx) * interpolate(f, [0, durationInFrames - 1], [0.18, 1], {
                     extrapolateRight: 'clamp',
                   })
-                : sfxVolume * bordes(f, durationInFrames, 3)
+                : sfxVolume * ganancia(shot.sfx) * bordes(f, durationInFrames, 3)
             }
           />
         </Sequence>
       ) : null}
 
-      <Grade accentColor={accentColor} />
+      <Grade primaryColor={primaryColor} />
       <AbsoluteFill style={{backgroundColor: `rgba(255,255,255,${flash})`}} />
+
+      {shot.overlays?.map((overlay, i) => (
+        <Overlay key={`${overlay.src}-${i}`} overlay={overlay} color={secondaryColor} sfxVolume={sfxVolume} />
+      ))}
 
       {shot.words?.length ? (
         <KaraokeCaption shot={shot} accentColor={accentColor} />
@@ -441,7 +464,9 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
   cta,
   ctaSub,
   finalOverlaySrc,
-  accentColor = '#FF8A3D',
+  accentColor = '#FF6600',
+  primaryColor = '#0047AB',
+  secondaryColor = '#00D4FF',
   musicSrc,
   musicVolume = 0.35,
   voiceVolume = 1,
@@ -490,6 +515,8 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
                 shot={shot}
                 index={index}
                 accentColor={accentColor}
+                primaryColor={primaryColor}
+                secondaryColor={secondaryColor}
                 voiceVolume={voiceVolume}
                 sfxVolume={sfxVolume}
                 fadeFrames={transitionInFrames}
@@ -513,7 +540,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
           loop
           volume={(f) => {
             const hayVoz = speechRanges.some(([a, b]) => f >= a - 6 && f < b + 6);
-            const base = hayVoz ? musicVolume * 0.35 : musicVolume;
+            const base = hayVoz ? musicVolume * 0.3 : musicVolume;
             // Entrada y salida suaves: un corte seco de música se nota feo.
             const entrada = interpolate(f, [0, fps], [0, 1], {extrapolateRight: 'clamp'});
             const salida = interpolate(
@@ -527,19 +554,30 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
         />
       ) : null}
 
-      {sfx?.riser ? (
+      {sfx?.riserApertura ? (
         /* El riser de apertura dura hasta el PRIMER CORTE y crece hacia él. Antes
            duraba 1 s fijo y moría en medio del gancho, sin nada que lo recibiera:
            un riser que no desemboca en un corte se oye como un ruido suelto. */
-        <Sequence durationInFrames={cuts[0] ?? Math.round(fps)} name="SFX riser">
+        <Sequence durationInFrames={cuts[0] ?? Math.round(fps)} name="SFX riser de apertura">
           <Audio
-            src={resolveSrc(sfx.riser)}
+            src={resolveSrc(sfx.riserApertura.src)}
             volume={(f) =>
               sfxVolume *
+              ganancia(sfx.riserApertura) *
               interpolate(f, [0, (cuts[0] ?? fps) - 1], [0.15, 1], {extrapolateRight: 'clamp'})
             }
           />
         </Sequence>
+      ) : null}
+
+      {/* Clímax: el riser crece 1,8 s y su PICO cae en el corte del reveal, donde
+          golpea el impacto grave. Se alinean por el pico medido de cada archivo,
+          no por su inicio: si no, el golpe llega tarde y el reveal se siente flojo. */}
+      {sfx?.riser && ultimoCorte > 0 ? (
+        <EfectoEn efecto={sfx.riser} en={ultimoCorte} antes={1.8} volumen={sfxVolume} crece nombre="SFX riser al reveal" />
+      ) : null}
+      {sfx?.impact && ultimoCorte > 0 ? (
+        <EfectoEn efecto={sfx.impact} en={ultimoCorte} volumen={sfxVolume * 1.2} nombre="SFX impacto del reveal" />
       ) : null}
       {/* Whoosh solo donde cambia la escena de verdad. En los jump cuts dentro
           de un mismo clip (los que produce el corte de silencios) no cambia
@@ -555,25 +593,21 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
             // mismo instante, justo donde el video tiene que respirar.
             .filter(({index}) => !(index === cuts.length - 1 && shots[shots.length - 1]?.sfx))
             .map(({start, index}) => {
-              const src = sfx.whooshes![index % sfx.whooshes!.length];
+              // Rotan, y además varía el volumen: aun con efectos distintos, el
+              // mismo nivel en cada corte se oye mecánico.
+              const efecto = sfx.whooshes![index % sfx.whooshes!.length];
               const variacion = 0.85 + (index % 3) * 0.1;
               return (
-                <Sequence
+                <EfectoEn
                   key={`whoosh-${index}`}
-                  from={Math.max(start - 5, 0)}
-                  durationInFrames={Math.round(fps * 1.1)}
-                  name={`SFX cambio de escena ${index + 1}`}
-                >
-                  <Audio src={resolveSrc(src)} volume={sfxVolume * variacion} />
-                </Sequence>
+                  efecto={efecto}
+                  en={start}
+                  volumen={sfxVolume * variacion}
+                  nombre={`SFX cambio de escena ${index + 1}`}
+                />
               );
             })
         : null}
-      {sfx?.impact && cta ? (
-        <Sequence from={ctaStart} durationInFrames={Math.round(fps)} name="SFX cierre">
-          <Audio src={resolveSrc(sfx.impact)} volume={sfxVolume * 1.4} />
-        </Sequence>
-      ) : null}
 
       <Sequence durationInFrames={hookFrames} name="Gancho">
         <Hook text={hook} accentColor={accentColor} />
@@ -630,7 +664,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
                     fontWeight: 800,
                     letterSpacing: 1,
                     marginTop: 22,
-                    color: accentColor,
+                    color: secondaryColor,
                     textShadow: outline(3, 20),
                   }}
                 >

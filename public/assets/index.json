@@ -1,0 +1,35 @@
+[
+ {
+  "id": "emoji:🔥",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1f525.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": []
+ },
+ {
+  "id": "hugeicons:drill",
+  "tipo": "icon",
+  "archivo": "assets/icons/hugeicons__drill.svg",
+  "url": "https://api.iconify.design/hugeicons/drill.svg",
+  "licencia": "MIT (Huge Icons)",
+  "intenciones": [
+   "drill"
+  ],
+  "usadoEn": []
+ },
+ {
+  "id": "sourcesplash:7b1d1821ea61",
+  "tipo": "photo",
+  "archivo": "assets/photos/ss_7b1d1821ea61.jpg",
+  "url": "https://www.sourcesplash.com/i/7b1d1821ea61",
+  "licencia": "pexels (vía SourceSplash)",
+  "atribucion": "Foto: Wenhao Sun / pexels",
+  "intenciones": [
+   "ikea store"
+  ],
+  "usadoEn": []
+ }
+]

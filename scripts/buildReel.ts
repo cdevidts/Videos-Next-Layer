@@ -17,10 +17,14 @@ import {normalize, probe, run} from './lib/media';
 import {syncCaptions} from './syncCaptions';
 import {
   reelDurationInFrames,
+  type ReelOverlay,
   type ReelShot,
   type ReelWord,
+  type SfxRef,
   type VerticalReelProps,
 } from '../src/lib/reel';
+import {asegurar, esId, leerIndice} from './lib/biblioteca';
+import {elegir, registrarUso, resolverSfx} from './lib/sonido';
 
 const argv = process.argv.slice(2);
 const arg = (name: string): string | undefined => {
@@ -40,7 +44,19 @@ type PlanClip = {
   durationInSeconds?: number;
   /** Ignora la voz de este clip aunque exista transcripción. */
   ignoreSpeech?: boolean;
-  /** Efecto que corresponde a lo que se ve, ej. "taladro.mp3". */
+  /** Gráfica que puntúa el corte (íconos, stickers, fotos). Ver PlanOverlay. */
+  overlays?: PlanOverlay[];
+  /**
+   * Voz en off de Sonido/ que suena sobre este clip, relativa a la carpeta del
+   * proyecto (ej. "Sonido/Audios/VO1.wav"). Para B-roll o planos donde no se
+   * habla a cámara. Los subtítulos salen de su transcripción.
+   */
+  voiceover?: string;
+  /**
+   * Efecto de este corte: "taladro.mp3" (public/sfx), "sfx:<id>" (catálogo),
+   * "@impact" (el mejor del rol) o "buscar:<términos>" — este último lo
+   * resuelve `npm run assets` buscando algo específico para ESTE plano.
+   */
   sfx?: string;
   /**
    * Acelera el corte. Sirve para tomas habladas donde en pantalla no pasa nada
@@ -50,8 +66,32 @@ type PlanClip = {
   speed?: number;
 };
 
+type PlanOverlay = {
+  /** UNO de estos tres. Intención ("drill") o id fijado por `npm run assets`. */
+  icon?: string;
+  sticker?: string;
+  photo?: string;
+  /**
+   * Palabra a la que se engancha. Con esto entra justo cuando se dice, que es lo
+   * que hace que se sienta parte del montaje y no una calcomanía pegada encima.
+   */
+  word?: string;
+  /** Sin `word`: segundo dentro del corte en que entra. */
+  at?: number;
+  duration?: number;
+  pos?: 'left' | 'right' | 'center' | 'top';
+  /** Sonido de entrada: pop/click del catálogo por defecto; "ninguno" lo quita. */
+  sfx?: string;
+};
+
 type Plan = {
   project?: string;
+  /**
+   * Anula los sonidos automáticos. Cada uno acepta "@rol", "sfx:<id>",
+   * "archivo.mp3" o "ninguno". Si el video pide otra cosa, se pide acá: el
+   * catálogo es el default, no una obligación.
+   */
+  sonido?: {transiciones?: string; apertura?: string; riser?: string; impacto?: string; ui?: string};
   dir: string;
   hook: string;
   cta?: string;
@@ -59,6 +99,8 @@ type Plan = {
   /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
   finalOverlaySrc?: string;
   accentColor?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
   musicSrc?: string;
   musicVolume?: number;
   sfxVolume?: number;
@@ -75,6 +117,67 @@ type Transcript = {
 };
 
 const VIDEO_EXTENSIONS = ['.mp4', '.mov', '.m4v', '.webm', '.mkv'];
+/**
+ * Resuelve la gráfica de un corte: archivo en disco, instante y sonido de entrada.
+ *
+ * El instante sale de la palabra, buscada sobre los `words` YA convertidos a
+ * tiempo del corte (con la velocidad aplicada): buscarla en la transcripción
+ * original daría el instante del clip crudo, que no es donde cae en el reel.
+ *
+ * Solo acepta ids fijados. Buscar en internet es trabajo de `npm run assets`,
+ * que además deja la elección escrita en el plan: el render no decide nada.
+ */
+const resolverOverlays = async (
+  pedidos: PlanOverlay[],
+  words: ReelWord[] | undefined,
+  siguienteUi: () => SfxRef | undefined,
+  proyecto: string,
+): Promise<ReelOverlay[]> => {
+  const indice = leerIndice();
+  const salida: ReelOverlay[] = [];
+  for (const o of pedidos) {
+    const tipo = o.icon ? 'icon' : o.sticker ? 'sticker' : o.photo ? 'photo' : null;
+    const valor = o.icon ?? o.sticker ?? o.photo;
+    if (!tipo || !valor) continue;
+    const asset = esId(valor) ? indice.find((a) => a.id === valor) : undefined;
+    if (!asset) {
+      throw new Error(`El ${tipo} "${valor}" no está fijado. Corre: npm run assets -- --plan <plan>`);
+    }
+    await asegurar(asset);
+
+    let at = o.at ?? 0.3;
+    if (o.word && words?.length) {
+      const buscada = normalizar(o.word);
+      const w = words.find((x) => normalizar(x.text).includes(buscada));
+      if (w) at = Math.max(w.start - 0.12, 0);
+      else console.warn(`⚠️  "${o.word}" no aparece en los subtítulos de este corte: ${valor} entra a los ${at}s.`);
+    }
+    const sfx = o.sfx === 'ninguno' ? undefined : o.sfx ? resolverSfx(o.sfx, proyecto) : siguienteUi();
+    salida.push({
+      tipo,
+      src: asset.archivo,
+      atSeconds: Number(at.toFixed(3)),
+      durationSeconds: o.duration,
+      pos: o.pos,
+      multicolor: asset.multicolor,
+      sfx,
+    });
+  }
+  return salida;
+};
+
+/** ¿Este overlay va en este corte? Si nombra una palabra, en el corte donde se dice. */
+const vaEn = (o: PlanOverlay, words: ReelWord[]) =>
+  !o.word || words.some((w) => normalizar(w.text).includes(normalizar(o.word as string)));
+
+/** Sin tildes ni puntuación: "armé," y "arme" tienen que calzar. */
+const normalizar = (t: string) =>
+  t
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+
 const MIN_SHOT_SECONDS = 0.8;
 /** Pausas más cortas que esto no valen un corte: se fusionan. */
 const MERGE_GAP_SECONDS = 0.4;
@@ -124,6 +227,18 @@ const main = async () => {
         .map((file) => ({file}));
 
   const shots: ReelShot[] = [];
+  const son = plan.sonido ?? {};
+
+  // Sonidos de entrada de la gráfica: pops y clicks medidos, rotando. La
+  // directiva pide un pop o click cada vez que un elemento entra con spring().
+  const ui: SfxRef[] =
+    son.ui === 'ninguno'
+      ? []
+      : son.ui
+        ? [resolverSfx(son.ui, project)].filter((x): x is SfxRef => Boolean(x))
+        : [...elegir('pop', 3, {proyecto: project}), ...elegir('click', 3, {proyecto: project})];
+  let turnoUi = 0;
+  const siguienteUi = () => (ui.length ? ui[turnoUi++ % ui.length] : undefined);
 
   for (const item of items) {
     const source = path.resolve(plan.dir, item.file);
@@ -163,7 +278,8 @@ const main = async () => {
         .filter((range) => range.end - range.start >= MIN_SHOT_SECONDS);
 
       if (ranges.length) {
-        ranges.forEach((range, index) => {
+        const pendientes = [...(item.overlays ?? [])];
+        for (const [index, range] of ranges.entries()) {
           const words = transcript.words
             .filter((word) => {
               const middle = (word.start + word.end) / 2;
@@ -176,26 +292,33 @@ const main = async () => {
             }));
 
           const speed = item.speed && item.speed > 0 ? item.speed : 1;
+          const palabras =
+            speed === 1
+              ? words
+              : words.map((w) => ({text: w.text, start: w.start / speed, end: w.end / speed}));
+          // Lo que no nombra palabra va al primer corte; lo que la nombra, al corte
+          // donde se dice. Lo que quede sin corte al final va al primero, con aviso.
+          const aca = pendientes.filter((o) => vaEn(o, palabras));
+          const sobras = index === ranges.length - 1 ? pendientes.filter((o) => !aca.includes(o)) : [];
+          for (const o of [...aca, ...sobras]) pendientes.splice(pendientes.indexOf(o), 1);
+          const overlays = await resolverOverlays([...aca, ...sobras], palabras, siguienteUi, project);
           shots.push({
             src,
+            overlays: overlays.length ? overlays : undefined,
             startFromSeconds: Number(range.start.toFixed(3)),
             // Al acelerar, el corte dura menos en pantalla.
             durationInSeconds: Number(((range.end - range.start) / speed).toFixed(3)),
             label: index === 0 ? item.label : undefined,
             // Los tiempos de las palabras también se comprimen, si no el
             // karaoke se desincroniza del audio acelerado.
-            words: speed === 1 ? words : words.map((w) => ({
-              text: w.text,
-              start: w.start / speed,
-              end: w.end / speed,
-            })),
+            words: palabras,
             audioSrc,
             audioStartFromSeconds: Number(range.start.toFixed(3)),
             speed: speed === 1 ? undefined : speed,
-            sfx: index === 0 ? item.sfx : undefined,
+            sfx: index === 0 ? resolverSfx(item.sfx, project) : undefined,
             wordsLocked: transcript.correctedByHuman || undefined,
           });
-        });
+        }
         const cut = (windowEnd - windowStart) - ranges.reduce((s, r) => s + (r.end - r.start), 0);
         console.log(
           `🗣️  ${item.file} · ${ranges.length} tramos con voz · ${cut.toFixed(1)}s de silencio cortados`,
@@ -205,20 +328,56 @@ const main = async () => {
     }
 
     // B-roll: ventana fija del plan con su bajada de texto.
-    const duration = Math.max(
+    let duration = Math.max(
       Math.min(item.durationInSeconds ?? 3.4, info.durationInSeconds - windowStart),
       MIN_SHOT_SECONDS,
     );
+
+    // Voz en off sobre el B-roll: la grabación de Sonido/ pone el audio y los
+    // subtítulos; el clip pone la imagen. El corte dura lo que dura la lectura
+    // (sin los silencios de los bordes), hasta donde alcance el clip.
+    let vo: Pick<ReelShot, 'audioSrc' | 'audioStartFromSeconds' | 'words' | 'wordsLocked'> = {};
+    if (item.voiceover) {
+      const voName = `vo__${path.basename(item.voiceover, path.extname(item.voiceover))}`;
+      const voTranscript = loadTranscript(audioDir, voName);
+      const voHq = path.join(audioDir, 'hq', `${voName}.wav`);
+      if (!voTranscript || !fs.existsSync(voHq)) {
+        throw new Error(`Falta el audio o la transcripción de ${item.voiceover}. Corre npm run next (o audio + transcribe).`);
+      }
+      const desde = voTranscript.speech[0].start;
+      const hasta = voTranscript.speech[voTranscript.speech.length - 1].end;
+      const lectura = hasta - desde;
+      const disponible = info.durationInSeconds - windowStart;
+      if (lectura > disponible) {
+        console.warn(`⚠️  La voz en off ${item.voiceover} (${lectura.toFixed(1)}s) es más larga que ${item.file} desde ${windowStart}s (${disponible.toFixed(1)}s): se corta.`);
+      }
+      duration = Math.min(lectura, disponible);
+      vo = {
+        audioSrc: publicPath(path.resolve(voHq)),
+        audioStartFromSeconds: Number(desde.toFixed(3)),
+        words: voTranscript.words
+          .filter((w) => w.start >= desde - 0.05 && w.end <= desde + duration + 0.05)
+          .map((w) => ({text: w.text, start: Math.max(w.start - desde, 0), end: Math.min(w.end - desde, duration)})),
+        wordsLocked: voTranscript.correctedByHuman || undefined,
+      };
+    }
+
+    const overlays = await resolverOverlays(item.overlays ?? [], vo.words, siguienteUi, project);
     shots.push({
       src,
+      overlays: overlays.length ? overlays : undefined,
       startFromSeconds: Number(windowStart.toFixed(3)),
       durationInSeconds: Number(duration.toFixed(3)),
       label: item.label,
-      caption: item.caption,
-      sfx: item.sfx,
-      speed: item.speed && item.speed !== 1 ? item.speed : undefined,
+      caption: vo.words?.length ? undefined : item.caption,
+      sfx: resolverSfx(item.sfx, project),
+      speed: item.speed && item.speed !== 1 && !item.voiceover ? item.speed : undefined,
+      ...vo,
     });
-    console.log(`🎞️  ${item.file} · B-roll ${windowStart}s +${duration.toFixed(2)}s`);
+    console.log(
+      `🎞️  ${item.file} · B-roll ${windowStart}s +${duration.toFixed(2)}s` +
+        (item.voiceover ? ` · voz en off ${path.basename(item.voiceover)}` : ''),
+    );
   }
 
   if (!shots.length) throw new Error('El plan no produjo ningún corte.');
@@ -235,19 +394,37 @@ const main = async () => {
   const transitionInFrames = plan.transitionInFrames ?? 8;
   const totalFrames = reelDurationInFrames(shots, fps, transitionInFrames);
 
-  const sfx = fs.existsSync('public/sfx/whoosh-1.mp3')
-    ? {
-        whooshes: ['sfx/whoosh-1.mp3', 'sfx/whoosh-2.mp3', 'sfx/whoosh-3.mp3'],
-        pop: 'sfx/pop.mp3',
-        riser: 'sfx/riser.mp3',
-        // Sin golpe en el cierre a propósito: el swell del último corte ya
-        // cubre la placa de marca. Dos sonidos ahí se pisan y suenan "de más".
-        impact: undefined,
-      }
+  // Sonido por eventos (directiva): whoosh grave en cada cambio de escena,
+  // riser de apertura sobre el gancho, y riser + golpe grave con el PICO sobre
+  // el reveal. Todo sale del catálogo medido salvo que el plan pida otra cosa.
+  const tomar = (valor: string | undefined, rol: Parameters<typeof elegir>[0], n: number, grave = false): SfxRef[] =>
+    valor === 'ninguno'
+      ? []
+      : valor
+        ? [resolverSfx(valor, project)].filter((x): x is SfxRef => Boolean(x))
+        : elegir(rol, n, {proyecto: project, grave});
+
+  const whooshes = tomar(son.transiciones, 'whoosh', 6, true);
+  const [riserApertura] = tomar(son.apertura, 'riser', 1);
+  // Si el plan ya puso sonido propio sobre el reveal, no se le suma otro: dos
+  // efectos peleando por el mismo instante suenan "de más".
+  const revealManual = Boolean(shots[shots.length - 1]?.sfx) || shots[shots.length - 2]?.sfx?.rol === 'riser';
+  const [riser] = revealManual ? [] : tomar(son.riser, 'riser', 2).filter((r) => r.id !== riserApertura?.id);
+  const [impact] = revealManual ? [] : tomar(son.impacto, 'impact', 1, true);
+
+  const sfx = whooshes.length || riserApertura || riser || impact
+    ? {whooshes, riserApertura, riser, impact}
     : undefined;
-  if (!sfx) {
-    console.warn('⚠️  No hay efectos en public/sfx/. Corre `npm run sfx`.');
+  if (!whooshes.length && son.transiciones !== 'ninguno') {
+    console.warn('⚠️  No hay whooshes en el catálogo. Corre `npm run sfx-catalog`.');
   }
+  const sonidosUsados = [
+    ...whooshes,
+    riserApertura,
+    riser,
+    impact,
+    ...shots.flatMap((s) => [s.sfx, ...(s.overlays ?? []).map((o) => o.sfx)]),
+  ].filter((x): x is SfxRef => Boolean(x));
 
   // El cierre lo dibuja HyperFrames si el asset existe; si no, Remotion cae al
   // cierre de texto y el pipeline sigue funcionando sin HyperFrames instalado.
@@ -265,7 +442,9 @@ const main = async () => {
     cta: plan.cta,
     ctaSub: plan.ctaSub,
     finalOverlaySrc,
-    accentColor: plan.accentColor ?? '#FF8A3D',
+    accentColor: plan.accentColor ?? '#FF6600',
+    primaryColor: plan.primaryColor ?? '#0047AB',
+    secondaryColor: plan.secondaryColor ?? '#00D4FF',
     musicSrc:
       arg('music') ??
       plan.musicSrc ??
@@ -290,6 +469,8 @@ const main = async () => {
   );
 
   if (flag('dry-run')) return;
+  // Queda anotado qué sonidos usó este video, para que el próximo no los repita.
+  registrarUso(sonidosUsados, project);
 
   const output = arg('out-file') ?? `renders/${project}-reel.mp4`;
   fs.mkdirSync(path.dirname(output), {recursive: true});

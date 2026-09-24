@@ -35,12 +35,12 @@ const reelDefaults: VerticalReelProps = {
   hook: 'Un gancho *corto*',
   cta: 'Next Layer',
   ctaSub: 'Impresión 3D',
-  accentColor: '#FF8A3D',
+  accentColor: '#FF6600',
+  primaryColor: '#0047AB',
+  secondaryColor: '#00D4FF',
   sfx: {
-    whooshes: ['sfx/whoosh-1.mp3', 'sfx/whoosh-2.mp3', 'sfx/whoosh-3.mp3'],
-    pop: 'sfx/pop.mp3',
-    riser: 'sfx/riser.mp3',
-    impact: 'sfx/impact.mp3',
+    whooshes: ['whoosh-1', 'whoosh-2', 'whoosh-3'].map((n) => ({src: `sfx/${n}.mp3`, picoSeg: 0.15, gananciaDb: 0})),
+    riserApertura: {src: 'sfx/riser.mp3', picoSeg: 0, gananciaDb: 0},
   },
   transitionInFrames: DEFAULT_TRANSITION_FRAMES,
 };

@@ -28,9 +28,15 @@ export type ReelShot = {
   isSceneChange?: boolean;
   /**
    * Efecto puntual que corresponde a lo que se ve en este corte
-   * (ej. "taladro" sobre el plano del taladro). Nombre de archivo en public/sfx/.
+   * (ej. "taladro" sobre el plano del taladro).
    */
-  sfx?: string;
+  sfx?: SfxRef;
+  /**
+   * Gráfica que puntúa el corte: íconos, stickers animados, fotos. Los archivos
+   * los baja `npm run assets` a public/assets/; `buildReel` resuelve la ruta y
+   * el instante (enganchado a una palabra si el plan la nombra).
+   */
+  overlays?: ReelOverlay[];
   /** Velocidad de reproducción. El tono de voz no cambia: Remotion usa atempo. */
   speed?: number;
   /**
@@ -42,13 +48,43 @@ export type ReelShot = {
   wordsLocked?: boolean;
 };
 
+/**
+ * Un efecto de sonido ya elegido y medido (ver `npm run sfx-catalog`).
+ * `picoSeg` es donde golpea: la composición lo hace caer sobre el evento, no el
+ * inicio del archivo. `gananciaDb` lo nivela contra los demás efectos.
+ */
+export type SfxRef = {
+  src: string;
+  picoSeg: number;
+  gananciaDb: number;
+  rol?: string;
+  id?: string;
+};
+
+export type ReelOverlay = {
+  tipo: 'icon' | 'sticker' | 'photo';
+  /** Relativo a public/. */
+  src: string;
+  /** Segundo dentro del corte en que entra. */
+  atSeconds: number;
+  durationSeconds?: number;
+  pos?: 'left' | 'right' | 'center' | 'top';
+  /** Íconos de sets de color (emoji): se muestran tal cual, sin teñir. */
+  multicolor?: boolean;
+  /** Pop o click que suena al entrar. */
+  sfx?: SfxRef;
+};
+
 export type ReelSfx = {
   /** Varios whooshes distintos: se rotan por corte. Usar siempre el mismo
    * sonido en cada transición es lo que hace que el video suene a máquina. */
-  whooshes?: string[];
-  pop?: string;
-  riser?: string;
-  impact?: string;
+  whooshes?: SfxRef[];
+  /** Crece durante el gancho y desemboca en el primer corte. */
+  riserApertura?: SfxRef;
+  /** Crece 1,8 s antes del reveal y su pico cae justo en el último corte. */
+  riser?: SfxRef;
+  /** Golpe grave con el pico sobre el reveal. */
+  impact?: SfxRef;
 };
 
 export type VerticalReelProps = {
@@ -65,7 +101,15 @@ export type VerticalReelProps = {
    * Si no está, se dibuja el cierre de texto de siempre con `cta`/`ctaSub`.
    */
   finalOverlaySrc?: string;
+  /**
+   * Paleta de marca. `accentColor` es el naranja de acentos y CTA: es el que
+   * pinta el resaltado de los subtítulos y del gancho. `primaryColor` es el azul
+   * principal y tiñe el grade, así que existe en todo el video y no solo en la
+   * placa de cierre. `secondaryColor` es el azul eléctrico, para los remates.
+   */
   accentColor?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
   /** Música opcional (relativa a public/). */
   musicSrc?: string;
   musicVolume?: number;
