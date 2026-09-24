@@ -1,0 +1,54 @@
+{
+  "_como_usar": "Copia a plans/<slug>.json y borra lo que no uses. Las intenciones (icon, sticker, photo, 'buscar:...', '@rol') las busca y FIJA `npm run assets`: despues de correrlo quedan ids exactos. Los campos que empiezan con _ son notas y el pipeline los ignora.",
+  "project": "video-NN",
+  "dir": "public/input/video-NN/Videos",
+  "hook": "Promesa o pregunta de 8 palabras como maximo con *una* resaltada",
+  "_hook": "Tiene que corresponder a lo que se dice en el video. Los primeros 1,5 s deciden si alguien sigue viendo.",
+  "iconSet": "ph",
+  "_iconSet": "Un solo set por video (ph, tabler, hugeicons, lucide, fluent, material-symbols...). Si una intencion no existe ahi, assets usa otro y avisa.",
+  "transitionInFrames": 3,
+  "sfxVolume": 0.3,
+  "musicVolume": 0.16,
+  "clips": [
+    {
+      "file": "CLIP_HABLADO.MOV",
+      "startFromSeconds": 0,
+      "durationInSeconds": 6,
+      "speed": 1.15,
+      "_ventana": "Tiempos de la FUENTE. Los silencios se cortan solos. check frena si la ventana cierra por la mitad de una palabra.",
+      "overlays": [
+        {"icon": "ruler", "word": "medidas"},
+        {"sticker": "emoji:🔥", "word": "perfecto", "pos": "right"}
+      ],
+      "_overlays": "UNO de icon/sticker/photo por entrada. 'word' lo engancha al instante en que se dice. pos: left | right | lower | center | top. sfx de entrada automatico; 'ninguno' lo quita."
+    },
+    {
+      "file": "CLIP_BROLL.MOV",
+      "startFromSeconds": 1,
+      "durationInSeconds": 2.5,
+      "sfx": "buscar:3d printer",
+      "_sfx": "Solo si corresponde a lo que se ve. 'buscar:<terminos en ingles>' busca algo especifico; '@impact' toma del catalogo."
+    },
+    {
+      "file": "CLIP_BROLL_2.MOV",
+      "startFromSeconds": 0,
+      "durationInSeconds": 4,
+      "voiceover": "Sonido/Audios/VO1.wav",
+      "_voiceover": "Voz en off de Sonido/ sobre un clip sin audio relevante. Pone el audio y los subtitulos; el clip pone la imagen.",
+      "overlays": [{"photo": "3d printer filament", "word": "filamento"}]
+    }
+  ],
+  "descartados": [
+    {"file": "CLIP_REPETIDO.MOV", "razon": "Misma toma que CLIP_HABLADO con peor audio"}
+  ],
+  "_descartados": "Todo clip del MANIFEST va al plan o aca, con razon. check no deja pasar un clip sin decidir.",
+  "sonido": {},
+  "_sonido": "Vacio = automatico (whoosh grave en cambios de escena, riser de apertura, riser + golpe grave en el reveal, pop al entrar graficas). Claves: transiciones, apertura, riser, impacto, ui. Valores: '@rol', 'sfx:<id>', 'archivo.mp3' o 'ninguno'.",
+  "cierre": {
+    "precio": "$XX.XXX",
+    "bajadaPrecio": "QUE INCLUYE ESA CIFRA",
+    "tagIzq": "ETIQUETA IZQUIERDA",
+    "tagDer": "ETIQUETA DERECHA"
+  },
+  "_cierre": "Textos de la placa final de HyperFrames. Lo que se omita no aparece. Tiene que salir de lo que se dice o se ve en el video: no se inventa."
+}

@@ -11,6 +11,9 @@ Instagram/TikTok, y salen de clips crudos de cámara que viven en Google Drive.
 No es contenido de Cero Trade. Si el copy empieza a hablar de energía o trading,
 te equivocaste de marca.
 
+Cada error ya pagado, por tema (material, subtítulos, tipografía, gráfica, sonido,
+herramientas), está en `references/lecciones.md`. Léelo cuando toques ese tema.
+
 ## Antes que nada: mira el video, no los frames
 
 **`npm run watch -- <render.mp4>`** deja en `out/watch/<nombre>/GUION.md` una fila
@@ -38,21 +41,35 @@ ve en un frame ni en un gráfico de niveles: hay que medirlo.
 
 ## El orden correcto de trabajo
 
-Saltarse el paso 1 es el error más caro que se ha cometido en este repo.
+Cada paso existe porque saltárselo ya costó un video. Y está pensado para gastar
+pocos tokens: los scripts miden y resumen, el agente lee resúmenes y decide.
 
-1. **Mira todo el material antes de decidir nada.** Saca frames de *todos* los
-   clips y léelos con `Read`. Nunca elijas por peso de archivo ni por duración.
-   El clip más pesado de Video 46 (48 s) era el que explicaba el producto entero
-   y quedó fuera de la primera versión por descartarlo sin abrirlo.
-2. **Lee las transcripciones antes de escribir textos.** El gancho puede estar
-   ya dicho en cámara. Si whisper devolvió algo sin sentido, sospecha de jerga
-   chilena antes de declarar el clip inservible ("once lucas" salió como "once
-   lugar"). Ante la duda, pregunta.
-3. **Escribe el guion en `plans/<proyecto>.json`**, no en la conversación.
-4. **Valida antes de renderizar**: `npm run check -- --plan plans/<proyecto>.json`.
-   Un render son ~15 minutos; la validación son 2 segundos.
-5. **Renderiza y revísalo con `npm run watch` + `npm run sync`.** No con frames
-   sueltos: eso ya dejó pasar sonidos sin sentido y subtítulos inventados.
+1. **`npm run next`** — elige el siguiente video de `videos.json`, lo baja entero
+   con la **compuerta de ingreso** (cuenta lo que hay en Drive, verifica cada
+   archivo), extrae audio, transcribe y arma el digest. Si la compuerta no pasa,
+   no se sigue: es regla del repositorio.
+2. **Mira TODO el material.** Lee `public/input/<slug>/DIGEST.md` y abre **cada**
+   hoja de `_digest/` (una imagen por clip: frames parejos con lo que se dice en
+   cada uno). No abras frames sueltos: la hoja es más barata y dice más. En el
+   Video 46 el mejor material quedó fuera dos veces por no mirarlo.
+3. **Lee las transcripciones antes de escribir textos.** El gancho puede estar
+   dicho en cámara. Si whisper devolvió algo sin sentido, sospecha de jerga
+   chilena ("once lucas" → "once lugar") y **pregunta** antes de descartar.
+4. **Escribe `plans/<slug>.json`** partiendo de `plans/_plantilla.json`: cortes,
+   gancho, overlays, voces en off sobre B-roll, sonidos específicos, cierre. Cada
+   clip del proyecto va al plan o a `descartados` con su razón.
+5. **`npm run assets -- --plan ...`** — busca la gráfica y los sonidos para ESTE
+   video y los fija en el plan. Abre la hoja `out/assets/<slug>-candidatos.jpg`
+   (una sola imagen para todo el video) y cambia el id de lo que no calce.
+6. **`npm run check`** — 2 segundos contra ~15 minutos de render.
+7. **`npm run reel`** — proxies, cortes, subtítulos sobre el audio montado,
+   cierre propio del video y render.
+8. **`npm run watch`** — lee `GUION.md` de corrido (lo que se ESCUCHA en cada
+   instante) y mira `GRAFICA.jpg` (cada overlay en contexto: ¿tapa la cara? ¿choca
+   con el subtítulo?). Después **`npm run sync`** para el desfase.
+9. **Commit, entrada en `docs/journal.md`**, y cuando la persona lo apruebe,
+   `videos.json` → `"estado": "entregado"`. Desde ahí `npm run reel` se niega a
+   pisarlo.
 
 ## Qué hace que un reel funcione
 
@@ -91,6 +108,32 @@ Lo que sí funciona, ya implementado en `src/VerticalReel.tsx`:
 - Zoom que alterna de dirección por corte, más un golpe de escala al entrar
 - Cortes secos de ~3 frames en vez de disolvencias
 
+### La capa gráfica: se baja, y se elige para este video
+
+Footage + subtítulo y nada más se ve plano al lado de un reel editado. Lo que
+falta es una capa que **puntúe lo que se dice**. Instrucción de Veronica: esa
+capa se baja de APIs gratuitas, no se dibuja en código, y se elige para cada
+video (lo ya descargado no tiene prioridad).
+
+En el plan, `overlays` en el clip; `npm run assets` busca y fija:
+
+| Qué | Cuándo | Fuente |
+| --- | --- | --- |
+| `icon` | Un objeto o concepto que se nombra: la herramienta, la medida, el precio | Iconify, un set por video (`iconSet`) |
+| `sticker` | Una reacción o emoción: 🔥 🤯 💸 ✅ | `emoji:🔥` (Noto animado, parejo) o búsqueda LottieFiles (estilo variable) |
+| `photo` | Algo que se menciona y no está en el material: una tienda, un producto de referencia | SourceSplash (Pexels) o Wikimedia |
+
+Criterio:
+- **Engancha a la palabra** (`"word"`): entra justo cuando se dice. Sin eso es una
+  calcomanía pegada encima.
+- **Uno cada 3–5 s como mucho**, y nunca dos a la vez en la misma zona.
+- **La cara no se tapa.** Defaults: ícono a la izquierda a la altura del pecho,
+  sticker a la derecha sobre el torso, foto abajo sobre el torso. Mira las hojas
+  del digest para saber dónde está la persona y elige `pos` si hace falta.
+- **Menos de 0,6 s en pantalla no existe**: `buildReel` avisa.
+- Una foto de archivo ilustra algo que se nombra; **nunca** se hace pasar por el
+  trabajo de la persona.
+
 ## Sonido: donde más se nota lo amateur
 
 Ocho errores ya cometidos acá, todos detectados de oído por la usuaria.
@@ -108,12 +151,30 @@ computador → teclado o click. Revelación del producto → un reveal. Si nada
 justifica un sonido, no va ninguno. El plan acepta `"sfx": "taladro.mp3"` por
 clip justamente para esto.
 
-### 2. El whoosh va solo donde cambia la escena
-El corte de silencios genera muchos jump cuts *dentro del mismo clip*. Ahí en
-pantalla no cambia nada y un whoosh se oye pegado con scotch. `buildReel` marca
-`isSceneChange` cuando el corte viene de otro clip, y `VerticalReel` solo suena
-whoosh ahí. La skill de edición lo dice sin rodeos: **90% de los cortes deben
-ser secos; las transiciones vistosas son condimento, no el plato.**
+### 2. El whoosh va en cada cambio de escena, y solo ahí
+La directiva pide un whoosh grave en cada cambio de escena. El corte de silencios
+genera jump cuts *dentro del mismo clip*: ahí no cambia la escena y un whoosh se
+oye pegado con scotch. `buildReel` marca `isSceneChange` cuando el corte viene de
+otro clip y solo ahí suena. Los whooshes salen de la mitad más grave del
+catálogo, rotan, y su **pico** cae en el corte.
+
+### Cómo se eligen los sonidos: medidos, no por el nombre
+`npm run sfx-catalog` baja ~240 efectos (Mixkit, Lots of Sounds) y mide cada uno:
+pico, ataque, cola, nivel y brillo. Con eso descarta lo que no sirve para su rol
+(52 "whooshes" demasiado largos, 27 "impactos" que no golpean), nivela entre
+fuentes y alinea el pico con el evento. El mapeo es automático:
+
+| Evento | Sonido |
+| --- | --- |
+| Cambio de escena | whoosh grave, rotando |
+| Entra un ícono/sticker/foto | pop o click, rotando |
+| Gancho | riser de apertura que desemboca en el primer corte |
+| Reveal (último corte) | riser 1,8 s + golpe grave, los dos con el pico en el corte |
+| Voz | la música baja al 30% |
+
+Si el plano pide algo específico (una sierra, una caja registradora):
+`"sfx": "buscar:circular saw"`. Si un automático no calza con el video:
+`"sonido": {"impacto": "ninguno"}`. El catálogo es el default, no una obligación.
 
 ### 3. Audio opaco
 Nunca uses `_audio/<clip>.wav` como pista del reel: es mono 16 kHz porque lo
@@ -123,11 +184,11 @@ exige whisper y suena a teléfono. La pista buena es `_audio/hq/<clip>.wav`
 ### 4. Efectos sintetizados
 Ruido filtrado no suena a whoosh, suena a arena: le falta el barrido de
 frecuencia resonante. Se midió: uno real barre de ~2,9 kHz a ~4,9 kHz en 1,3 s.
-Los efectos se bajan con `npm run sfx`. Para elegir uno nuevo, mide el barrido;
-no te fíes del nombre.
+Los efectos se bajan y se miden (`npm run sfx-catalog`); no te fíes del nombre.
 
 ### 5. El mismo sonido repetido
-Suena a máquina. Hay tres whooshes que se rotan variando el volumen.
+Suena a máquina. Los efectos rotan dentro del video, varía el volumen, y el
+catálogo anota qué usó cada video para que el siguiente no suene igual.
 
 ### 6. Un riser tiene que crecer y desembocar en algo
 Un riser a volumen constante es un ruido que aparece. Tiene que subir hacia el
@@ -310,8 +371,15 @@ una sola.
 ## El cierre: HyperFrames, no React
 
 La placa de cierre se autorea en HTML (`brand/cierre/index.html`), se renderiza
-a un WebM/VP9 **con canal alfa** (`npm run cierre`) y Remotion la compone encima
-del último corte con `<OffthreadVideo transparent>`. La ventaja no es técnica:
+a un WebM/VP9 **con canal alfa** y Remotion la compone encima del último corte
+con `<OffthreadVideo transparent>`.
+
+**Cada video trae sus textos.** El HTML declara variables (precio, bajada,
+etiquetas de las esquinas, marca, paleta) y el plan las llena en `"cierre"`.
+`npm run reel` renderiza el cierre del video a `public/cierres/<slug>.webm`
+cuando falta o quedó viejo. Lo que se omite no aparece. Antes los textos del
+Video 46 estaban escritos a mano en el HTML: el siguiente habría salido con el
+precio de otro mueble. (`public/brand/cierre.webm` es el del 46 y no se toca.) La ventaja no es técnica:
 es que la pieza de marca se diseña una vez, se previsualiza en el Studio de
 HyperFrames sin tocar React, y se reusa igual en todos los videos.
 
@@ -381,17 +449,20 @@ rellena con texto inventado. Una transcripción corregida a mano se marca
 ## Comandos
 
 ```bash
-npm run status                                   # dónde quedó todo
-npm run fetch-drive -- --project "Video 46"      # baja el proyecto de Drive
-npm run audio -- --dir public/input/video-46     # 16 kHz (whisper) + hq/ 48 kHz (reel)
-npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
-npm run fonts && npm run sfx                     # una sola vez cada uno
-npm run fonts-check                              # ¿las fuentes se aplican de verdad?
-npm run cierre                                   # placa de cierre (HyperFrames -> webm con alfa)
-npm run color -- --dir public/input/video-46     # iguala el color entre tomas
-npm run check -- --plan plans/video-46.json      # valida el plan (rápido)
-npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
-npm run review -- renders/video-46-reel.mp4      # frames + niveles de audio
+npm run status                                # dónde quedó todo, y qué video sigue
+npm run next                                  # siguiente video: baja con compuerta, transcribe, digest
+npm run fetch-drive -- --list                 # proyectos en Drive (sin credenciales)
+npm run digest -- --project <slug> --force    # rehace las hojas de contacto
+npm run assets -- --plan plans/<slug>.json    # gráfica y sonidos para el video, fijados
+npm run assets -- --buscar icon "ruler" --preview    # candidatos en una hoja
+npm run sfx-catalog                           # baja/mide lo que falte del catálogo
+npm run check  -- --plan plans/<slug>.json
+npm run reel   -- --plan plans/<slug>.json
+npm run watch  -- renders/<slug>-reel.mp4     # GUION.md + GRAFICA.jpg
+npm run sync   -- --render renders/<slug>-reel.mp4
+npm run fonts && npm run fonts-check          # una vez por contenedor
+npm run color -- --dir public/input/<slug>    # iguala el color entre tomas
+npm run publish-drive -- --render <mp4>       # necesita credenciales con escritura
 ```
 
 ## Referencias del motor

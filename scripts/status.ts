@@ -42,7 +42,8 @@ const readProjects = (): ProjectState[] => {
 
   return fs
     .readdirSync('plans')
-    .filter((f) => f.endsWith('.json'))
+    // plans/_plantilla.json y cualquier _*.json son notas, no proyectos.
+    .filter((f) => f.endsWith('.json') && !f.startsWith('_'))
     .sort()
     .map((planFile) => {
       const full = path.join('plans', planFile);
@@ -98,6 +99,15 @@ const nextStep = (state: ProjectState): string => {
 
 const main = () => {
   const projects = readProjects();
+  const entregados = new Set<string>(
+    fs.existsSync('videos.json')
+      ? Object.values(
+          (JSON.parse(fs.readFileSync('videos.json', 'utf8')) as {videos: Record<string, {slug: string; estado: string}>}).videos,
+        )
+          .filter((v) => v.estado === 'entregado')
+          .map((v) => v.slug)
+      : [],
+  );
 
   console.log('\n════ ESTADO DEL PIPELINE ════\n');
 
@@ -112,10 +122,20 @@ const main = () => {
     return archivos.length > 0 && archivos.every((f) => fs.existsSync(path.join('public', f)));
   })();
 
+  // Los MP3 del catálogo no van a git: en un contenedor nuevo el catálogo está
+  // (con sus mediciones) pero los archivos no, y hay que rebajarlos.
+  const catalogoListo = (() => {
+    const f = 'public/assets/sfx/catalog.json';
+    if (!fs.existsSync(f)) return false;
+    const c = JSON.parse(fs.readFileSync(f, 'utf8')) as Array<{archivo: string; apto?: boolean}>;
+    const aptos = c.filter((e) => e.apto);
+    return aptos.length > 0 && aptos.every((e) => fs.existsSync(path.join('public', e.archivo)));
+  })();
+
   const globals = [
     ['tipografías', fuentesOk, 'npm run fonts (después: npm run fonts-check)'],
-    ['efectos de sonido', fs.existsSync('public/sfx/whoosh-1.mp3'), 'npm run sfx'],
-    ['credenciales Drive', fs.existsSync('.env'), 'copiar .env.example a .env (ver README §2)'],
+    ['efectos de sonido', catalogoListo, 'npm run sfx-catalog (rebaja lo que falte, ya medido)'],
+    ['efectos legados', fs.existsSync('public/sfx/whoosh-1.mp3'), 'npm run sfx (solo para planes anteriores)'],
     ['whisper.cpp', fs.existsSync('whisper.cpp'), 'se instala solo en el primer npm run transcribe'],
   ] as const;
 
@@ -123,8 +143,27 @@ const main = () => {
     console.log(`  ${ready ? '✓' : '·'} ${label.padEnd(20)} ${ready ? '' : `→ ${fix}`}`);
   }
 
+  // Los videos de Drive y en qué estado están. Drive es público: no hacen falta
+  // credenciales para bajar (sí para subir).
+  if (fs.existsSync('videos.json')) {
+    const registro = JSON.parse(fs.readFileSync('videos.json', 'utf8')) as {
+      videos: Record<string, {slug: string; estado: string; nota?: string; clipsEnDrive?: number}>;
+    };
+    console.log('\n════ VIDEOS (videos.json) ════\n');
+    const orden = Object.entries(registro.videos).sort(
+      ([a], [b]) => Number(/\d+/.exec(a)?.[0] ?? 0) - Number(/\d+/.exec(b)?.[0] ?? 0),
+    );
+    for (const [nombre, v] of orden) {
+      const m = path.join('public', 'input', v.slug, 'MANIFEST.json');
+      const bajado = fs.existsSync(m) ? ' · bajado' : '';
+      console.log(`  ${nombre.padEnd(10)} ${v.estado.padEnd(10)} ${v.clipsEnDrive ?? '?'} clips${bajado}${v.nota ? `\n             ↳ ${v.nota}` : ''}`);
+    }
+    const siguiente = orden.find(([, v]) => v.estado === 'en-curso') ?? orden.find(([, v]) => v.estado !== 'entregado');
+    console.log(siguiente ? `\n  👉 npm run next   (${siguiente[0]})` : '\n  ✅ Todo entregado.');
+  }
+
   if (!projects.length) {
-    console.log('\nNo hay planes en plans/. Copia plans/video-46.json y ajústalo.\n');
+    console.log('\nNo hay planes en plans/. Parte de plans/_plantilla.json.\n');
     return;
   }
 
@@ -139,14 +178,18 @@ const main = () => {
     console.log(
       `   proxies    : ${state.proxies.length}   audio: ${state.audios.length}   transcripciones: ${state.transcripts.length}`,
     );
+    // Un video entregado no tiene "siguiente paso", aunque las fechas digan que
+    // el plan es más nuevo que el render: basta un `git checkout` para que lo
+    // parezca. Sugerir `npm run reel` ahí es invitar a pisar lo que ya se subió.
+    const entregado = entregados.has(state.project);
     console.log(
       `   render     : ${
         state.render
-          ? `${state.render}${state.renderIsStale ? '  ⚠️ desactualizado' : '  ✓ al día'}`
+          ? `${state.render}${entregado ? '  ✓ entregado' : state.renderIsStale ? '  ⚠️ desactualizado' : '  ✓ al día'}`
           : 'todavía no'
       }`,
     );
-    console.log(`   👉 sigue   : ${nextStep(state)}`);
+    console.log(`   👉 sigue   : ${entregado ? 'nada — entregado; no se re-renderiza (videos.json)' : nextStep(state)}`);
   }
 
   if (fs.existsSync(JOURNAL)) {

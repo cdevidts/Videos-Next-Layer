@@ -235,6 +235,20 @@ const main = async () => {
 
   if (!fs.existsSync(plan.dir)) throw new Error(`No existe la carpeta de clips: ${plan.dir}`);
 
+  // Un video entregado no se vuelve a renderizar por accidente: ya está subido,
+  // y un render nuevo con el código de hoy no sería el mismo video.
+  if (fs.existsSync('videos.json') && !flag('dry-run') && !flag('rehacer-entregado')) {
+    const registro = JSON.parse(fs.readFileSync('videos.json', 'utf8')) as {
+      videos: Record<string, {slug: string; estado: string}>;
+    };
+    const entregado = Object.entries(registro.videos).find(([, v]) => v.slug === project && v.estado === 'entregado');
+    if (entregado) {
+      throw new Error(
+        `${entregado[0]} está ENTREGADO (videos.json): no se re-renderiza. Si de verdad hay que rehacerlo, pásale --rehacer-entregado.`,
+      );
+    }
+  }
+
   const items: PlanClip[] = plan.clips?.length
     ? plan.clips
     : fs

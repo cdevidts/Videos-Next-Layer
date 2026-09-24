@@ -1,191 +1,87 @@
 # Instrucciones para el agente
 
-Pipeline de reels verticales (9:16) para **Next Layer**, empresa de impresión 3D.
-Remotion + Google Drive. El material crudo son clips de cámara; la salida son
-reels listos para publicar en `renders/`.
+Pipeline de reels verticales (9:16) para **Next Layer**, impresión 3D. Remotion +
+HyperFrames + Google Drive. Entra una carpeta de clips crudos, sale un reel listo
+para publicar. **No es contenido de Cero Trade.**
 
-> Ojo: la marca es Next Layer (impresión 3D). No es contenido de Cero Trade.
+Este archivo se carga en cada turno: es corto a propósito. El detalle vive en la
+skill `reel-nextlayer` (el oficio) y en `.claude/skills/reel-nextlayer/references/lecciones.md`
+(cada error ya pagado). El *por qué* de las decisiones, en `docs/journal.md`.
 
-## Empieza siempre por acá
-
-```bash
-npm install          # si node_modules no existe
-npm run status       # qué está hecho, qué falta y el comando que sigue
-```
-
-Si la tarea es sobre un **video** (armar, corregir, revisar, cambiar gráfica o
-sonido), la skill `reel-nextlayer` tiene el playbook completo: qué hace que un
-reel funcione, los errores de sonido y gráfica ya cometidos, y el orden de
-trabajo. Este archivo solo enruta; el detalle vive ahí.
-
-Ese conocimiento de referencia no está en git (son skills de terceros). Se
-instala una vez con `npm run skills`, que deja en `.agents/skills/`:
-`remotion-*` (motor: animación, subtítulos, render) y `ultimate-video-editor`
-(diseño sonoro, loudness por plataforma, ganchos y ritmo viral). Léelas cuando
-necesites el detalle, no de entrada.
-
-`npm run status` deduce todo del disco, así que no miente aunque la sesión
-anterior se haya cortado a la mitad. Después lee `docs/journal.md`: ahí está el
-*por qué* de las decisiones, que es lo único que no se puede deducir mirando
-archivos.
-
-## Reglas de continuidad
-
-Este proyecto está pensado para que una sesión se corte en cualquier punto y otra
-retome sin perder nada. Para que eso siga siendo cierto:
-
-1. **El estado vive en archivos, no en la conversación.** El guion completo de un
-   video está en `plans/<proyecto>.json`. Si tomas una decisión de edición,
-   escríbela ahí, no solo la apliques.
-2. **Todo paso es reanudable.** Descargas, proxies, transcripciones y renders se
-   saltan si el resultado ya existe y está al día. Nunca borres `_normalized/`,
-   `_audio/` ni `whisper.cpp/` para "empezar limpio": son horas de CPU.
-   Para rehacer algo a propósito existe `--force`.
-3. **Commitea al terminar cada paso grande**, no al final de todo. Un render que
-   quedó sin commitear se pierde con el contenedor.
-4. **Antes de cerrar tu turno, agrega una entrada en `docs/journal.md`** con lo
-   que decidiste, lo que descartaste y lo que quedó esperando una decisión humana.
-   Esa entrada es lo que lee el agente siguiente.
-5. **No inventes contenido.** Los textos en pantalla tienen que corresponder a lo
-   que se ve y se escucha. Si la transcripción salió ininteligible, se marca
-   `ignoreSpeech` y se usa el clip mudo; no se rellena con texto inventado.
-6. **Mira todos los clips antes de escribir el plan.** No elijas material por peso
-   de archivo ni por duración: saca frames de cada clip y míralos con `Read`. El
-   primer render de Video 46 salió mal justamente por esto — el clip más pesado
-   (48 s) era el que explicaba todo y quedó fuera por descartarlo sin abrirlo.
-7. **Si whisper devuelve algo raro, puede ser jerga, no ruido.** "once lucas"
-   (chileno: once mil pesos) salió como "once lugar"; "IKEA" salió como "y que".
-   Las dos veces el clip parecía inservible y era el mejor material del video.
-   Antes de descartar un clip por ininteligible, **pregunta**.
-   Una transcripción corregida a mano se marca con `"correctedByHuman": true`.
-   Esa bandera viaja: `buildReel` marca el corte con `wordsLocked` y
-   `syncCaptions` **no lo vuelve a transcribir**. Sin esa cadena, cada render
-   pisaba la corrección con lo que whisper vuelve a entender mal, en silencio.
-
-## Flujo
+## "Haz el siguiente video"
 
 ```bash
-npm run fetch-drive -- --list                    # proyectos disponibles en Drive
-npm run fetch-drive -- --project "Video 46"      # descarga a public/input/video-46/
-npm run audio -- --dir public/input/video-46     # audio a WAV 16 kHz
-npm run transcribe -- --dir public/input/video-46/_audio --model medium --language es
-npm run fonts && npm run fonts-check             # una sola vez, y verifica
-npm run cierre                                   # placa de cierre (HyperFrames -> webm con alfa)
-npm run sfx                                      # una sola vez (descarga los efectos)
-npm run check -- --plan plans/video-46.json      # valida el plan antes de renderizar
-npm run captions -- --project video-46           # resincroniza subtitulos (lo hace `reel` solo)
-npm run reel -- --plan plans/video-46.json       # proxies + corte de silencios + render
-npm run watch -- renders/video-46-reel.mp4      # ver Y escuchar el resultado (frames + guion)
-npm run sync -- --render renders/video-46-reel.mp4   # desfase de audio y subtitulos
+npm install                                   # si falta node_modules
+npm run next                                  # elige, baja TODO, transcribe, arma el digest
+# → lee public/input/<slug>/DIGEST.md y abre CADA hoja de _digest/
+# → escribe plans/<slug>.json (parte de plans/_plantilla.json)
+npm run assets -- --plan plans/<slug>.json    # gráfica y sonidos para ESTE video; revisa la hoja de candidatos
+npm run check  -- --plan plans/<slug>.json    # compuerta: no renderiza nada que no pase
+npm run reel   -- --plan plans/<slug>.json    # proxies, cortes, subtítulos, cierre y render
+npm run watch  -- renders/<slug>-reel.mp4     # lee GUION.md y mira GRAFICA.jpg
 ```
 
-Para un video nuevo: copia `plans/video-46.json`, cambia `project`, `dir`, `hook`,
-`cta` y los `clips`. El resto del pipeline no cambia.
+`npm run status` dice qué está hecho y qué sigue, deducido del disco. `videos.json`
+lleva el estado de cada video de Drive: **nunca re-renderices uno `entregado`**.
 
-## Cosas que ya se probaron y no hay que repetir
+## Reglas del repositorio
 
-- **No uses `@remotion/google-fonts`**: el Chrome del render no siempre puede salir
-  a fonts.gstatic.com. Las tipografías viven en `public/fonts/` (`npm run fonts`).
-- **Cargar una fuente no es tenerla aplicada, y `document.fonts.check()` no sirve
-  para saberlo.** Se entregaron varios renders con TODA la gráfica en la fuente de
-  respaldo: `fetchFonts.ts` había guardado el subconjunto latin-ext de Anton, que
-  no trae ni una A-Z. La fuente cargaba perfecto (`check()` = `true`, estado
-  `loaded`) y Chrome igual caía al respaldo carácter por carácter, sin un solo
-  error. Lo único que no miente es medir texto: **corre `npm run fonts-check`**,
-  que abre el Chrome de Remotion y falla si una familia mide igual que su
-  respaldo. Y si algo se ve raro dentro de Remotion, sácalo de Remotion: renderiza
-  el `.woff2` suelto en un Chromium al lado del original.
-- **El cierre lo dibuja HyperFrames, no React.** `brand/cierre/index.html` se
-  renderiza a un WebM/VP9 con alfa (`npm run cierre`) y Remotion lo compone sobre
-  el último corte con `<OffthreadVideo transparent>`. Sí carga Anton: hubo una
-  sesión que concluyó lo contrario, pero medía con el archivo de fuente roto.
-  Si falta el `.webm`, `buildReel` avisa y cae al cierre de texto.
-- **No transcribas B-roll mudo**: el modelo alucina `[BLANK_AUDIO]`, `(música)`.
-  `transcribeClips.ts` ya detecta por nivel qué clips tienen voz.
-- **No infieras los tiempos de los subtítulos sobre el audio original.** Se
-  probaron tres formas de alinearlos y todas dejaban desfase (hasta 1,2 s),
-  porque después el audio se corta, se acelera y se monta. `buildReel` arma la
-  pista final y la transcribe (`syncCaptions`): los tiempos salen del audio que
-  realmente se escucha.
-- **No asumas la orientación por `ffprobe`**: los `.MOV` reportan 3840x2160 pero
-  son verticales por metadato de rotación.
-- **No metas música comercial.** Ver la entrada de la bitácora sobre Content ID.
-- **Nunca uses `_audio/<clip>.wav` como pista del reel.** Ese archivo es mono
-  16 kHz porque es lo que exige whisper, y a 16 kHz el audio pierde todo sobre
-  los 8 kHz: suena opaco, como teléfono. La pista del reel sale de
-  `_audio/hq/<clip>.wav` (48 kHz estéreo). `buildReel.ts` ya la prefiere y
-  avisa si falta.
-- **No sintetices los efectos de sonido.** Se probó: ruido filtrado con un
-  pasa-bajos de un polo no suena a whoosh, suena a arena, porque le falta el
-  barrido de frecuencia resonante que tiene uno real. Los efectos se descargan
-  con `npm run sfx`.
-- **No uses el mismo whoosh en todos los cortes.** Suena a máquina. Hay tres
-  variantes y `VerticalReel` las rota, variando también el volumen.
+1. **Compuerta de ingreso** (regla de Veronica): antes de empezar un proyecto se
+   enumeran los archivos en Drive, se bajan todos, se verifica que cada uno se vea o
+   se escuche, y se mira cada clip en su hoja. Si falta uno, no se empieza.
+   `next`/`fetch-drive` y `check` lo hacen cumplir; cada clip va al plan o a
+   `descartados` con su razón.
+2. **Drive**: la raíz (`videos.json` → `drive.raiz`) es pública; se baja sin
+   credenciales. Los clips raw están SIEMPRE en `<Video N>/Videos/`. `Sonido/` trae
+   voces en off para poner sobre clips sin audio relevante (`"voiceover"` en el plan).
+3. **El estado vive en archivos**: cada decisión de edición se escribe en el plan.
+4. **Todo es reanudable**: nunca borres `_normalized/`, `_audio/` ni `whisper.cpp/`.
+   Para rehacer algo, `--force`.
+5. **Commitea al terminar cada paso grande** y, antes de cerrar el turno, agrega una
+   entrada en `docs/journal.md`: qué decidiste, qué descartaste, qué espera a una persona.
+6. **Los subtítulos dicen lo que se escucha.** Si la transcripción salió rara puede
+   ser jerga ("once lucas" → "once lugar"): **pregunta** antes de descartar.
+   Una corrección humana lleva `"correctedByHuman": true` y sobrevive los renders.
+7. **La gráfica se baja, no se dibuja, y se elige para cada video.** Iconify,
+   LottieFiles, Noto, SourceSplash, Wikimedia — todo vía `npm run assets`. Lo ya
+   descargado no tiene prioridad: si el video pide otra cosa, se busca otra cosa.
 
-## Verificar antes de dar algo por terminado
+## Directiva de dirección de arte y sonido
 
-- `npm run check -- --plan <plan>` sin problemas. Son 2 segundos y evita
-  descubrir a los 15 minutos que faltaba un archivo.
-- `npx tsc --noEmit` limpio.
-- `npm run fonts-check` en verde. Una tipografía caída no rompe el render: sale
-  todo en la de respaldo, sin errores, y solo se nota comparando con la marca.
-- **`npm run watch -- <render.mp4>`** — lo más importante de esta lista. Deja en
-  `out/watch/<nombre>/GUION.md` una fila por instante con **lo que se escucha**,
-  el nivel y el frame. Léelo de corrido y abre los frames: es la única forma de
-  juzgar si el sonido corresponde a la imagen y si el subtítulo corresponde a la
-  voz. Revisando sin esto se entregaron subtítulos inventados y un taladro
-  sonando sobre un plano sin taladro.
-- `npm run sync -- --render <render.mp4>` — mide desfase de audio y subtítulos
-  contra la fuente. Un desfase no se ve en un frame ni en un gráfico de niveles.
-- `npm run review -- <render.mp4>` — saca 8 frames parejos a `out/review/<nombre>/`
-  y un resumen del nivel de audio en dBFS por ventana. Léelos con `Read`. Un
-  render que termina sin error igual puede tener el texto cortado, la fuente
-  caída o el audio mudo; esto lo pesca sin sacar cada frame a mano.
-  Para mirar un instante puntual con más detalle: `npx remotion ffmpeg -ss <s>
-  -i <mp4> -frames:v 1 out.jpg`.
-- Si el plugin `watch@claude-video` está instalado, `/watch <archivo o URL>` es
-  otra forma de revisar el resultado. No es parte del pipeline y no reemplaza
-  `npm run watch`, que no depende de nada externo.
-- Revisar que el audio tenga contenido, no solo que exista la pista.
+Pedida por Veronica como núcleo del repositorio. Cada punto dice cómo se cumple:
 
-## Plugins declarados en el proyecto
+| Directiva | Cómo se cumple acá |
+| --- | --- |
+| Entorno cloud listo: ffmpeg, Chromium, skills | Ya está: nada que instalar. Ver *Entorno* |
+| Skills de Remotion y HyperFrames | `npm run skills` (incluye `remotion-dev/skills`); para movimiento, `hyperframes-animation` y `hyperframes-keyframes` antes de improvisar |
+| Ingesta desde Drive, analizar ritmo y energía | `npm run next` + `DIGEST.md` (tramos de voz, niveles, hojas) |
+| Guion para retención | El plan: gancho en 1,5 s, cortes de silencio, textos en pantalla |
+| No dibujar formas planas; íconos por API | Iconify, sets MIT/ISC/Apache (`npm run assets`) |
+| Media de apoyo | SourceSplash (sin su relleno de Picsum) y Wikimedia Commons |
+| Tipografía de Google Fonts | Sí, pero **bajadas** a `public/fonts/` (`npm run fonts`): el Chrome del render no siempre sale a internet |
+| SFX por API, términos exactos | Catálogo medido de Mixkit + Lots of Sounds (`npm run sfx-catalog`); `"buscar:<términos>"` para algo específico |
+| Paleta: #0047AB, #00D4FF, #FF6600 | Default del código: azul en el grade y el cierre, eléctrico en íconos, naranja en acentos y CTA |
+| Nada lineal: `spring()` y ease-in-out | `VerticalReel` y `Overlays.tsx` |
+| Whoosh grave en cada cambio de escena | Automático, rotando, graves del catálogo, el pico cae en el corte |
+| Pop o click al entrar gráfica | Automático en cada overlay, alineado por el pico |
+| Riser 1–2 s antes del reveal + golpe grave | Automático, el pico sobre el último corte |
+| Ducking de música al 30% con voz | `musicVolume * 0.3` mientras hay voz, vuelve en los silencios |
+| Sin pedir confirmación | Todo lo anterior es automático; el plan lo anula (`"sonido"`, `"ninguno"`) si el video pide otra cosa |
 
-`.claude/settings.json` (versionado) declara el marketplace y los plugins que
-este repo usa, así que **cualquier sesión nueva los tiene sin instalar nada**.
-Hoy está `codex@openai-codex` (marketplace `openai/codex-plugin-cc`), que aporta
-`/codex:review`, `/codex:adversarial-review`, `/codex:rescue`, `/codex:transfer`
-y `/codex:status` — revisión de código con Codex como segunda opinión.
+## Verificar antes de entregar
 
-Ojo: el plugin necesita el CLI de Codex y una sesión iniciada. El CLI se instala
-con `npm install -g @openai/codex`; el login (`codex login`) lo tiene que hacer
-una persona, con su cuenta de OpenAI. **Un contenedor remoto se recicla**, así
-que el CLI y el login hay que rehacerlos en cada sesión remota nueva; lo único
-que persiste es la declaración en `.claude/settings.json`.
-
-Para agregar otro plugin al proyecto, no uses `/plugin` (es interactivo y muere
-con el contenedor):
-
-```bash
-claude plugin marketplace add <owner/repo> --scope project
-claude plugin install <plugin>@<marketplace> --scope project -y
-```
-
-## El ffmpeg de Remotion es una build recortada
-
-`npx remotion ffmpeg` **no** es un ffmpeg completo: viene compilado solo con los
-filtros que Remotion necesita para su propio encode/decode. Confirmado por
-prueba directa: `fps`, `tile`, `showwavespic` y `drawtext` no existen ahí y
-fallan con `No option name near '...'` (mensaje engañoso, no dice "unknown
-filter"). Sí están disponibles `scale`, `volume`, `concat`, `loudnorm`, `pan`,
-`aformat` y los que ya usa `scripts/lib/media.ts`. Antes de usar un filtro
-nuevo, probarlo suelto primero; si falla así, hay que resolverlo sin ffmpeg
-(ver `rmsWindows` en `scripts/reviewReel.ts` y `transcribeClips.ts` — análisis
-de audio hecho a mano en Node leyendo el WAV, en vez de con un filtro).
+- `npm run check` sin problemas y `npx tsc --noEmit` limpio.
+- `npm run fonts-check` en verde (una fuente caída no da error: sale en la de respaldo).
+- **`npm run watch`** — lo más importante: `GUION.md` (lo que se ESCUCHA en cada
+  instante, con su frame) y `GRAFICA.jpg` (cada overlay en contexto: que no tape la
+  cara ni el subtítulo).
+- `npm run sync -- --render <mp4>`: desfase de audio y subtítulos.
 
 ## Entorno
 
-- FFmpeg y ffprobe vienen con Remotion: `npx remotion ffmpeg`, `npx remotion ffprobe`.
-- Los renders largos van en background; nunca esperes con `sleep` en primer plano.
-- Si esperas a que termine un proceso, **no uses `pgrep -f <patrón>`**: el propio
-  shell que espera contiene el patrón en su línea de comando, se encuentra a sí
-  mismo y el bucle nunca termina. Espera por el archivo de salida.
+- Nada que instalar en la nube: ffmpeg de Remotion (`npx remotion ffmpeg`, recortado)
+  para render; ffmpeg de sistema (completo) para análisis y hojas; Chromium en
+  `/opt/pw-browsers` — **nunca** `playwright install`.
+- Renders largos en background; no esperes con `sleep` ni con `pgrep -f`.
+- Subir a Drive (`npm run publish-drive`) sí necesita credenciales con escritura en
+  `.env`, que no sobreviven al contenedor.

@@ -562,3 +562,85 @@ de lectura (`drive.file`, el mínimo) y subida en streaming — googleapis hace 
 stream, que es lo único que aguanta 43 MB. **No se pudo probar contra Drive**: un contenedor remoto
 no tiene `.env`, así que falta `DRIVE_PUBLISH_FOLDER_ID` y credenciales con permiso de escritura.
 El conector de Drive del agente no sirve para esto: sube como base64 dentro de la llamada.
+
+---
+
+## 2026-09-24 · El pipeline pasa a ser agéntico: "haz el siguiente video"
+
+Veronica: *"no estás pensando agénticamente… este pipeline lo vamos a reutilizar
+para todos los videos… deja el sistema listo para que cualquier video salga de gran
+calibre, con APIs externas para lo que no quiero que hagas con tu propio código"*.
+Tenía razón: se venía resolviendo el Video 46 en vez del sistema.
+
+### Drive: el bloqueo de semanas no existía
+
+La raíz (`1ZlHAzBLG40AgwH_Umh-YOCd4M1BGurzt`, ahora en `videos.json`) está
+compartida "cualquiera con el link". Se lista con `embeddedfolderview` y se baja con
+`drive.usercontent.google.com/download?...&confirm=t`, **sin credenciales**. Todo el
+tiempo se buscó un `.env` que el contenedor no conserva y que no hacía falta.
+Estructura verificada en los 5 proyectos: los clips raw están SIEMPRE en
+`<Video N>/Videos/`; `Sonido/` son voces en off (van sobre B-roll); `Export/` está
+vacía incluso en el 46 entregado, así que no sirve como señal: el estado vive en
+`videos.json`. Video 45 tiene `NL45.prproj` en `Proyecto/`: alguien lo editó en
+Premiere — **preguntarle a Veronica antes de hacerlo**.
+
+### La regla de ingreso, en código
+
+Regla del repositorio pedida por Veronica: enumerar lo que hay en Drive, bajar todo,
+verificar que cada archivo se vea o se escuche, y mirar cada clip antes de empezar.
+`ingest` (tamaño exacto por `Content-Range` + decodificación) → `MANIFEST.json` con
+compuerta; `digest` → una hoja de contactos por clip; `check` exige compuerta,
+digest, y que cada clip esté en el plan o en `descartados` con razón. Probado: un
+plan que olvida un clip no pasa.
+
+### Gráfica y sonido desde APIs, elegidos por video
+
+- Íconos: Iconify, solo sets con licencia MIT/ISC/Apache verificada en su API.
+  El primer resultado no es confiable ("drill" traía un martillo neumático y un
+  ícono de "drill down"): ranking por nombre exacto + una hoja de candidatos por
+  video.
+- Stickers: Noto Animated Emoji (parejo) y LottieFiles (estilo variable).
+- Fotos: SourceSplash **descartando Picsum** — cuando no encuentra, devuelve fotos
+  al azar sin avisar — y Wikimedia con licencia comercial.
+- Veronica: "no priorices lo descargado". La biblioteca es caché y registro de
+  licencias; cada intención se busca para el video que la pide.
+- Sonido: catálogo de 242 efectos medidos (pico, ataque, cola, nivel, brillo); 92
+  aptos. Pico alineado al evento, nivelación entre fuentes, rotación sin repetir
+  entre videos, mapeo por eventos de la directiva, `buscar:` para algo específico
+  y `ninguno` para anular.
+- Cierre con variables de HyperFrames: cada plan trae sus textos; el del 46
+  (`public/brand/cierre.webm`) no se tocó.
+
+### Tokens
+
+`CLAUDE.md` bajó de 245 a ~95 líneas (se carga en cada turno); el detalle pasó a
+`.claude/skills/reel-nextlayer/references/lecciones.md`. Mirar el material pasó de
+decenas de frames sueltos a una hoja por clip; revisar la gráfica, a una hoja de
+candidatos antes y un `GRAFICA.jpg` después.
+
+### Descartado, con razón
+
+- `media-use` como base de assets: su catálogo exige login OAuth de HeyGen, que
+  muere con el contenedor.
+- Screenshots con Chrome headless: se cuelga en este entorno. Las hojas salen con
+  el ffmpeg de sistema (completo) y los stills con `npx remotion still`.
+- Puter.js para imágenes por IA: en Node exige un token de login en navegador.
+- Lots of Sounds: entra al catálogo, pero su muestra gratuita da 12 por término y no
+  declara licencia por sonido; en empate gana Mixkit.
+
+### Verificado
+
+Ingreso real de Video 43 y Video 41 (sin credenciales, compuerta OK). Plan
+desechable sobre los clips del 41: assets fijados, render de 5,7 s, `GRAFICA.jpg`.
+Esa hoja mostró en el primer uso que la foto tapaba la cara (defaults bajados al
+torso) y que un sticker vivía 0,2 s (ahora `buildReel` lo avisa). El 46 quedó
+blindado: `status` ya no sugiere re-renderizarlo y `npm run reel` se niega sin
+`--rehacer-entregado`.
+
+### Pendiente
+
+- **Video 41 en curso**: bajado y con digest; falta mirarlo y escribir el plan.
+  Son 2 clips (13 s hablado "¿cuántas cosas sobre mí?" + 24 s de trípode con
+  bobinas): material corto, puede que haya que preguntar qué video es.
+- **Video 45**: confirmar con Veronica por el proyecto de Premiere.
+- Subir a Drive sigue necesitando credenciales con escritura (`publish-drive`).
