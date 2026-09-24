@@ -68,7 +68,7 @@ export type ReelOverlay = {
   /** Segundo dentro del corte en que entra. */
   atSeconds: number;
   durationSeconds?: number;
-  pos?: 'left' | 'right' | 'center' | 'top';
+  pos?: 'left' | 'right' | 'lower' | 'center' | 'top';
   /** Íconos de sets de color (emoji): se muestran tal cual, sin teñir. */
   multicolor?: boolean;
   /** Pop o click que suena al entrar. */

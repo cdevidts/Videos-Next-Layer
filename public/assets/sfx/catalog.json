@@ -1426,7 +1426,8 @@
   "colaSeg": 0.14,
   "nivelDb": -15.8,
   "brilloHz": 3579,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "mixkit-2925",
@@ -1459,7 +1460,8 @@
   "colaSeg": 0.08,
   "nivelDb": -16.3,
   "brilloHz": 2120,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "mixkit-2363",
@@ -2724,7 +2726,8 @@
   "colaSeg": 0.231,
   "nivelDb": -14.6,
   "brilloHz": 1021,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "mixkit-632",
@@ -2806,7 +2809,8 @@
   "colaSeg": 0.782,
   "nivelDb": -11.5,
   "brilloHz": 2263,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "lots-fs-118933",
@@ -2839,7 +2843,8 @@
   "colaSeg": 0.09,
   "nivelDb": -22.9,
   "brilloHz": 859,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "lots-fs-127197",
@@ -2855,7 +2860,8 @@
   "colaSeg": 0.11,
   "nivelDb": -22.4,
   "brilloHz": 824,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "lots-fs-150950",
@@ -2871,7 +2877,8 @@
   "colaSeg": 0.241,
   "nivelDb": -15.1,
   "brilloHz": 1905,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "lots-fs-161098",
@@ -2887,7 +2894,8 @@
   "colaSeg": 0.08,
   "nivelDb": -10.4,
   "brilloHz": 2172,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "lots-fs-169867",
@@ -2903,7 +2911,8 @@
   "colaSeg": 0.752,
   "nivelDb": -18.1,
   "brilloHz": 340,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "lots-fs-181889",
@@ -3165,7 +3174,8 @@
   "colaSeg": 0.04,
   "nivelDb": -14.3,
   "brilloHz": 1282,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "lots-fs-164469",
@@ -4067,7 +4077,8 @@
   "colaSeg": 0.02,
   "nivelDb": -26.7,
   "brilloHz": 6215,
-  "apto": true
+  "apto": true,
+  "usadoEn": []
  },
  {
   "id": "lots-fs-249750",

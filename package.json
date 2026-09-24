@@ -29,7 +29,7 @@
     "captions": "tsx scripts/syncCaptions.ts",
     "color": "tsx scripts/matchColor.ts",
     "fonts-check": "tsx scripts/checkFonts.ts",
-    "cierre": "npm --prefix brand/cierre run check && npm --prefix brand/cierre run render -- --format webm -q high -o ../../public/brand/cierre.webm",
+    "cierre": "tsx scripts/cierre.ts",
     "sync": "tsx scripts/checkSync.ts",
     "watch": "tsx scripts/watchReel.ts"
   },

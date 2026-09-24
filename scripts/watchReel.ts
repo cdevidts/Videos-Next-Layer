@@ -24,6 +24,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {hasSystemFfmpeg, run} from './lib/media';
+import {ffmpeg as ffmpegCompleto} from './lib/ffmpegFull';
+import {shotFrames, type VerticalReelProps} from '../src/lib/reel';
 
 const argv = process.argv.slice(2);
 const flag = (n: string) => argv.includes(`--${n}`);
@@ -163,6 +165,55 @@ const main = async () => {
 
   fs.writeFileSync(path.join(dir, 'GUION.md'), `${lineas.join('\n')}\n`);
   fs.unlinkSync(wav);
+
+  // --- La gráfica, en contexto -----------------------------------------------
+  // Cada ícono, sticker y foto en el instante en que está entero, sacado del
+  // render real. Es la única forma de saber si tapa la cara o choca con el
+  // subtítulo: en el primer render de prueba la foto tapaba la cara entera y
+  // nada en los props lo decía. Una imagen para toda la gráfica del video.
+  const propsFile = path.join('out', `${nombre.replace(/-reel$/, '')}.reel.props.json`);
+  if (fs.existsSync(propsFile)) {
+    const props = JSON.parse(fs.readFileSync(propsFile, 'utf8')) as VerticalReelProps;
+    const fps = 30;
+    const T = props.transitionInFrames ?? 8;
+    const momentos: Array<{t: number; etiqueta: string}> = [];
+    let cursor = 0;
+    for (const shot of props.shots) {
+      for (const o of shot.overlays ?? []) {
+        // Medio segundo después de entrar, o la mitad de su ventana si es más corta:
+        // si no, un overlay breve se muestrea cuando ya se fue.
+        const ventana = Math.max(Math.min(o.durationSeconds ?? 1.4, shot.durationInSeconds - 0.2 - o.atSeconds), 0.1);
+        const t = (cursor + o.atSeconds * fps) / fps + Math.min(0.5, ventana / 2);
+        momentos.push({t, etiqueta: `${mmss(t)} ${o.tipo} ${path.basename(o.src, path.extname(o.src))}`.slice(0, 40)});
+      }
+      cursor += shotFrames(shot, fps) - T;
+    }
+    if (momentos.length) {
+      try {
+        const tmp = path.join(dir, '_grafica');
+        fs.mkdirSync(tmp, {recursive: true});
+        momentos.forEach((m, i) => {
+          const txt = path.join(tmp, `t${i}.txt`);
+          fs.writeFileSync(txt, m.etiqueta);
+          ffmpegCompleto([
+            '-ss', m.t.toFixed(2), '-i', render, '-frames:v', '1',
+            '-vf', `scale=270:-2,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:textfile=${txt}:fontsize=13:fontcolor=white:box=1:boxcolor=0x07080cDD:boxborderw=5:x=5:y=5`,
+            path.join(tmp, `f${String(i).padStart(2, '0')}.jpg`),
+          ]);
+        });
+        const cols = Math.min(momentos.length, 4);
+        ffmpegCompleto([
+          '-i', path.join(tmp, 'f%02d.jpg'),
+          '-vf', `tile=${cols}x${Math.ceil(momentos.length / cols)}:padding=6:margin=6:color=0x07080c`,
+          '-frames:v', '1', path.join(dir, 'GRAFICA.jpg'),
+        ]);
+        fs.rmSync(tmp, {recursive: true, force: true});
+        console.log(`🎨 ${dir}/GRAFICA.jpg — ${momentos.length} overlays en contexto. Revisa que ninguno tape la cara ni el subtítulo.`);
+      } catch (error) {
+        console.warn(`⚠️  No se pudo armar la hoja de gráfica: ${(error as Error).message}`);
+      }
+    }
+  }
   console.log(`\n✅ ${dir}/GUION.md — léelo y abre los frames que te llamen la atención.`);
   if (mudos.length) console.log(`⚠️  Silencio digital: ${mudos.join(', ')}`);
 };

@@ -25,6 +25,7 @@ import {
 } from '../src/lib/reel';
 import {asegurar, esId, leerIndice} from './lib/biblioteca';
 import {elegir, registrarUso, resolverSfx} from './lib/sonido';
+import {asegurarCierre} from './cierre';
 
 const argv = process.argv.slice(2);
 const arg = (name: string): string | undefined => {
@@ -79,7 +80,7 @@ type PlanOverlay = {
   /** Sin `word`: segundo dentro del corte en que entra. */
   at?: number;
   duration?: number;
-  pos?: 'left' | 'right' | 'center' | 'top';
+  pos?: 'left' | 'right' | 'lower' | 'center' | 'top';
   /** Sonido de entrada: pop/click del catálogo por defecto; "ninguno" lo quita. */
   sfx?: string;
 };
@@ -98,6 +99,11 @@ type Plan = {
   ctaSub?: string;
   /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
   finalOverlaySrc?: string;
+  /**
+   * Textos del cierre de ESTE video (ver scripts/cierre.ts). Con esto el reel
+   * renderiza su propio cierre a public/cierres/<proyecto>.webm.
+   */
+  cierre?: {precio?: string; bajadaPrecio?: string; tagIzq?: string; tagDer?: string; marca?: string; bajadaMarca?: string};
   accentColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
@@ -132,6 +138,7 @@ const resolverOverlays = async (
   words: ReelWord[] | undefined,
   siguienteUi: () => SfxRef | undefined,
   proyecto: string,
+  duracionCorte: number,
 ): Promise<ReelOverlay[]> => {
   const indice = leerIndice();
   const salida: ReelOverlay[] = [];
@@ -151,6 +158,16 @@ const resolverOverlays = async (
       const w = words.find((x) => normalizar(x.text).includes(buscada));
       if (w) at = Math.max(w.start - 0.12, 0);
       else console.warn(`⚠️  "${o.word}" no aparece en los subtítulos de este corte: ${valor} entra a los ${at}s.`);
+    }
+    // Un overlay cuya palabra cae al final de un corte corto vive fracciones de
+    // segundo: en la primera prueba un sticker quedó 0,2 s en pantalla, imposible
+    // de leer. Se avisa acá, antes del render.
+    const visible = Math.min(o.duration ?? 1.4, duracionCorte - 0.2 - at);
+    if (visible < 0.6) {
+      console.warn(
+        `⚠️  ${valor} se vería ${Math.max(visible, 0).toFixed(1)}s: entra a los ${at.toFixed(1)}s de un corte de ${duracionCorte.toFixed(1)}s. ` +
+          'Engánchalo a una palabra anterior o ponlo en un corte más largo.',
+      );
     }
     const sfx = o.sfx === 'ninguno' ? undefined : o.sfx ? resolverSfx(o.sfx, proyecto) : siguienteUi();
     salida.push({
@@ -301,7 +318,13 @@ const main = async () => {
           const aca = pendientes.filter((o) => vaEn(o, palabras));
           const sobras = index === ranges.length - 1 ? pendientes.filter((o) => !aca.includes(o)) : [];
           for (const o of [...aca, ...sobras]) pendientes.splice(pendientes.indexOf(o), 1);
-          const overlays = await resolverOverlays([...aca, ...sobras], palabras, siguienteUi, project);
+          const overlays = await resolverOverlays(
+            [...aca, ...sobras],
+            palabras,
+            siguienteUi,
+            project,
+            (range.end - range.start) / speed,
+          );
           shots.push({
             src,
             overlays: overlays.length ? overlays : undefined,
@@ -362,7 +385,7 @@ const main = async () => {
       };
     }
 
-    const overlays = await resolverOverlays(item.overlays ?? [], vo.words, siguienteUi, project);
+    const overlays = await resolverOverlays(item.overlays ?? [], vo.words, siguienteUi, project, duration);
     shots.push({
       src,
       overlays: overlays.length ? overlays : undefined,
@@ -428,10 +451,12 @@ const main = async () => {
 
   // El cierre lo dibuja HyperFrames si el asset existe; si no, Remotion cae al
   // cierre de texto y el pipeline sigue funcionando sin HyperFrames instalado.
-  const finalOverlaySrc =
-    plan.finalOverlaySrc && fs.existsSync(path.join('public', plan.finalOverlaySrc))
-      ? plan.finalOverlaySrc
-      : undefined;
+  // Un plan con "cierre" trae sus propios textos: se renderiza (si falta o
+  // quedó viejo) a public/cierres/<proyecto>.webm. Los planes anteriores
+  // siguen usando el `finalOverlaySrc` que tenían.
+  const cierrePropio = plan.cierre && !flag('dry-run') ? asegurarCierre(planPath) : undefined;
+  const pedido = cierrePropio ?? plan.finalOverlaySrc;
+  const finalOverlaySrc = pedido && fs.existsSync(path.join('public', pedido)) ? pedido : undefined;
   if (plan.finalOverlaySrc && !finalOverlaySrc) {
     console.warn(`⚠️  Falta public/${plan.finalOverlaySrc}. Corre \`npm run cierre\`. Se usa el cierre de texto.`);
   }

@@ -12,6 +12,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {probe} from './lib/media';
+import {esId, leerIndice} from './lib/biblioteca';
+import {leerCatalogo} from './sfxCatalog';
 
 const argv = process.argv.slice(2);
 const arg = (name: string): string | undefined => {
@@ -30,6 +32,9 @@ type PlanClip = {
   ignoreSpeech?: boolean;
   /** Escape para cortar a propósito por la mitad de una palabra. */
   allowMidWordCut?: boolean;
+  sfx?: string;
+  voiceover?: string;
+  overlays?: Array<{icon?: string; sticker?: string; photo?: string; sfx?: string; word?: string}>;
 };
 
 type Palabra = {text: string; start: number; end: number};
@@ -42,6 +47,9 @@ type Plan = {
   /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
   finalOverlaySrc?: string;
   clips: PlanClip[];
+  /** Clips del MANIFEST que se miraron y se dejaron fuera, con la razón. */
+  descartados?: Array<{file: string; razon: string}>;
+  sonido?: Record<string, string>;
 };
 
 const problemas: string[] = [];
@@ -200,8 +208,81 @@ const main = () => {
     }
   }
 
+  // --- Gráfica y sonido fijados ------------------------------------------
+  // El render no busca en internet ni decide: todo tiene que venir fijado por
+  // `npm run assets`. Si no, el reel sale distinto cada vez que se renderiza.
+  const indice = new Set(leerIndice().map((a) => a.id));
+  const catalogo = new Set(leerCatalogo().map((e) => e.id));
+  const revisarSfx = (valor: string | undefined, donde: string) => {
+    if (!valor || valor === 'ninguno' || valor.startsWith('@')) return;
+    if (valor.startsWith('buscar:')) {
+      problemas.push(`${donde}: sonido "${valor}" sin fijar. Corre \`npm run assets -- --plan ${planPath}\`.`);
+    } else if (valor.startsWith('sfx:')) {
+      if (!catalogo.has(valor.slice(4))) problemas.push(`${donde}: ${valor} no está en el catálogo de sonidos.`);
+    } else if (!fs.existsSync(path.join('public', 'sfx', valor))) {
+      problemas.push(`${donde}: no existe public/sfx/${valor}. Corre \`npm run sfx\`.`);
+    }
+  };
+  for (const [i, clip] of (plan.clips ?? []).entries()) {
+    const donde = `clip ${i + 1} (${clip.file})`;
+    revisarSfx(clip.sfx, donde);
+    for (const o of clip.overlays ?? []) {
+      const valores = [o.icon, o.sticker, o.photo].filter(Boolean) as string[];
+      if (valores.length !== 1) {
+        problemas.push(`${donde}: cada overlay lleva UNO de icon/sticker/photo (este tiene ${valores.length}).`);
+        continue;
+      }
+      if (!esId(valores[0]) || !indice.has(valores[0]) && !valores[0].startsWith('emoji:')) {
+        problemas.push(`${donde}: "${valores[0]}" sin fijar. Corre \`npm run assets -- --plan ${planPath}\`.`);
+      }
+      revisarSfx(o.sfx, `${donde} (overlay)`);
+    }
+    if (clip.voiceover) {
+      const vo = `vo__${path.basename(clip.voiceover, path.extname(clip.voiceover))}`;
+      if (!fs.existsSync(path.join(projectDir, clip.voiceover))) {
+        problemas.push(`${donde}: no existe la voz en off ${clip.voiceover}.`);
+      } else if (!fs.existsSync(path.join(audioDir, `${vo}.json`))) {
+        problemas.push(`${donde}: la voz en off no está transcrita. Corre \`npm run next\` (o audio + transcribe).`);
+      }
+    }
+  }
+  for (const [k, v] of Object.entries(plan.sonido ?? {})) revisarSfx(v, `sonido.${k}`);
+
+  // --- La compuerta de ingreso (regla del repositorio) --------------------
+  // No se empieza un proyecto sin haber bajado Y mirado todo lo que hay en
+  // Drive. En el Video 46 tres clips quedaron sin mirar hasta que el video ya
+  // estaba hecho, y eran el mejor material. Acá no depende de acordarse.
+  const manifiestoPath = path.join(projectDir, 'MANIFEST.json');
+  if (fs.existsSync(manifiestoPath)) {
+    const m = JSON.parse(fs.readFileSync(manifiestoPath, 'utf8')) as {
+      compuerta: {ok: boolean; problemas: string[]};
+      digest?: {hojas: number};
+      enDrive: {clips: number};
+      archivos: Array<{tipo: string; local: string; ok: boolean}>;
+    };
+    if (!m.compuerta.ok) {
+      problemas.push(`La compuerta de ingreso no pasó: ${m.compuerta.problemas.join(' · ')}`);
+    }
+    const clipsManifiesto = m.archivos.filter((a) => a.tipo === 'clip').map((a) => path.basename(a.local));
+    if (!m.digest || m.digest.hojas < clipsManifiesto.length) {
+      problemas.push('Falta el digest (hojas de contacto de cada clip): corre `npm run digest -- --project <slug>` y míralas antes de planear.');
+    }
+    const enPlan = new Set((plan.clips ?? []).map((c) => c.file));
+    const descartados = new Set((plan.descartados ?? []).map((d) => d.file));
+    const sinDecidir = clipsManifiesto.filter((f) => !enPlan.has(f) && !descartados.has(f));
+    if (sinDecidir.length) {
+      problemas.push(
+        `${sinDecidir.length} de ${m.enDrive.clips} clips no están en el plan ni en "descartados": ${sinDecidir.join(', ')}. ` +
+          'Cada clip se usa o se descarta con su razón — así no se pierde material sin mirarlo.',
+      );
+    }
+    for (const d of plan.descartados ?? []) {
+      if (!d.razon?.trim()) problemas.push(`"${d.file}" está descartado sin razón. Escribe por qué.`);
+    }
+  }
+
   // --- Material sin usar --------------------------------------------------
-  if (fs.existsSync(plan.dir)) {
+  if (fs.existsSync(plan.dir) && !fs.existsSync(manifiestoPath)) {
     const disponibles = fs
       .readdirSync(plan.dir)
       .filter((f) => ['.mov', '.mp4', '.m4v'].includes(path.extname(f).toLowerCase()));

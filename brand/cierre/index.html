@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-composition-variables='[{"id": "precio", "type": "string", "label": "Cifra que responde el gancho (vacío = sin sello)", "default": "$11.000"}, {"id": "bajadaPrecio", "type": "string", "label": "Bajada de la cifra", "default": "TABLAS + CONECTORES IMPRESOS"}, {"id": "tagIzq", "type": "string", "label": "Etiqueta esquina izquierda (vacío = no va)", "default": "SIN SER CARPINTERO"}, {"id": "tagDer", "type": "string", "label": "Etiqueta esquina derecha (vacío = no va)", "default": "UN TALADRO Y LISTO"}, {"id": "marca", "type": "string", "label": "Marca", "default": "Next Layer"}, {"id": "bajadaMarca", "type": "string", "label": "Bajada de marca", "default": "IMPRESIÓN 3D"}, {"id": "primario", "type": "color", "label": "Azul principal", "default": "#0047AB"}, {"id": "secundario", "type": "color", "label": "Azul eléctrico", "default": "#00D4FF"}, {"id": "acento", "type": "color", "label": "Naranja de acento / CTA", "default": "#FF6600"}]'>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
@@ -12,7 +12,7 @@
       #root{position:relative;width:1080px;height:1920px}
       .clip{position:absolute;inset:0}
 
-      #velo{background:linear-gradient(180deg,rgba(6,8,14,0) 0%,rgba(6,8,14,.35) 38%,rgba(6,8,14,.9) 100%);opacity:0}
+      #velo{background:linear-gradient(180deg,rgba(2,14,40,0) 0%,rgba(2,14,40,.38) 38%,rgba(2,12,34,.92) 100%);opacity:0}
 
       .contorno{text-shadow:
         6px 6px 0 #07080c,-6px -6px 0 #07080c,6px -6px 0 #07080c,-6px 6px 0 #07080c,
@@ -24,13 +24,13 @@
          todo al centro deja el cuadro apretado arriba y vacio abajo. */
       #tag-sin{
         position:absolute;top:250px;left:0;
-        background:#ff8a3d;color:#07080c;
+        background:var(--primario,#0047AB);color:#fff;
         font-family:"Inter",sans-serif;font-weight:900;font-size:38px;letter-spacing:2px;
         padding:16px 30px 16px 56px;border-radius:0 14px 14px 0;
       }
       #tag-taladro{
         position:absolute;bottom:430px;right:0;
-        background:#07080c;color:#fff;border-right:10px solid #ff8a3d;
+        background:#07080c;color:#fff;border-right:10px solid var(--secundario,#00D4FF);
         font-family:"Inter",sans-serif;font-weight:900;font-size:36px;letter-spacing:2px;
         padding:16px 46px 16px 30px;border-radius:14px 0 0 14px;
       }
@@ -39,15 +39,15 @@
       #precio-grupo{top:640px}
       #marca-grupo{top:820px}
 
-      .barra{width:300px;height:14px;background:#ff8a3d;border-radius:999px}
+      .barra{width:300px;height:14px;background:var(--secundario,#00D4FF);border-radius:999px}
       #barra-precio{margin:22px 0 20px}
       #barra-marca{margin:0 0 26px}
 
       #precio{font-family:"Anton",sans-serif;font-size:250px;line-height:.92;color:#fff;letter-spacing:-3px}
       #bajada-precio{font-family:"Inter",sans-serif;font-weight:800;font-size:42px;letter-spacing:2px;
-        color:#ff8a3d;text-align:center;text-shadow:4px 4px 0 #07080c,-4px -4px 0 #07080c,0 4px 22px rgba(0,0,0,.9)}
+        color:var(--secundario,#00D4FF);text-align:center;text-shadow:4px 4px 0 #07080c,-4px -4px 0 #07080c,0 4px 22px rgba(0,0,0,.9)}
       #marca{font-family:"Anton",sans-serif;font-size:146px;line-height:1;color:#fff;text-transform:uppercase;letter-spacing:1px}
-      #bajada-marca{font-family:"Inter",sans-serif;font-weight:800;font-size:48px;letter-spacing:3px;color:#ff8a3d;margin-top:20px;
+      #bajada-marca{font-family:"Inter",sans-serif;font-weight:800;font-size:48px;letter-spacing:3px;color:var(--secundario,#00D4FF);margin-top:20px;
         text-shadow:3px 3px 0 #07080c,-3px -3px 0 #07080c,0 4px 20px rgba(0,0,0,.85)}
     </style>
   </head>
@@ -56,23 +56,38 @@
       <div id="capa" class="clip" data-start="0" data-duration="3.2">
         <div id="velo" class="clip"></div>
 
-        <div id="tag-sin">SIN SER CARPINTERO</div>
+        <div id="tag-sin" data-var-text="tagIzq">SIN SER CARPINTERO</div>
         <div id="precio-grupo" class="centro">
-          <div id="precio" class="contorno">$11.000</div>
+          <div id="precio" data-var-text="precio" class="contorno">$11.000</div>
           <div id="barra-precio" class="barra"></div>
-          <div id="bajada-precio">TABLAS + CONECTORES IMPRESOS</div>
+          <div id="bajada-precio" data-var-text="bajadaPrecio">TABLAS + CONECTORES IMPRESOS</div>
         </div>
-        <div id="tag-taladro">UN TALADRO Y LISTO</div>
+        <div id="tag-taladro" data-var-text="tagDer">UN TALADRO Y LISTO</div>
 
         <div id="marca-grupo" class="centro">
-          <div id="barra-marca" class="barra"></div>
-          <div id="marca" class="contorno">Next Layer</div>
-          <div id="bajada-marca">IMPRESIÓN 3D</div>
+          <div id="barra-marca" class="barra" style="background:var(--acento,#FF6600)"></div>
+          <div id="marca" data-var-text="marca" class="contorno">Next Layer</div>
+          <div id="bajada-marca" data-var-text="bajadaMarca">IMPRESIÓN 3D</div>
         </div>
       </div>
     </div>
 
     <script>
+      // Cada video trae sus textos desde el plan (npm run cierre -- --plan ...).
+      // Lo que venga vacío no va: una etiqueta sin texto sería una pastilla de
+      // color vacía en pantalla. Se lee una vez, antes de armar la línea de tiempo.
+      const vars = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+      const ocultarSiVacio = (id, clave) => {
+        const valor = vars[clave];
+        if (typeof valor === 'string' && !valor.trim()) document.getElementById(id).style.display = 'none';
+      };
+      ocultarSiVacio('tag-sin', 'tagIzq');
+      ocultarSiVacio('tag-taladro', 'tagDer');
+      ocultarSiVacio('bajada-precio', 'bajadaPrecio');
+      if (typeof vars.precio === 'string' && !vars.precio.trim()) {
+        document.getElementById('precio-grupo').style.display = 'none';
+      }
+
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({paused: true});
       window.__timelines['cierre'] = tl;

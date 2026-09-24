@@ -72,14 +72,20 @@ export const EfectoEn: React.FC<{
 const DURACION: Record<ReelOverlay['tipo'], number> = {icon: 1.4, sticker: 1.9, photo: 1.9};
 
 /**
- * Posiciones elegidas mirando frames, no a ojo: arriba lo ocupa el gancho los
- * primeros 2,2 s, abajo el subtítulo, y el sujeto queda al centro-derecha en
- * casi todos los cortes. Por eso el default del ícono es la banda izquierda a
- * media altura, y el del sticker la derecha, más arriba.
+ * Posiciones elegidas mirando frames renderizados, no a ojo. En un reel
+ * hablado la cara vive en el tercio superior-medio (y ≈ 480–900), arriba de
+ * eso va el gancho los primeros 2,2 s, y abajo el subtítulo (y ≈ 1540).
+ *
+ * La primera versión ponía las fotos arriba y los stickers a la derecha a la
+ * altura de la cara: en el primer render de prueba la foto tapaba la cara
+ * entera y el sticker quedaba pegado a la mandíbula. Por eso los defaults
+ * bajaron al torso, que se puede tapar sin perder nada. Si un encuadre pide
+ * otra cosa, el plan elige `pos`; `npm run watch` deja la hoja para verificarlo.
  */
 const CAJA: Record<NonNullable<ReelOverlay['pos']>, React.CSSProperties> = {
-  left: {alignItems: 'flex-start', justifyContent: 'flex-start', padding: '820px 0 0 74px'},
-  right: {alignItems: 'flex-end', justifyContent: 'flex-start', padding: '640px 60px 0 0'},
+  left: {alignItems: 'flex-start', justifyContent: 'flex-start', padding: '900px 0 0 74px'},
+  right: {alignItems: 'flex-end', justifyContent: 'flex-start', padding: '980px 60px 0 0'},
+  lower: {alignItems: 'center', justifyContent: 'flex-start', padding: '980px 0 0 0'},
   center: {alignItems: 'center', justifyContent: 'center'},
   top: {alignItems: 'center', justifyContent: 'flex-start', padding: '250px 0 0 0'},
 };
@@ -130,7 +136,7 @@ const Pieza: React.FC<{overlay: ReelOverlay; color: string}> = ({overlay, color}
     extrapolateRight: 'clamp',
   });
   const escala = interpolate(entra, [0, 1], [0.4, 1]);
-  const pos = overlay.pos ?? (overlay.tipo === 'icon' ? 'left' : overlay.tipo === 'photo' ? 'top' : 'right');
+  const pos = overlay.pos ?? (overlay.tipo === 'icon' ? 'left' : overlay.tipo === 'photo' ? 'lower' : 'right');
   // El contorno oscuro es lo que lo hace legible sobre madera, pared blanca o
   // un mueble rojo sin tener que ponerle una caja detrás.
   const sombra = 'drop-shadow(0 0 10px rgba(7,8,12,.95)) drop-shadow(0 6px 26px rgba(0,0,0,.8))';
@@ -170,8 +176,8 @@ const Pieza: React.FC<{overlay: ReelOverlay; color: string}> = ({overlay, color}
       <Img
         src={src(overlay.src)}
         style={{
-          width: 640,
-          maxHeight: 620,
+          width: 600,
+          maxHeight: 500,
           objectFit: 'cover',
           borderRadius: 26,
           border: '10px solid white',
