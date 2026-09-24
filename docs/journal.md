@@ -644,3 +644,41 @@ blindado: `status` ya no sugiere re-renderizarlo y `npm run reel` se niega sin
   bobinas): material corto, puede que haya que preguntar qué video es.
 - **Video 45**: confirmar con Veronica por el proyecto de Premiere.
 - Subir a Drive sigue necesitando credenciales con escritura (`publish-drive`).
+
+---
+
+## Video 41 · "5 cosas sobre mí" — primer video hecho con el pipeline nuevo
+
+Veronica: *"es un viral típico, 5 cosas sobre mí, pero es un chiste: en vez de decir
+5 cosas sobre mí, aparezco con 5 cosas literalmente sobre mí. Corto y cómico. Debería
+decir 5."*
+
+**Material** (compuerta OK, 2 clips, los dos mirados en su hoja):
+- `DSCF7555` tiene la línea dos veces, transcrita aislada: 4,2–5,2 s "**cuatro** cosas
+  sobre mí" (4 dedos) y 10,8–11,95 s "**cinco** cosas sobre mí". Va la de cinco. Entre
+  medio hay algo bajo e ininteligible que no se usa.
+- `DSCF7556` es el remate: acostado en la alfombra, filmado desde arriba, con 5 cosas
+  encima (bobina naranja, bobina negra, trípode, recipiente rojo, algo dorado en la
+  cabeza). La cámara grabó apaisado sin metadato de giro: se rota -90°. Tramo quieto
+  3,2–6,4 s.
+
+**Montaje (4,7 s)**: gancho "5 COSAS SOBRE MÍ" mientras muestra la mano abierta (sin
+subtítulo: el gancho ya lo dice) → golpe grave sutil en el corte al cenital → 1️⃣–5️⃣
+(Noto) cada 0,25 s con su pop, de abajo hacia la cabeza → marca (cierre propio, solo
+marca: un precio sería texto que el video no dice).
+
+**Lo que se agregó al sistema por este video** (sirve para todos): `rotate` por clip,
+overlays con `x`/`y`/`size`, `subtitulos: false`, el gancho no pasa del primer corte,
+sin whoosh en el corte del reveal cuando hay golpe, y el cierre solo se re-renderiza
+si cambian sus textos (antes, con cualquier cambio del plan).
+
+**Errores pescados antes de entregar**: los números 1 y 2 quedaban sobre las patas del
+trípode (se calibró sobre el render con grilla; el proxy no coincide por el zoom) y los
+pops quedaban 20 dB bajo la voz — inaudibles en un celular. Medido aislando el audio sin
+música; ahora pican entre −4,6 y −10,7 dBFS, sobre un fondo de −18 a −41.
+
+**Verificado**: fonts-check, check, tsc, sync (audio −0,056 s, subtítulos dentro del
+tope), `watch` escucha "¡Cinco cosas sobre mí!", `GRAFICA.jpg` con los cinco números en
+su objeto.
+
+**Pendiente**: que Veronica lo apruebe → `videos.json` "entregado". Queda en "en-curso".

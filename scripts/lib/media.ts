@@ -73,15 +73,28 @@ export const probe = (file: string): MediaInfo => {
  * graban 4K horizontal + metadato de giro), limita el lado corto a 1080 px y
  * normaliza los fps. Sin esto, renderizar HEVC 4K de 10 bits es lentísimo.
  */
+/**
+ * Giro manual en grados, sentido horario. Hace falta en las tomas cenitales:
+ * con la cámara apuntando al suelo el sensor no sabe dónde es arriba y graba
+ * apaisado SIN metadato de giro (DSCF7556 del Video 41: una persona acostada
+ * quedaba de costado y el recorte 9:16 le cortaba la cabeza y los pies).
+ */
+export type Giro = 90 | -90 | 270 | 180;
+
+const filtroGiro = (giro?: Giro) =>
+  giro === 90 ? ['transpose=1'] : giro === -90 || giro === 270 ? ['transpose=2'] : giro === 180 ? ['hflip', 'vflip'] : [];
+
 export const normalize = (
   source: string,
   targetDir: string,
   fps = 30,
   keepAudio = false,
+  giro?: Giro,
 ): string => {
   const target = path.join(
     targetDir,
-    `${path.basename(source, path.extname(source))}.mp4`,
+    // Otro nombre para el proxy girado: jamás se reusa uno sin girar por error.
+    `${path.basename(source, path.extname(source))}${giro ? `__r${(giro + 360) % 360}` : ''}.mp4`,
   );
 
   // Corrección de color para igualar las tomas entre sí, si `npm run color`
@@ -118,6 +131,7 @@ export const normalize = (
     source,
     '-vf',
     [
+      ...filtroGiro(giro),
       "scale='if(gt(iw,ih),-2,1080)':'if(gt(iw,ih),1080,-2)'",
       ...(colorFilter ? [colorFilter] : []),
     ].join(','),

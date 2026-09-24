@@ -15,8 +15,15 @@ import path from 'node:path';
 import type {SfxRef} from '../../src/lib/reel';
 import {CATALOGO, leerCatalogo, type Efecto, type Rol} from '../sfxCatalog';
 
-/** Nivel objetivo por rol, en el mismo dBFS relativo que mide el catálogo. */
-const OBJETIVO: Record<Rol, number> = {whoosh: -22, pop: -24, click: -26, impact: -17, riser: -22, foley: -20};
+/**
+ * Nivel objetivo por rol, en el mismo dBFS relativo que mide el catálogo.
+ *
+ * Pops y clicks van más arriba que el resto: duran décimas de segundo y el oído
+ * los percibe mucho más bajos que su RMS. Con -24/-26 quedaban 20 dB bajo la
+ * voz después del volumen general de efectos — medido en el Video 41, el conteo
+ * del 1 al 5 no se oía en un parlante de celular.
+ */
+const OBJETIVO: Record<Rol, number> = {whoosh: -22, pop: -12, click: -13, impact: -17, riser: -22, foley: -20};
 
 const hash = (t: string) => [...t].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
 

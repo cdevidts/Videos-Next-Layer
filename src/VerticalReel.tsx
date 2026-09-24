@@ -366,7 +366,7 @@ const Shot: React.FC<{
         <Overlay key={`${overlay.src}-${i}`} overlay={overlay} color={secondaryColor} sfxVolume={sfxVolume} />
       ))}
 
-      {shot.words?.length ? (
+      {shot.hideCaptions ? null : shot.words?.length ? (
         <KaraokeCaption shot={shot} accentColor={accentColor} />
       ) : shot.caption ? (
         <StaticCaption text={shot.caption} accentColor={accentColor} />
@@ -477,7 +477,9 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
   const frame = useCurrentFrame();
   const {durationInFrames, fps} = useVideoConfig();
 
-  const hookFrames = Math.round(fps * 2.2);
+  // El gancho es del primer corte: si sigue en pantalla cuando llega el segundo,
+  // tapa lo que viene — y en un video corto lo que viene es el remate.
+  const hookFrames = Math.min(Math.round(fps * 2.2), shots[0] ? shotFrames(shots[0], fps) : Infinity);
   const ctaFrames = Math.round(fps * 2.4);
   const ctaStart = durationInFrames - ctaFrames;
   const ctaIn = spring({
@@ -591,7 +593,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
             // El corte del reveal se lo queda su propio sonido. Un whoosh corto
             // encima de un swell largo se oyen como dos cosas peleando por el
             // mismo instante, justo donde el video tiene que respirar.
-            .filter(({index}) => !(index === cuts.length - 1 && shots[shots.length - 1]?.sfx))
+            .filter(({index}) => !(index === cuts.length - 1 && (shots[shots.length - 1]?.sfx || sfx?.impact)))
             .map(({start, index}) => {
               // Rotan, y además varía el volumen: aun con efectos distintos, el
               // mismo nivel en cada corte se oye mecánico.

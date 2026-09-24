@@ -412,7 +412,10 @@
   "colaSeg": 0.1,
   "nivelDb": -15,
   "brilloHz": 677,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "mixkit-1487",
@@ -1376,7 +1379,10 @@
   "colaSeg": 0.03,
   "nivelDb": -10.5,
   "brilloHz": 902,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "mixkit-2364",
@@ -1427,7 +1433,9 @@
   "nivelDb": -15.8,
   "brilloHz": 3579,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "mixkit-2925",
@@ -1859,7 +1867,10 @@
   "colaSeg": 0.01,
   "nivelDb": -17.3,
   "brilloHz": 3682,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "mixkit-2569",
@@ -1994,7 +2005,10 @@
   "colaSeg": 0.03,
   "nivelDb": -20.9,
   "brilloHz": 982,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "mixkit-2995",
@@ -2427,7 +2441,10 @@
   "colaSeg": 1.283,
   "nivelDb": -6.7,
   "brilloHz": 2004,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "mixkit-2180",
@@ -2928,7 +2945,10 @@
   "colaSeg": 0.461,
   "nivelDb": -16.3,
   "brilloHz": 1856,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "lots-fs-184325",
@@ -2976,7 +2996,10 @@
   "colaSeg": 0.06,
   "nivelDb": -17.4,
   "brilloHz": 2134,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "lots-fs-219095",
@@ -3058,7 +3081,10 @@
   "colaSeg": 0.12,
   "nivelDb": -12.5,
   "brilloHz": 2150,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "lots-fs-850167",
@@ -3074,7 +3100,10 @@
   "colaSeg": 0.13,
   "nivelDb": -11.5,
   "brilloHz": 1534,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "lots-fs-850168",
@@ -3090,7 +3119,10 @@
   "colaSeg": 0.12,
   "nivelDb": -11.6,
   "brilloHz": 2284,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "lots-fs-119107",
@@ -3175,7 +3207,9 @@
   "nivelDb": -14.3,
   "brilloHz": 1282,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "lots-fs-164469",
@@ -3876,7 +3910,10 @@
   "colaSeg": 0.331,
   "nivelDb": -19.6,
   "brilloHz": 810,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-41"
+  ]
  },
  {
   "id": "lots-fs-510246",

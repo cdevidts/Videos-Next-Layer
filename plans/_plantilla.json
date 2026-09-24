@@ -17,17 +17,35 @@
       "speed": 1.15,
       "_ventana": "Tiempos de la FUENTE. Los silencios se cortan solos. check frena si la ventana cierra por la mitad de una palabra.",
       "overlays": [
-        {"icon": "ruler", "word": "medidas"},
-        {"sticker": "emoji:🔥", "word": "perfecto", "pos": "right"}
+        {
+          "icon": "ruler",
+          "word": "medidas"
+        },
+        {
+          "sticker": "emoji:🔥",
+          "word": "perfecto",
+          "pos": "right"
+        },
+        {
+          "icon": "noto:keycap-1",
+          "at": 0.3,
+          "x": 40,
+          "y": 55,
+          "size": 120
+        }
       ],
-      "_overlays": "UNO de icon/sticker/photo por entrada. 'word' lo engancha al instante en que se dice. pos: left | right | lower | center | top. sfx de entrada automatico; 'ninguno' lo quita."
+      "_overlays": "UNO de icon/sticker/photo por entrada. 'word' lo engancha al instante en que se dice. pos: left | right | lower | center | top. sfx de entrada automatico; 'ninguno' lo quita. x/y (% del cuadro) clavan el elemento en un punto exacto para senalar algo que se ve; se calibran sobre el RENDER con grilla, no sobre el proxy.",
+      "subtitulos": false,
+      "_subtitulos": "false = la voz suena pero no se dibuja el subtitulo. Para cuando el gancho ya pone esas mismas palabras en grande."
     },
     {
       "file": "CLIP_BROLL.MOV",
       "startFromSeconds": 1,
       "durationInSeconds": 2.5,
       "sfx": "buscar:3d printer",
-      "_sfx": "Solo si corresponde a lo que se ve. 'buscar:<terminos en ingles>' busca algo especifico; '@impact' toma del catalogo."
+      "_sfx": "Solo si corresponde a lo que se ve. 'buscar:<terminos en ingles>' busca algo especifico; '@impact' toma del catalogo.",
+      "rotate": -90,
+      "_rotate": "Solo si en la hoja del digest el mundo se ve de costado: las tomas cenitales (camara al suelo) se graban apaisadas SIN metadato de giro. Grados en sentido horario: 90, -90, 180."
     },
     {
       "file": "CLIP_BROLL_2.MOV",
@@ -35,11 +53,19 @@
       "durationInSeconds": 4,
       "voiceover": "Sonido/Audios/VO1.wav",
       "_voiceover": "Voz en off de Sonido/ sobre un clip sin audio relevante. Pone el audio y los subtitulos; el clip pone la imagen.",
-      "overlays": [{"photo": "3d printer filament", "word": "filamento"}]
+      "overlays": [
+        {
+          "photo": "3d printer filament",
+          "word": "filamento"
+        }
+      ]
     }
   ],
   "descartados": [
-    {"file": "CLIP_REPETIDO.MOV", "razon": "Misma toma que CLIP_HABLADO con peor audio"}
+    {
+      "file": "CLIP_REPETIDO.MOV",
+      "razon": "Misma toma que CLIP_HABLADO con peor audio"
+    }
   ],
   "_descartados": "Todo clip del MANIFEST va al plan o aca, con razon. check no deja pasar un clip sin decidir.",
   "sonido": {},

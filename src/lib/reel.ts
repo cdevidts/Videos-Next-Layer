@@ -46,6 +46,12 @@ export type ReelShot = {
    * de esas palabras salen del archivo corregido, no del audio montado.
    */
   wordsLocked?: boolean;
+  /**
+   * No dibuja el subtítulo de este corte (la voz suena igual). Para cuando el
+   * gancho ya pone esas mismas palabras en grande: dos veces lo mismo en pantalla
+   * es ruido.
+   */
+  hideCaptions?: boolean;
 };
 
 /**
@@ -69,6 +75,14 @@ export type ReelOverlay = {
   atSeconds: number;
   durationSeconds?: number;
   pos?: 'left' | 'right' | 'lower' | 'center' | 'top';
+  /**
+   * Punto exacto en % del cuadro (centro del elemento). Gana sobre `pos`. Sirve
+   * para señalar algo que se ve: un número sobre cada objeto, una flecha.
+   */
+  x?: number;
+  y?: number;
+  /** Tamaño en px (lado). Por defecto 190 para íconos y 320 para stickers. */
+  size?: number;
   /** Íconos de sets de color (emoji): se muestran tal cual, sin teñir. */
   multicolor?: boolean;
   /** Pop o click que suena al entrar. */

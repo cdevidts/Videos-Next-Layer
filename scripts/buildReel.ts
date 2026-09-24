@@ -13,7 +13,7 @@ import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {normalize, probe, run} from './lib/media';
+import {normalize, probe, run, type Giro} from './lib/media';
 import {syncCaptions} from './syncCaptions';
 import {
   reelDurationInFrames,
@@ -48,6 +48,14 @@ type PlanClip = {
   /** Gráfica que puntúa el corte (íconos, stickers, fotos). Ver PlanOverlay. */
   overlays?: PlanOverlay[];
   /**
+   * Giro manual, grados en sentido horario (90, -90, 180). Para tomas cenitales
+   * que la cámara grabó apaisadas sin metadato de giro. Mira la hoja del digest:
+   * si el mundo se ve de costado, va esto.
+   */
+  rotate?: Giro;
+  /** false: la voz suena pero el subtítulo no se dibuja (el gancho ya dice lo mismo). */
+  subtitulos?: boolean;
+  /**
    * Voz en off de Sonido/ que suena sobre este clip, relativa a la carpeta del
    * proyecto (ej. "Sonido/Audios/VO1.wav"). Para B-roll o planos donde no se
    * habla a cámara. Los subtítulos salen de su transcripción.
@@ -81,6 +89,10 @@ type PlanOverlay = {
   at?: number;
   duration?: number;
   pos?: 'left' | 'right' | 'lower' | 'center' | 'top';
+  /** Punto exacto en % del cuadro; gana sobre `pos`. Para señalar algo que se ve. */
+  x?: number;
+  y?: number;
+  size?: number;
   /** Sonido de entrada: pop/click del catálogo por defecto; "ninguno" lo quita. */
   sfx?: string;
 };
@@ -176,6 +188,9 @@ const resolverOverlays = async (
       atSeconds: Number(at.toFixed(3)),
       durationSeconds: o.duration,
       pos: o.pos,
+      x: o.x,
+      y: o.y,
+      size: o.size,
       multicolor: asset.multicolor,
       sfx,
     });
@@ -276,7 +291,7 @@ const main = async () => {
     if (!fs.existsSync(source)) throw new Error(`No existe el clip del plan: ${source}`);
 
     const name = path.basename(item.file, path.extname(item.file));
-    const proxy = normalize(source, normalizedDir, fps);
+    const proxy = normalize(source, normalizedDir, fps, false, item.rotate);
     const info = probe(proxy);
     const src = publicPath(proxy);
 
@@ -354,6 +369,7 @@ const main = async () => {
             speed: speed === 1 ? undefined : speed,
             sfx: index === 0 ? resolverSfx(item.sfx, project) : undefined,
             wordsLocked: transcript.correctedByHuman || undefined,
+            hideCaptions: item.subtitulos === false || undefined,
           });
         }
         const cut = (windowEnd - windowStart) - ranges.reduce((s, r) => s + (r.end - r.start), 0);

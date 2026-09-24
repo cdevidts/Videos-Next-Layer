@@ -44,12 +44,6 @@ export const asegurarCierre = (planPath: string, forzar = false): string | undef
   const relativo = archivoCierre(proyecto);
   const salida = path.join(RAIZ, 'public', relativo);
 
-  const alDia =
-    fs.existsSync(salida) &&
-    fs.statSync(salida).mtimeMs >= fs.statSync(HTML).mtimeMs &&
-    fs.statSync(salida).mtimeMs >= fs.statSync(planPath).mtimeMs;
-  if (alDia && !forzar) return relativo;
-
   const vars = {
     // Vacío explícito para lo que el plan no trae: si no, entra el default
     // del HTML, que es el texto del Video 46.
@@ -64,8 +58,18 @@ export const asegurarCierre = (planPath: string, forzar = false): string | undef
     acento: plan.accentColor ?? '#FF6600',
   };
   const varsFile = path.join(RAIZ, 'out', `cierre-${proyecto}.vars.json`);
+  const varsJson = `${JSON.stringify(vars, null, 2)}\n`;
+  // Se rehace solo si cambian sus textos o colores, o el HTML. Comparar contra
+  // la fecha del plan lo rehacía con cualquier ajuste de un overlay: 25 s de
+  // render por nada.
+  const alDia =
+    fs.existsSync(salida) &&
+    fs.existsSync(varsFile) &&
+    fs.readFileSync(varsFile, 'utf8') === varsJson &&
+    fs.statSync(salida).mtimeMs >= fs.statSync(HTML).mtimeMs;
+  if (alDia && !forzar) return relativo;
   fs.mkdirSync(path.dirname(varsFile), {recursive: true});
-  fs.writeFileSync(varsFile, `${JSON.stringify(vars, null, 2)}\n`);
+  fs.writeFileSync(varsFile, varsJson);
   fs.mkdirSync(path.dirname(salida), {recursive: true});
 
   console.log(`🎬 Cierre de ${proyecto} (HyperFrames): ${[vars.tagIzq, vars.precio, vars.tagDer].filter(Boolean).join(' · ') || 'solo marca'}`);

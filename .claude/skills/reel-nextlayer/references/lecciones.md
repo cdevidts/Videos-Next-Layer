@@ -37,8 +37,14 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   permite a propósito.
 - **Orientación**: los `.MOV` reportan 3840x2160 y son verticales por metadato de
   rotación; `probe` ya lo resuelve. Un clip que queda horizontal se recorta al
-  centro en 9:16; si en la hoja el mundo se ve de costado, se grabó con la cámara
-  girada.
+  centro en 9:16 — salvo que sea una **toma cenital**: con la cámara apuntando al
+  suelo el sensor no sabe dónde es arriba y graba apaisado SIN metadato. En el
+  Video 41 una persona acostada quedaba de costado y el recorte le cortaba la
+  cabeza y los pies, o sea el chiste. Va `"rotate"` en el plan.
+- **Una línea dicha dos veces** es común: en el Video 41 la toma A decía "cuatro
+  cosas" y la B "cinco". Transcribe cada tramo con voz AISLADO antes de elegir;
+  whisper sobre el clip entero había puesto "Cinco" en un silencio y el subtítulo
+  lo habría perdido.
 
 ## Subtítulos y sincronía
 
@@ -79,6 +85,10 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   sticker quedaba en la mandíbula. Los defaults van al torso; verifica con
   `GRAFICA.jpg` de `npm run watch`.
 - **Un overlay que vive menos de 0,6 s no existe.** `buildReel` avisa.
+- **Para señalar algo que se ve (x/y), calibra sobre el RENDER con grilla**, no
+  sobre el proxy: el reel aplica un zoom leve al plano. En el Video 41 los números
+  de las bobinas quedaron sobre las patas del trípode y no se sabía qué numeraban.
+  Y ponlos en el borde del objeto o encima si es grande, nunca entre dos objetos.
 - **El cierre lo dibuja HyperFrames**, no React: `brand/cierre/index.html` con
   variables, renderizado a WebM/VP9 con alfa por video (`public/cierres/`), y
   Remotion lo compone con `<OffthreadVideo transparent>`. Sí carga Anton (una
@@ -100,6 +110,10 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
 - **Un efecto que no corresponde a la imagen se nota como error**: un taladro
   sonando sobre un plano sin taladro. Si el plano pide algo específico,
   `"buscar:<términos>"`; si el automático no calza, `"ninguno"`.
+- **Un pop tiene que oírse.** Duran décimas de segundo y el oído los percibe
+  mucho más bajos que su RMS: con el objetivo viejo quedaban 20 dB bajo la voz y
+  el conteo del Video 41 no se oía. Para verificar sonidos cortos, renderiza solo
+  el audio sin música (`--codec=wav` con props sin `musicSrc`) y mide cada uno.
 - **Nunca `_audio/<clip>.wav` como pista del reel**: es mono 16 kHz para whisper y
   suena a teléfono. La pista sale de `_audio/hq/` (48 kHz estéreo).
 - **Música sin Content ID**: nada comercial (ver bitácora).

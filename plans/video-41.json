@@ -1,0 +1,77 @@
+{
+  "project": "video-41",
+  "dir": "public/input/video-41/Videos",
+  "_idea": "Trend '5 cosas sobre mi', pero son 5 cosas LITERALMENTE encima de el. Corto y comico: setup de 1,5 s, remate cenital con los 5 objetos numerados, marca. El chiste esta en el corte; nada lo tiene que demorar.",
+  "hook": "*5 cosas* sobre mí",
+  "_hook": "Es lo que el dice en la toma B, con el titulo del trend. Por eso ese corte va sin subtitulo: dos veces lo mismo en pantalla.",
+  "iconSet": "noto",
+  "transitionInFrames": 3,
+  "sfxVolume": 0.3,
+  "musicVolume": 0.16,
+  "clips": [
+    {
+      "file": "DSCF7555.MOV",
+      "startFromSeconds": 10.5,
+      "durationInSeconds": 1.8,
+      "subtitulos": false,
+      "_toma": "Toma B, 'cinco cosas sobre mi' (10,8-11,95 s). La toma A (4,2-5,2 s) dice 'cuatro' y muestra 4 dedos: fuera, Veronica confirmo que es la de cinco. Sin acelerar: es timing de comedia."
+    },
+    {
+      "file": "DSCF7556.MOV",
+      "rotate": -90,
+      "startFromSeconds": 3.2,
+      "durationInSeconds": 3.2,
+      "_toma": "Cenital: acostado con las 5 cosas encima. La camara grabo apaisado sin metadato de giro; -90 deja la cabeza arriba. 3,2-6,4 s es el tramo mas quieto (despues se acerca y se mueve). Dura lo mismo que el cierre, que va encima. La voz de 0,7-2,3 s queda fuera.",
+      "overlays": [
+        {
+          "icon": "noto:keycap-1",
+          "at": 0.25,
+          "duration": 1.8,
+          "x": 43,
+          "y": 58,
+          "size": 120
+        },
+        {
+          "icon": "noto:keycap-2",
+          "at": 0.5,
+          "duration": 1.55,
+          "x": 62,
+          "y": 58,
+          "size": 120
+        },
+        {
+          "icon": "noto:keycap-3",
+          "at": 0.75,
+          "duration": 1.3,
+          "x": 80,
+          "y": 45,
+          "size": 120
+        },
+        {
+          "icon": "noto:keycap-4",
+          "at": 1.0,
+          "duration": 1.05,
+          "x": 56,
+          "y": 38,
+          "size": 120
+        },
+        {
+          "icon": "noto:keycap-5",
+          "at": 1.25,
+          "duration": 0.8,
+          "x": 32,
+          "y": 31,
+          "size": 120
+        }
+      ],
+      "_overlays": "Uno por objeto, de abajo hacia la cabeza: bobina naranja, bobina negra, tripode, recipiente rojo, lo dorado sobre la cabeza (el ultimo es el remate). En el BORDE de cada objeto, no encima: el chiste es verlos. Posiciones medidas con grilla sobre el RENDER (el reel aplica un zoom leve y el proxy no coincide). 1 y 2 van sobre las bobinas: en el borde superior quedaban encima de las patas del tripode y no se sabia que numeraban. Cada 0,25 s con su pop; todos salen a los 2,05 s, cuando entra la marca."
+    }
+  ],
+  "descartados": [],
+  "sonido": {
+    "apertura": "ninguno"
+  },
+  "_sonido": "Sin riser de apertura: con dos cortes, el primer corte ES el reveal y el riser del reveal ya crece hacia ahi. Dos risers al mismo corte se pisan. El golpe grave cae en el corte al plano cenital.",
+  "cierre": {},
+  "_cierre": "Solo marca: un precio o etiquetas aca serian texto que el video no dice."
+}

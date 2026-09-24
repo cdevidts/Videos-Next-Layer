@@ -144,14 +144,14 @@ const Pieza: React.FC<{overlay: ReelOverlay; color: string}> = ({overlay, color}
   let pieza: React.ReactNode;
   if (overlay.tipo === 'icon') {
     pieza = overlay.multicolor ? (
-      <Img src={src(overlay.src)} style={{width: 200, height: 200, filter: sombra}} />
+      <Img src={src(overlay.src)} style={{width: overlay.size ?? 200, height: overlay.size ?? 200, filter: sombra}} />
     ) : (
       // Los íconos monocromos se tiñen con la paleta vía máscara: el SVG queda
       // neutro y cambiar de marca no obliga a rebajarlo.
       <div
         style={{
-          width: 190,
-          height: 190,
+          width: overlay.size ?? 190,
+          height: overlay.size ?? 190,
           backgroundColor: color,
           maskImage: `url(${src(overlay.src)})`,
           WebkitMaskImage: `url(${src(overlay.src)})`,
@@ -187,10 +187,15 @@ const Pieza: React.FC<{overlay: ReelOverlay; color: string}> = ({overlay, color}
     );
   }
 
+  // Con x/y el elemento se centra en ese punto exacto del cuadro.
+  const exacto = overlay.x !== undefined && overlay.y !== undefined;
   return (
-    <AbsoluteFill style={{...CAJA[pos], pointerEvents: 'none'}}>
+    <AbsoluteFill style={exacto ? {pointerEvents: 'none'} : {...CAJA[pos], pointerEvents: 'none'}}>
       <div
         style={{
+          ...(exacto
+            ? {position: 'absolute', left: `${overlay.x}%`, top: `${overlay.y}%`, translate: '-50% -50%'}
+            : {}),
           opacity: Math.min(entra, sale),
           transform: `scale(${escala}) rotate(${interpolate(entra, [0, 1], [overlay.tipo === 'photo' ? 8 : -14, overlay.tipo === 'photo' ? -3 : 0])}deg)`,
         }}

@@ -21,6 +21,66 @@
   "usadoEn": []
  },
  {
+  "id": "noto:keycap-1",
+  "tipo": "icon",
+  "archivo": "assets/icons/noto__keycap-1.svg",
+  "url": "https://api.iconify.design/noto/keycap-1.svg",
+  "licencia": "Apache-2.0 (Noto Emoji)",
+  "multicolor": true,
+  "intenciones": [],
+  "usadoEn": [
+   "video-41"
+  ]
+ },
+ {
+  "id": "noto:keycap-2",
+  "tipo": "icon",
+  "archivo": "assets/icons/noto__keycap-2.svg",
+  "url": "https://api.iconify.design/noto/keycap-2.svg",
+  "licencia": "Apache-2.0 (Noto Emoji)",
+  "multicolor": true,
+  "intenciones": [],
+  "usadoEn": [
+   "video-41"
+  ]
+ },
+ {
+  "id": "noto:keycap-3",
+  "tipo": "icon",
+  "archivo": "assets/icons/noto__keycap-3.svg",
+  "url": "https://api.iconify.design/noto/keycap-3.svg",
+  "licencia": "Apache-2.0 (Noto Emoji)",
+  "multicolor": true,
+  "intenciones": [],
+  "usadoEn": [
+   "video-41"
+  ]
+ },
+ {
+  "id": "noto:keycap-4",
+  "tipo": "icon",
+  "archivo": "assets/icons/noto__keycap-4.svg",
+  "url": "https://api.iconify.design/noto/keycap-4.svg",
+  "licencia": "Apache-2.0 (Noto Emoji)",
+  "multicolor": true,
+  "intenciones": [],
+  "usadoEn": [
+   "video-41"
+  ]
+ },
+ {
+  "id": "noto:keycap-5",
+  "tipo": "icon",
+  "archivo": "assets/icons/noto__keycap-5.svg",
+  "url": "https://api.iconify.design/noto/keycap-5.svg",
+  "licencia": "Apache-2.0 (Noto Emoji)",
+  "multicolor": true,
+  "intenciones": [],
+  "usadoEn": [
+   "video-41"
+  ]
+ },
+ {
   "id": "sourcesplash:7b1d1821ea61",
   "tipo": "photo",
   "archivo": "assets/photos/ss_7b1d1821ea61.jpg",
