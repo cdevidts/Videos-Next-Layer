@@ -718,3 +718,25 @@ loudnorm), el cenital en silencio. check, tsc, fonts-check y sync en verde (audi
 −0,056 s); `watch` escucha "Cinco cosas sobre mí." y después nada.
 
 **Pendiente**: aprobación de Veronica → `videos.json` "entregado".
+
+## 2026-10-29 · Skills de referencia pedidas por Cris (foto de un reel)
+
+Cris pasó una lista de cinco skills vistas en un reel: *IT Reelsmaker*, *Embedded
+captions*, *Remotion*, *HyperFrames* y *Media use*, con la regla "las con más
+estrellas en GitHub". Cuatro ya estaban: `embedded-captions`, `media-use` y todo
+`hyperframes-*` vienen de `heygen-com/hyperframes` (75k★, la más estrellada de su
+rubro) y `remotion-*` de `remotion-dev/skills` (5,9k★). `media-use` sigue descartada
+como fuente de gráfica (pide login de HeyGen).
+
+"IT Reelsmaker" no existe con ese nombre en GitHub (búsqueda web + lista
+`zhuyansen/awesome-claude-video-skills`). Lo más cercano a lo que hace este repo
+(clips crudos de celular → reel de Instagram) y con más estrellas:
+`tenfoldmarc/video-edit-skill` (109★). Las que tienen más estrellas en la categoría
+no calzan: SeeCut (407★) es para chino y usa Gemini vía Antigravity; ReelMimic
+(269★) copia el estilo de un video de referencia, no edita tomas habladas.
+
+**Qué se hizo**: `tenfoldmarc/video-edit-skill` entra a `npm run skills` como
+referencia (looks, zona segura, trucos de "palabras detrás de la cabeza"). No
+reemplaza a `reel-nextlayer`; es material para la guía de estilo que Cris quiere
+definir. No se ejecutó `npx skills add` en este turno (bloqueado por el entorno):
+corre en la próxima sesión con `npm run skills`.
