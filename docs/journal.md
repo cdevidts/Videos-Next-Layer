@@ -718,3 +718,36 @@ loudnorm), el cenital en silencio. check, tsc, fonts-check y sync en verde (audi
 −0,056 s); `watch` escucha "Cinco cosas sobre mí." y después nada.
 
 **Pendiente**: aprobación de Veronica → `videos.json` "entregado".
+
+## 2026-10-29 · La marca de los reels pasa al Brand Book, con energía
+
+Cris revisó el documento de contexto y pidió alinear los estilos del pipeline con
+el Brand Book v1 (junio 2026), pero sin perder lo "animado, dinámico, pop" que
+necesitan TikTok e Instagram: el Brand Book describe una marca técnica, y eso
+sirve para empresas, no para un reel.
+
+**Qué cambió.**
+- Paleta: `#0047AB/#00D4FF/#FF6600` → `#011D62` (azul profundo), `#0382F7`
+  (azul eléctrico), `#FB830F` (naranjo Next), como default en `VerticalReel`,
+  `VerticalClip`, `Root.tsx`, `buildReel.ts`, `cierre.ts`, `processClip.ts` y el
+  cierre de HyperFrames. El plan del 46 trae su propio `accentColor` y no se tocó.
+- Display: Anton → **Montserrat Black 900** (`fetchFonts.ts`, `fonts.ts`,
+  `brand/cierre/`). Montserrat es ancha donde Anton era condensada: el gancho
+  bajó de 124 a 104 px con tracking −3, la placa de cierre de Remotion de 132 a
+  112 px, y en el cierre de HyperFrames el precio de 250 a 196 px y la marca de
+  146 a 124 px.
+- La skill tiene una sección nueva, *Marca en los reels: el Brand Book, con
+  energía*: qué se mantiene del Brand Book (colores, tipografías, precisión) y
+  qué se intensifica en un reel (peso 900, contorno, springs, el naranjo como el
+  color que se mueve).
+
+**Verificado**: `npm run fonts` (Montserrat 900 latin, Inter var), `fonts-check`
+en verde (Montserrat aplicada de verdad, 1490 px contra respaldo), `tsc` limpio,
+`check` del cierre de HyperFrames sin errores, y dos stills de `VerticalReel`
+con un gancho de 8 palabras: cabe en 1080 sin partir palabras, el resaltador
+naranjo barre bien sobre Montserrat.
+
+**Pendiente de decisión humana**: renderizar el Video 41 (en curso) con la
+marca nueva para que Veronica compare; el 46 queda como está (entregado). Si en
+el render real el gancho se siente chico, subirlo a 110 px es un cambio de una
+línea en `VerticalReel.tsx`.

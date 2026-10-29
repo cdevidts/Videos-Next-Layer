@@ -30,7 +30,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const FAMILIES = [
-  {name: 'Anton', query: 'Anton'},
+  {name: 'Montserrat', query: 'Montserrat:wght@900'},
   {name: 'Inter', query: 'Inter:wght@600;700;800;900'},
 ];
 

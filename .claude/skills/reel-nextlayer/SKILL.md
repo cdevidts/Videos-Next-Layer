@@ -116,6 +116,40 @@ plan lo apaga: `"camara": "fija"` (sin zoom, golpe, destello ni deriva),
 chiste. El Video 41 (un chiste) salió así porque Veronica lo pidió para ESE
 video; **no es una regla para la comedia** — eso lo deciden ellos, video a video.
 
+### Marca en los reels: el Brand Book, con energía
+
+El Brand Book v1 (junio 2026, en Drive > Logos y Brand Book) define una marca
+**técnica, cercana y profesional**: Montserrat para títulos, Inter para texto,
+azul profundo #011D62, azul eléctrico #0382F7 y naranjo Next #FB830F. Eso es
+correcto para empresas, cotizaciones y la web. **En TikTok e Instagram la misma
+marca tiene que verse animada, dinámica, pop** (instrucción de Cris, octubre 2026).
+La regla: los colores y las tipografías son los del Brand Book sin excepción;
+lo que cambia en un reel es el *movimiento* y la *intensidad*.
+
+| Elemento | Brand Book (B2B) | En un reel |
+| --- | --- | --- |
+| Display | Montserrat Bold/SemiBold | Montserrat **Black 900**, mayúsculas, tracking apretado (−3), contorno negro grueso |
+| Texto | Inter Regular/Medium | Inter **900** en subtítulos, con contorno; nunca una caja de fondo |
+| Azul profundo #011D62 | Fondos, confianza | Grade: tinte radial sobre el footage y velo del cierre |
+| Azul eléctrico #0382F7 | Innovación | Íconos y stickers, bajada del cierre |
+| Naranjo Next #FB830F | Energía | El color que se mueve: resaltador que barre la palabra, sello de precio, barra del cierre |
+| Movimiento | Estático | Todo entra con `spring()` y sobrepaso: palabra por palabra, rebote, golpe de escala, zoom alterno por corte |
+| Tono | Técnico, sin humor que reste seriedad | Igual de preciso en lo que dice, pero con ritmo: gancho en 1,5 s, cortes secos, un elemento gráfico cada 3–5 s |
+
+Lo que **no** cambia por ser reel: los íconos se bajan (no se dibujan), nada
+lineal, la cara no se tapa, los subtítulos dicen lo que se escucha, y nada de
+lenguaje de presentación (chips, cajas, barras de progreso). Lo que **sí** se
+apaga video a video, si Veronica lo pide, son los interruptores del plan
+(`camara`, `marca`, `hook`, `musicSrc`, `transitionInFrames`).
+
+Los colores viven en `plans/_plantilla.json` (`primaryColor`, `secondaryColor`,
+`accentColor`), con los del Brand Book como default en `buildReel.ts`,
+`cierre.ts`, `Root.tsx` y `brand/cierre/index.html`. Un plan solo los pisa con
+una nota que diga por qué. Si cambias una tipografía: `npm run fonts`,
+`npm run fonts-check` y un `npx remotion still` del gancho más largo que tengas
+antes de dar nada por bueno — Montserrat Black es ancha y se calibró a 104 px
+para que un gancho de 8 palabras quepa en 1080.
+
 ### La capa gráfica: se baja, y se elige para este video
 
 Footage + subtítulo y nada más se ve plano al lado de un reel editado. Lo que
@@ -329,8 +363,9 @@ estira hasta t=0 aunque la voz empiece 1,8 s después) y **poco en el resto**
 
 ## Tipografía: cargarla no es aplicarla
 
-La marca es **Anton** para display y **Inter** para texto, ambas locales en
-`public/fonts/`. Antes de dar por bueno cualquier render:
+La marca es **Montserrat Black (900)** para display e **Inter** para texto, las
+dos del Brand Book y las dos locales en `public/fonts/`. (Hasta octubre de 2026
+el display era Anton; los renders anteriores al cambio la llevan.) Antes de dar por bueno cualquier render:
 
 ```bash
 npm run fonts-check

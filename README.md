@@ -78,7 +78,7 @@ Qué hace cada paso:
 | `fetch-drive` | Descarga el proyecto desde Drive con caché por tamaño y arma el `manifest.json`. |
 | `audio` | Extrae el audio de cada clip a WAV mono 16 kHz (lo que necesita whisper). |
 | `transcribe` | Instala whisper.cpp, detecta qué clips tienen voz (mide el nivel, no transcribe B-roll mudo) y guarda frases + palabras con timestamp. Filtra las marcas que whisper inventa en los silencios (`[BLANK_AUDIO]`, `(música)`). |
-| `fonts` | Descarga Anton e Inter a `public/fonts/` y genera `src/fonts.generated.ts`. El Chrome del render no siempre puede salir a fonts.gstatic.com, así que las fuentes viven en el repo. |
+| `fonts` | Descarga Montserrat Black e Inter (las del Brand Book) a `public/fonts/` y genera `src/fonts.generated.ts`. El Chrome del render no siempre puede salir a fonts.gstatic.com, así que las fuentes viven en el repo. |
 | `sfx` | Sintetiza `whoosh`, `tick`, `riser` e `impact` en `public/sfx/` — sin samples externos, sin problemas de licencia. |
 | `reel` | Normaliza cada fuente a un proxy 1080x1920 H.264 (aplica la rotación de cámara y baja el 4K/HEVC), **corta los silencios** usando la transcripción, arma los props y renderiza. |
 | `review` | Saca 8 frames parejos del render (`npm run review -- renders/video-46-reel.mp4`) y un resumen del nivel de audio, para revisar sin sacar cada frame a mano. |
@@ -125,7 +125,7 @@ Todas en 1080x1920 @ 30fps. `npm run dev` abre Remotion Studio para revisar y aj
 
 ### Sistema gráfico de `VerticalReel`
 
-- **Gancho**: tipografía display (Anton) que entra palabra por palabra, con caja de acento en lo resaltado.
+- **Gancho**: tipografía display (Montserrat Black) que entra palabra por palabra, con caja de acento en lo resaltado.
 - **Subtítulos**: pastilla con blur, 2-3 palabras por pantalla, palabra activa en color de acento.
 - **Chips de sección**: `01 · El problema`, entran desde la izquierda.
 - **Color**: saturación/contraste + split-tone cálido-frío, viñeta y grano de película animado.

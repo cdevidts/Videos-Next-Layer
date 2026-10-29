@@ -58,9 +58,9 @@ Pedida por Veronica como núcleo del repositorio. Cada punto dice cómo se cumpl
 | Guion para retención | El plan: gancho en 1,5 s, cortes de silencio, textos en pantalla |
 | No dibujar formas planas; íconos por API | Iconify, sets MIT/ISC/Apache (`npm run assets`) |
 | Media de apoyo | SourceSplash (sin su relleno de Picsum) y Wikimedia Commons |
-| Tipografía de Google Fonts | Sí, pero **bajadas** a `public/fonts/` (`npm run fonts`): el Chrome del render no siempre sale a internet |
+| Tipografía de Google Fonts | Las del Brand Book: **Montserrat Black** (display) e **Inter** (texto), **bajadas** a `public/fonts/` (`npm run fonts`): el Chrome del render no siempre sale a internet |
 | SFX por API, términos exactos | Catálogo medido de Mixkit + Lots of Sounds (`npm run sfx-catalog`); `"buscar:<términos>"` para algo específico |
-| Paleta: #0047AB, #00D4FF, #FF6600 | Default del código: azul en el grade y el cierre, eléctrico en íconos, naranja en acentos y CTA |
+| Paleta del Brand Book: #011D62, #0382F7, #FB830F | Default del código: azul profundo en el grade y el cierre, azul eléctrico en íconos, naranjo Next en acentos y CTA. La marca es técnica en B2B; en reels se mueve con energía (ver *Marca en los reels* en la skill) |
 | Nada lineal: `spring()` y ease-in-out | `VerticalReel` y `Overlays.tsx` |
 | Whoosh grave en cada cambio de escena | Automático, rotando, graves del catálogo, el pico cae en el corte |
 | Pop o click al entrar gráfica | Automático en cada overlay, alineado por el pico |

@@ -173,7 +173,7 @@ const KaraokeCaption: React.FC<{shot: ReelShot; accentColor: string}> = ({
             <span
               style={{
                 position: 'absolute',
-                // El resaltador sobresale poco a los lados: con Anton/Inter de
+                // El resaltador sobresale poco a los lados: con Montserrat/Inter de
                 // verdad las palabras quedan más juntas que con la fuente de
                 // respaldo, y con -12px las cajas de dos palabras contiguas se
                 // tocaban y se leían como una sola.
@@ -453,7 +453,11 @@ const Hook: React.FC<{text: string; accentColor: string}> = ({text, accentColor}
                 style={{
                   position: 'relative',
                   fontFamily: DISPLAY_FONT,
-                  fontSize: 124,
+                  // Montserrat Black es ancha (Anton era condensada): 104 px cabe
+                  // un gancho de 8 palabras en 1080 sin partir palabras.
+                  fontSize: 104,
+                  fontWeight: 900,
+                  letterSpacing: -3,
                   lineHeight: 1,
                   textTransform: 'uppercase',
                   color: highlighted && sweep > 0.5 ? '#07080C' : 'white',
@@ -476,9 +480,9 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
   cta,
   ctaSub,
   finalOverlaySrc,
-  accentColor = '#FF6600',
-  primaryColor = '#0047AB',
-  secondaryColor = '#00D4FF',
+  accentColor = '#FB830F',
+  primaryColor = '#011D62',
+  secondaryColor = '#0382F7',
   musicSrc,
   musicVolume = 0.35,
   voiceVolume = 1,
@@ -668,7 +672,9 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
               <p
                 style={{
                   fontFamily: DISPLAY_FONT,
-                  fontSize: 132,
+                  fontSize: 112,
+                  fontWeight: 900,
+                  letterSpacing: -3,
                   lineHeight: 1,
                   margin: 0,
                   color: 'white',
