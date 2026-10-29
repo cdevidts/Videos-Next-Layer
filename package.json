@@ -31,7 +31,8 @@
     "fonts-check": "tsx scripts/checkFonts.ts",
     "cierre": "tsx scripts/cierre.ts",
     "sync": "tsx scripts/checkSync.ts",
-    "watch": "tsx scripts/watchReel.ts"
+    "watch": "tsx scripts/watchReel.ts",
+    "grafo": "bash scripts/grafo.sh"
   },
   "repository": {
     "type": "git",
