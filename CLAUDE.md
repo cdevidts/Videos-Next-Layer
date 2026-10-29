@@ -85,3 +85,11 @@ Pedida por Veronica como núcleo del repositorio. Cada punto dice cómo se cumpl
 - Renders largos en background; no esperes con `sleep` ni con `pgrep -f`.
 - Subir a Drive (`npm run publish-drive`) sí necesita credenciales con escritura en
   `.env`, que no sobreviven al contenedor.
+
+## Contexto y memoria (leer `docs/contexto.md` antes de explorar)
+
+- **Grafo del repo** en `graphify-out/` (`npm run grafo` lo regenera, sin LLM).
+  Para una pregunta sobre el código: `graphify query "<pregunta>"` antes de grep o
+  de abrir archivos; `graphify explain "<símbolo>"` para uno concreto.
+- **Memoria del proyecto** (archivos por tema) y `docs/journal.md` son la fuente de
+  lo que no está en el código. Al cerrar un paso: journal, memoria, `videos.json`.

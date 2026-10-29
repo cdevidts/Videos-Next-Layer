@@ -718,3 +718,29 @@ loudnorm), el cenital en silencio. check, tsc, fonts-check y sync en verde (audi
 −0,056 s); `watch` escucha "Cinco cosas sobre mí." y después nada.
 
 **Pendiente**: aprobación de Veronica → `videos.json` "entregado".
+
+## 2026-10-29 · Capa de contexto: grafo (graphify) y protocolo de memoria
+
+Cris pidió instalar lo que sirva de la lista "nueve repos para tu IA" de
+digitalsoulia, con énfasis en memoria persistente y Graphify, siguiendo
+*Context Engineering*.
+
+**Lo que se instaló**: Graphify (`graphifyy` en PyPI, repo Graphify-Labs/graphify,
+Apache-2.0/MIT). `npm run grafo` → `graphify-out/graph.json` + `GRAPH_REPORT.md`,
+603 nodos, 1119 aristas, 22 comunidades; código por AST y encabezados de los `.md`,
+sin LLM salvo el nombre de cada comunidad (Haiku vía `claude` CLI si existe).
+`.graphifyignore` saca `gsap.min.js` y la media bajada, que eran puro ruido
+("Minified Module Internals" ×4). La skill `/graphify` quedó en `.claude/skills/`.
+`docs/contexto.md` es el mapa: cuatro capas, orden de lectura, protocolo de cierre.
+
+**Descartado**: los hooks `PreToolUse` que `graphify install` mete en
+`.claude/settings.json` (bloquean Read/Grep hasta consultar el grafo; en un
+contenedor sin `graphify` fallan en cada herramienta) y su bloque largo en
+`CLAUDE.md` (este archivo es corto a propósito; quedó un párrafo). De la lista de
+digitalsoulia nada más aplica a este repo: no hay skill de memoria ni Graphify en
+esa página; `book-to-skill` serviría para el Brand Book PDF cuando esté en Drive;
+`no-ai-slop` solo tiene ejemplos en inglés.
+
+**Pendiente**: que Cris guarde las skills propuestas (`nextlayer-contexto-vivo`,
+`nextlayer-memoria`) desde la tarjeta del hilo; cuando aparezca una comunidad
+nueva, revisar el nombre que le pone Haiku.
