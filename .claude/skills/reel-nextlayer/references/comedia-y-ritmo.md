@@ -121,7 +121,7 @@ mezcla a −7 LUFS (el repo normaliza a −14).
 | SFX | **Lots of Sounds** (lo que trae `buscar:`) | **Sin licencia declarada** | `buscar:` también consulta esta fuente: para un reel comercial, descartar esos candidatos (ahora `assets` avisa). |
 | Gráfica | **LottieFiles** | Lottie Simple License: comercial gratis, crédito recomendado | Ya integrado (`buscarLottie`). Revisar cada animación. |
 | Gráfica | **Noto animado** (`emoji:🔥`) | **CC BY 4.0: exige crédito** | Ya integrado. `@remotion/animated-emoji` es redundante. Poner el crédito en la descripción del post. |
-| Motor | **Remotion** | **Gratis hasta 3 personas**; desde 4, de pago | Decisión de Cris: confirmar cuánta gente cuenta Next Layer (contratistas incluidos). |
+| Motor | **Remotion** | **Gratis hasta 3 personas**; desde 4, de pago | Cris confirmó (30-oct-2026) que es 1 persona: dentro de lo gratis. Revisar si el equipo supera 3. |
 
 No existe rimshot en Mixkit ni en OpenGameArt-CC0 (los "joke drums" de Mixkit lo reemplazan);
 tampoco trombón triste, record scratch ni slide whistle con licencia CC0.
@@ -164,4 +164,3 @@ Engr Mejba Ahmed (mejba.me), LaoZhang AI (blog.laozhang.ai/es/posts/claude-code-
   nadie lo probó. Se prueba con el 44 y se anota en `lecciones.md`.
 - Los shorts de YouTube de Humbe no se pudieron bajar (bloqueo anti-bot): su estructura se
   infiere de títulos y de TikToks.
-- Cuántas personas cuenta Next Layer para la licencia de Remotion.
