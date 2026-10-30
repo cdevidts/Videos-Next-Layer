@@ -71,6 +71,12 @@ pocos tokens: los scripts miden y resumen, el agente lee resúmenes y decide.
    `videos.json` → `"estado": "entregado"`. Desde ahí `npm run reel` se niega a
    pisarlo.
 
+## Si el reel es de humor o de historia
+
+Antes de ordenar cortes lee `references/comedia-y-ritmo.md`: la historia en una línea,
+causa antes que efecto, setup rápido + pausa antes del remate + reacción después, y un
+checklist de orden. El Video 44 salió poco cómico por saltarse esto.
+
 ## Qué hace que un reel funcione
 
 Referencias completas en `.agents/skills/ultimate-video-editor/`:
