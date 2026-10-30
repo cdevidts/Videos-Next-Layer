@@ -39,6 +39,12 @@ const flag = (name: string) => argv.includes(`--${name}`);
 
 type PlanClip = {
   file: string;
+  /**
+   * Otro proyecto de donde sale el clip (ej. "video-45"): se busca en
+   * public/input/<proyecto>/Videos y usa los proxies y transcripciones de ESE
+   * proyecto. Para armar un reel mezclando material de varias carpetas.
+   */
+  proyecto?: string;
   label?: string;
   caption?: string;
   startFromSeconds?: number;
@@ -147,6 +153,8 @@ type Transcript = {
   speech: Array<{start: number; end: number}>;
   /** Transcripción arreglada por una persona: no se vuelve a transcribir nunca. */
   correctedByHuman?: boolean;
+  /** Palabras rehechas tramo por tramo (`npm run tramos`): se bloquean igual. */
+  tramosAislados?: boolean;
 };
 
 const VIDEO_EXTENSIONS = ['.mp4', '.mov', '.m4v', '.webm', '.mkv'];
@@ -302,11 +310,14 @@ const main = async () => {
   const siguienteUi = () => (ui.length ? ui[turnoUi++ % ui.length] : undefined);
 
   for (const item of items) {
-    const source = path.resolve(plan.dir, item.file);
+    const clipDir = item.proyecto ? path.join(path.dirname(projectDir), item.proyecto, 'Videos') : plan.dir;
+    const source = path.resolve(clipDir, item.file);
     if (!fs.existsSync(source)) throw new Error(`No existe el clip del plan: ${source}`);
+    const clipAudioDir = item.proyecto ? path.join(path.dirname(clipDir), '_audio') : audioDir;
+    const clipNormalizedDir = item.proyecto ? path.join(path.dirname(clipDir), '_normalized') : normalizedDir;
 
     const name = path.basename(item.file, path.extname(item.file));
-    const proxy = normalize(source, normalizedDir, fps, false, item.rotate);
+    const proxy = normalize(source, clipNormalizedDir, fps, false, item.rotate);
     const info = probe(proxy);
     const src = publicPath(proxy);
 
@@ -315,12 +326,12 @@ const main = async () => {
       ? Math.min(windowStart + item.durationInSeconds, info.durationInSeconds)
       : info.durationInSeconds;
 
-    const transcript = item.ignoreSpeech ? null : loadTranscript(audioDir, name);
+    const transcript = item.ignoreSpeech ? null : loadTranscript(clipAudioDir, name);
     // La pista del reel sale de _audio/hq (48 kHz estéreo). La de la raíz de
     // _audio es mono 16 kHz y existe solo para whisper: usarla acá deja el
     // audio opaco.
-    const hqFile = path.join(audioDir, 'hq', `${name}.wav`);
-    const legacyFile = path.join(audioDir, `${name}.wav`);
+    const hqFile = path.join(clipAudioDir, 'hq', `${name}.wav`);
+    const legacyFile = path.join(clipAudioDir, `${name}.wav`);
     const audioFile = fs.existsSync(hqFile) ? hqFile : legacyFile;
     if (!fs.existsSync(hqFile) && fs.existsSync(legacyFile)) {
       console.warn(
@@ -395,7 +406,7 @@ const main = async () => {
             audioStartFromSeconds: Number(range.start.toFixed(3)),
             speed: speed === 1 ? undefined : speed,
             sfx: index === 0 ? resolverSfx(item.sfx, project) : undefined,
-            wordsLocked: transcript.correctedByHuman || undefined,
+            wordsLocked: transcript.correctedByHuman || transcript.tramosAislados || undefined,
             hideCaptions: item.subtitulos === false || undefined,
           });
         }

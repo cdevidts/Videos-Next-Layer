@@ -43,6 +43,13 @@
       "_pausaDespues": "Segundos que el corte sigue despues de la ultima palabra en vez de cortarse en el silencio (una pausa incomoda antes del remate). Topa con el final de la toma y avisa cuanto dio."
     },
     {
+      "file": "CLIP_DE_OTRO_VIDEO.MOV",
+      "proyecto": "video-NN",
+      "_proyecto": "El clip sale de public/input/<proyecto>/Videos y usa los proxies y transcripciones de ESE proyecto. Para mezclar material de varias carpetas (el 44 usa planos del 45). Baja ese proyecto con npm run next -- --project \"Video NN\" antes.",
+      "startFromSeconds": 0,
+      "durationInSeconds": 4
+    },
+    {
       "file": "CLIP_BROLL.MOV",
       "startFromSeconds": 1,
       "durationInSeconds": 2.5,

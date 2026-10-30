@@ -41,6 +41,13 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   suelo el sensor no sabe dónde es arriba y graba apaisado SIN metadato. En el
   Video 41 una persona acostada quedaba de costado y el recorte le cortaba la
   cabeza y los pies, o sea el chiste. Va `"rotate"` en el plan.
+- **Whisper -ml 1 sobre un tramo tampoco es la verdad**: dos corridas sobre el
+  mismo tramo del 7506 dieron "yo lo diseño" una y dos veces. Se desempata
+  contando frases por energía (RMS cada 0,1 s). Y sus tiempos internos no son
+  ritmo de nadie: bloqueados tal cual dejaron subtítulos 0,7 s adelantados al
+  inicio de una frase y 0,9 s atrasados al final. Desde el Video 44
+  `syncCaptions` empareja palabra por palabra contra el audio montado
+  (`alinearPorTexto`) y solo interpola las que whisper no reconoce.
 - **Una línea dicha dos veces** es común: en el Video 41 la toma A decía "cuatro
   cosas" y la B "cinco". Transcribe cada tramo con voz AISLADO antes de elegir;
   whisper sobre el clip entero había puesto "Cinco" en un silencio y el subtítulo
@@ -84,11 +91,21 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
 - **La cara es sagrada.** En la primera prueba la foto tapaba la cara entera y el
   sticker quedaba en la mandíbula. Los defaults van al torso; verifica con
   `GRAFICA.jpg` de `npm run watch`.
-- **Un overlay que vive menos de 0,6 s no existe.** `buildReel` avisa.
+- **Un overlay que vive menos de 0,6 s no existe.** `buildReel` avisa. Pasa
+  cuando la palabra es la última del corte ("pegamento" en el 44): engánchalo a
+  una palabra anterior.
+- **El sticker tampoco tapa la acción**, no solo la cara: el ✅ del 44 caía sobre
+  la mano que entrega la pieza.
+- **La puntuación del gancho va dentro del resaltado**: `*no existe*?` dejaba el
+  "?" suelto en otra línea ("EXISTE ?"); va `*no existe?*`.
 - **Para señalar algo que se ve (x/y), calibra sobre el RENDER con grilla**, no
   sobre el proxy: el reel aplica un zoom leve al plano. En el Video 41 los números
   de las bobinas quedaron sobre las patas del trípode y no se sabía qué numeraban.
   Y ponlos en el borde del objeto o encima si es grande, nunca entre dos objetos.
+- **El último corte es el producto y dura lo que el cierre (3,2 s).** El cierre
+  arranca en el último corte: en el primer render del 44 ese corte era el CTA
+  hablado y la placa tapó "esto lo hice yo". Se agregó un plano final del panel
+  arreglado.
 - **El cierre lo dibuja HyperFrames**, no React: `brand/cierre/index.html` con
   variables, renderizado a WebM/VP9 con alfa por video (`public/cierres/`), y
   Remotion lo compone con `<OffthreadVideo transparent>`. Sí carga Anton (una
@@ -141,6 +158,12 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   el mismo problema que las credenciales. No integrado.
 - **Lots of Sounds**: la muestra gratuita da 12 resultados por término y no declara
   licencia por sonido; en empate se prefiere Mixkit.
+- **La caché de webpack tumbaba renders**: con la caché tibia, un render después
+  de cambiar el plan fallaba a veces en el bundle con `TypeError: Cannot read
+  properties of undefined (reading 'length')` en `wasm-hash.js`, sin relación con
+  el cambio; borrando `node_modules/.cache/webpack` salía bien. No se aisló la
+  causa (no eran los symlinks rotos de `.claude/skills`, se probó).
+  `remotion.config.ts` la apaga (`setCachingEnabled(false)`).
 - **No esperes con `pgrep -f`**: el shell que espera contiene el patrón y se
   encuentra a sí mismo. Espera por el archivo de salida.
 

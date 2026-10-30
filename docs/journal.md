@@ -751,3 +751,68 @@ naranjo barre bien sobre Montserrat.
 marca nueva para que Veronica compare; el 46 queda como está (entregado). Si en
 el render real el gancho se siente chico, subirlo a 110 px es un cambio de una
 línea en `VerticalReel.tsx`.
+
+## 2026-10-30 · Video 44 "Mándamelo a hacer" — primer reel armado con el pool completo
+
+Cris pidió un hilo que mirara de verdad los clips sueltos, encontrara el mejor
+gancho aunque hubiera que mezclar carpetas, editara un pendiente y dejara escrito
+el flujo real para repetirlo con calidad máxima. Se permitió ayuda de un agente
+Sonnet.
+
+**Material** (compuerta OK en los cuatro): 43 (1 clip), 44 (2), 41 (2), 45 (11).
+Cada hoja mirada; transcripción tramo por tramo.
+- **44 y 45 son la misma historia** (sesión del 18-ago, mismo bidé, misma pieza
+  negra impresa que sostiene el panel). El 44 es la versión a cámara, medio
+  cantada ("tengo un repuesto que no puedo encontrar o que no existe… ¡mándamelo
+  a hacer! yo lo diseño, yo lo arreglo"); el 45 la actuada (el cliente pide "una
+  pieza de 10 cm por 5", persecución por la casa, cajón secreto, "¡está
+  perfecto!", y un cenital donde se ve el soporte roto y la pieza entrando).
+- **43**: parodia de Russell (*Up*) en la puerta, cámara en el suelo, grabado de
+  costado (rotar −90). Nada de impresión 3D en cuadro: se preguntó para qué es.
+- **41**: ya renderizado, esperando a Veronica; no se tocó.
+
+**Decisión**: Video 44, reforzado con 4 planos del 45 (`"proyecto": "video-45"`).
+Gancho **¿Tu repuesto no existe?** sobre "tengo un repuesto que no puedo
+encontrar o que no existe": problema del espectador, dicho en cámara. Un agente
+Sonnet con el inventario y sin mi conclusión llegó al mismo gancho y a casi la
+misma estructura; aportó que el "Perfecto" del 7508 era dudoso (cae sobre negro).
+
+**Montaje (30,7 s, 9 cortes)**: gancho → "se me rompió algo y no pude arreglarlo
+con pegamento" → cliente "necesito exactamente una pieza como de 10 centímetros
+por 5" → "yo lo diseño, yo lo diseño, yo lo arreglo" con la pieza → cenital x2:
+soporte roto, entra la pieza, panel firme → "¡mira, mira, está perfecto!" →
+"¡mándamelo a hacer! … esto lo hice yo" → el panel arreglado bajo el cierre
+(¿NO EXISTE? · MÁNDALO A HACER · Next Layer, REPUESTOS IMPRESOS EN 3D).
+
+**Descartado**: 7505 7,2–9,2 s ("¡mándalo a hacer weón!", repite la idea), 7506
+16,5–21,9 y 32,8–39 s (planos oscuros/movidos), 7508 ("Perfecto" sobre negro),
+la persecución y el cajón del 45 (otra historia: es el material del 45), el
+efecto "plastic click" (un click de lápiz que sonaba sobre el soporte roto).
+
+**Lo que se agregó al sistema** (sirve para todos los videos):
+- `"proyecto"` por clip en el plan: clips de otra carpeta con sus proxies y
+  transcripciones. `npm run next -- --solo-material` baja un video sin marcarlo
+  en curso.
+- `npm run tramos`: retranscribe cada tramo aislado (whisper `-ml 1`), filtra lo
+  que whisper inventa en silencio y marca `tramosAislados` (se bloquea como una
+  corrección).
+- `npm run frames`: tira de frames en los instantes que uno elige, con giro.
+- `syncCaptions` empareja palabra por palabra contra el audio montado
+  (`alinearPorTexto`) en vez de copiar el ritmo interno del texto bloqueado. El
+  primer render daba ❌ en sync (|error| mediano 0,181 s, un corte con 0,7/0,9 s);
+  con esto, 0,096 s.
+- `references/flujo.md` en la skill: el flujo real paso a paso con su checklist
+  de calidad. Lecciones nuevas en `lecciones.md`.
+
+**Pescado al revisar** (3 renders): sticker invisible (enganchado a la última
+palabra del corte), "?" del gancho suelto, la placa del cierre tapando el CTA,
+el ✅ tapando la mano que entrega la pieza, una mano al borde del plano final, y
+renders que caían en el bundle con la caché de webpack tibia (se apagó en
+`remotion.config.ts`).
+
+**Pendiente de personas**:
+- Veronica/Cris aprueban el render → `videos.json` "entregado".
+- ¿Las líneas cantadas del 44 son una canción conocida (parodia) o propia?
+- ¿Para qué se grabó el 43 (Russell)? Puede ser gancho de otro video.
+- El 45 sigue pendiente con su material (persecución, cajón secreto); tiene un
+  proyecto de Premiere, confirmar con Veronica si ya se publicó.

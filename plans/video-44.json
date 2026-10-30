@@ -1,0 +1,123 @@
+{
+  "project": "video-44",
+  "dir": "public/input/video-44/Videos",
+  "_idea": "Repuestos que no existen: 'mándamelo a hacer'. El 44 trae el discurso (problema -> yo lo diseño -> mándamelo a hacer) cantado/actuado por Cristóbal; el 45 (misma sesión del 18-ago, mismo bidé) aporta el pedido concreto del cliente, la pieza puesta en la mano y el plano cenital donde se ve el soporte roto y la pieza negra impresa entrando. Cris autorizó mezclar clips de distintas carpetas (2026-10-30). El 45 conserva todo su material para su propio video.",
+  "hook": "¿Tu repuesto *no existe?*",
+  "_hook": "Sale de lo que dice en el primer corte ('tengo un repuesto que no puedo encontrar o que no existe'). Una pregunta de problema con la palabra clave resaltada: elegido entre 3 candidatos, coincide con la propuesta independiente del agente de estructura.",
+  "iconSet": "ph",
+  "transitionInFrames": 3,
+  "sfxVolume": 0.3,
+  "musicVolume": 0.16,
+  "clips": [
+    {
+      "file": "DSCF7505.MOV",
+      "startFromSeconds": 2.3,
+      "durationInSeconds": 5.05,
+      "speed": 1.1,
+      "subtitulos": false,
+      "_toma": "Gancho. Patio, con energía: 'Ay, bueno, tengo un repuesto que no puedo encontrar o que no existe.' Sin subtítulo: el gancho grande ya lo dice, y dos textos a la vez se pisan. La voz entra a los 0,3 s del corte."
+    },
+    {
+      "file": "DSCF7506.MOV",
+      "startFromSeconds": 3.9,
+      "durationInSeconds": 5.4,
+      "speed": 1.1,
+      "overlays": [
+        {
+          "sticker": "emoji:😩",
+          "word": "rompió",
+          "pos": "right"
+        }
+      ],
+      "_toma": "Setup concreto: 'Ay, se me rompió algo y yo no pude arreglarlo con pegamento.' En el marco de una puerta.",
+      "_overlay": "Primer render: enganchado a \"pegamento\" entraba 0,2 s antes del corte y no se veía (buildReel avisó). Va en \"rompió\"."
+    },
+    {
+      "file": "DSCF7507.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 14,
+      "durationInSeconds": 5.3,
+      "speed": 1.1,
+      "overlays": [
+        {
+          "icon": "ph:ruler-fill",
+          "word": "centímetros"
+        }
+      ],
+      "_toma": "El pedido a medida (del 45): 'Hermano, necesito exactamente una pieza como de 10 centímetros por 5'. Corta en el silencio de 19,25-19,35 s, antes de 'que me sostenga...' (medido por energía). Se ve a Cristóbal agachado frente al panel del bidé."
+    },
+    {
+      "file": "DSCF7506.MOV",
+      "startFromSeconds": 9.4,
+      "durationInSeconds": 3.75,
+      "speed": 1.1,
+      "overlays": [
+        {
+          "icon": "ph:cube-fill",
+          "word": "diseño"
+        }
+      ],
+      "_toma": "La respuesta: 'Yo lo diseño. Yo lo diseño. Yo lo arreglo.' con la pieza negra impresa junto a la cara. Tres frases medidas por energía (9,6-11,0 / 11,2-12,0 / 12,2-13,0 s): whisper se había comido una."
+    },
+    {
+      "file": "DSCF7515.MOV",
+      "proyecto": "video-45",
+      "rotate": 90,
+      "startFromSeconds": 1,
+      "durationInSeconds": 3.0,
+      "speed": 2.0,
+      "ignoreSpeech": true,
+      "_toma": "Prueba (del 45), cenital grabado apaisado sin metadato: +90 deja el estanque arriba. 1-3 s soporte del panel roto; 4,5-6 s entra la pieza negra; 7 s el panel firme. 6 s de fuente en 3 s de pantalla (x2: se lee como arreglo rapido). Mudo a propósito: el audio de esa toma es dirección de rodaje ('pretende que estés como...').",
+      "_sfx": "Se probó \"buscar:plastic click\": salió un click de lápiz de 3,5 s y el efecto suena al inicio del corte, cuando todavía se ve el soporte roto, no cuando entra la pieza. Sin efecto propio: suena el whoosh del cambio de escena y la música."
+    },
+    {
+      "file": "DSCF7514.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 4.2,
+      "durationInSeconds": 4.7,
+      "speed": 1.1,
+      "overlays": [
+        {
+          "sticker": "emoji:✅",
+          "word": "perfecto",
+          "pos": "left"
+        }
+      ],
+      "_toma": "Payoff con reacción (del 45): '¡Mira! ¡Mira! ¡Mira! ¡Mira, weón! ¡Está perfecto, weón!' entregando la pieza en la puerta del baño.",
+      "_overlay": "Segundo render: a la derecha tapaba la mano que entrega la pieza. Va a la izquierda."
+    },
+    {
+      "file": "DSCF7505.MOV",
+      "startFromSeconds": 9.1,
+      "durationInSeconds": 5.9,
+      "speed": 1.1,
+      "overlays": [
+        {
+          "sticker": "emoji:🔥",
+          "word": "hice",
+          "pos": "left"
+        }
+      ],
+      "_toma": "CTA: '¡Mándamelo a hacer! Mándamelo a hacer, yo lo hago, esto lo hice yo, mándamelo a hacer' — levanta otra pieza impresa (beige, redonda; no se afirma qué es). Se deja fuera 7,2-9,2 s ('¡Mándalo a hacer weón!'): repite la idea con garabato. Termina antes de 15,3 s ('Mano de los 7', ininteligible). El cierre va encima."
+    },
+    {
+      "file": "DSCF7515.MOV",
+      "proyecto": "video-45",
+      "rotate": 90,
+      "startFromSeconds": 9.2,
+      "durationInSeconds": 3.2,
+      "speed": 0.55,
+      "ignoreSpeech": true,
+      "_toma": "Reveal bajo el cierre: el panel ya firme sobre la pieza negra (9,2-10,96 s de fuente, quieto: antes de 9 s se ve una mano abajo y a los 11 s entra alguien). Se agregó tras el primer render, donde el cierre caía encima de 'esto lo hice yo' y tapaba la pieza beige: el cierre arranca en el último corte, así que el último corte tiene que ser el producto y durar lo que el cierre (3,2 s). x0,55 para estirar 1,76 s de plano quieto."
+    }
+  ],
+  "descartados": [],
+  "_descartados_otros": "Del 45 quedan fuera (no son de este plan, pero se miraron): 7508 (mano en el panel; el 'Perfecto' cae sobre un plano oscuro), 7510/7511/7512/7516/7517/7518/7520 (la persecución por la casa y el cajón secreto: otra historia, sirve para el 45), 7507 fuera de 14-19,3 s (indicaciones de rodaje). Del 44: 7506 16,5-21,9 s y 32,8-39 s (planos oscuros/movidos al baño) y 7505 7,2-9,2 s.",
+  "sonido": {},
+  "cierre": {
+    "tagIzq": "¿NO EXISTE?",
+    "tagDer": "MÁNDALO A HACER",
+    "bajadaMarca": "REPUESTOS IMPRESOS EN 3D"
+  },
+  "_cierre": "Sin precio: nadie dice uno. '¿No existe?' y 'mándalo a hacer' salen de lo que se dice; la bajada dice qué es Next Layer en este video."
+}

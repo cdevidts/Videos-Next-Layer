@@ -14,6 +14,10 @@ te equivocaste de marca.
 Cada error ya pagado, por tema (material, subtítulos, tipografía, gráfica, sonido,
 herramientas), está en `references/lecciones.md`. Léelo cuando toques ese tema.
 
+El flujo real de producción, paso a paso y con su checklist de calidad (bajar el
+pool completo, transcribir por tramos, gancho con segunda opinión, frames para
+cortar, revisión), está en `references/flujo.md`. Síguelo al armar un video.
+
 ## Antes que nada: mira el video, no los frames
 
 **`npm run watch -- <render.mp4>`** deja en `out/watch/<nombre>/GUION.md` una fila
@@ -52,12 +56,15 @@ pocos tokens: los scripts miden y resumen, el agente lee resúmenes y decide.
    hoja de `_digest/` (una imagen por clip: frames parejos con lo que se dice en
    cada uno). No abras frames sueltos: la hoja es más barata y dice más. En el
    Video 46 el mejor material quedó fuera dos veces por no mirarlo.
-3. **Lee las transcripciones antes de escribir textos.** El gancho puede estar
+3. **`npm run tramos -- --project <slug>`** retranscribe cada tramo aislado
+   (whisper sobre el clip entero pierde frases). **Lee las transcripciones antes de escribir textos.** El gancho puede estar
    dicho en cámara. Si whisper devolvió algo sin sentido, sospecha de jerga
    chilena ("once lucas" → "once lugar") y **pregunta** antes de descartar.
 4. **Escribe `plans/<slug>.json`** partiendo de `plans/_plantilla.json`: cortes,
    gancho, overlays, voces en off sobre B-roll, sonidos específicos, cierre. Cada
-   clip del proyecto va al plan o a `descartados` con su razón.
+   clip del proyecto va al plan o a `descartados` con su razón. Un clip de otra
+   carpeta va con `"proyecto": "video-NN"` (bájala con `--solo-material`), y
+   `npm run frames` saca la tira de frames exactos para fijar cada ventana.
 5. **`npm run assets -- --plan ...`** — busca la gráfica y los sonidos para ESTE
    video y los fija en el plan. Abre la hoja `out/assets/<slug>-candidatos.jpg`
    (una sola imagen para todo el video) y cambia el id de lo que no calce.

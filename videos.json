@@ -24,17 +24,21 @@
       "slug": "video-45",
       "estado": "pendiente",
       "clipsEnDrive": 11,
-      "nota": "Proyecto/ tiene NL45.prproj: se edito en Premiere. Confirmar con Veronica antes de hacerlo de nuevo. Es el unico con un archivo en Sonido/."
+      "nota": "Proyecto/ tiene NL45.prproj: se edito en Premiere. Confirmar con Veronica antes de hacerlo de nuevo. Es el unico con un archivo en Sonido/. Mismo rodaje y bidé que el 44; el 44 usa 7507, 7514 y 7515. Le queda la persecucion por la casa y el cajon secreto."
     },
     "Video 44": {
       "slug": "video-44",
-      "estado": "pendiente",
-      "clipsEnDrive": 2
+      "estado": "en-curso",
+      "clipsEnDrive": 2,
+      "plan": "plans/video-44.json",
+      "render": "renders/video-44-reel.mp4",
+      "nota": "Render 30-oct \"Mándamelo a hacer\" con 4 planos del 45; esperando aprobación de Veronica/Cris."
     },
     "Video 43": {
       "slug": "video-43",
       "estado": "pendiente",
-      "clipsEnDrive": 1
+      "clipsEnDrive": 1,
+      "nota": "Parodia de Russell (Up) en la puerta, camara en el suelo y de costado (rotar -90). Sin impresion 3D en cuadro: preguntar para que se grabo."
     },
     "Video 41": {
       "slug": "video-41",

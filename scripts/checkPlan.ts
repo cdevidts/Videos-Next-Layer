@@ -26,6 +26,8 @@ const arg = (name: string): string | undefined => {
 
 type PlanClip = {
   file: string;
+  /** Otro proyecto de donde sale el clip (public/input/<proyecto>/Videos). */
+  proyecto?: string;
   caption?: string;
   startFromSeconds?: number;
   durationInSeconds?: number;
@@ -90,8 +92,10 @@ const main = () => {
   for (const [i, clip] of (plan.clips ?? []).entries()) {
     const etiqueta = `clip ${i + 1} (${clip.file})`;
     const esUltimo = i === (plan.clips ?? []).length - 1;
-    const source = path.resolve(plan.dir, clip.file);
-    usados.add(clip.file);
+    const clipDir = clip.proyecto ? path.join(path.dirname(projectDir), clip.proyecto, 'Videos') : plan.dir;
+    const clipAudioDir = clip.proyecto ? path.join(path.dirname(clipDir), '_audio') : audioDir;
+    const source = path.resolve(clipDir, clip.file);
+    if (!clip.proyecto) usados.add(clip.file);
 
     if (!fs.existsSync(source)) {
       problemas.push(`${etiqueta}: no existe el archivo. Corre \`npm run fetch-drive\`.`);
@@ -120,7 +124,7 @@ const main = () => {
     // avisa cuando el hueco es largo de verdad, y nunca sobre el último corte
     // si el cierre de HyperFrames ya va montado encima.
     const nombre = path.basename(clip.file, path.extname(clip.file));
-    const transcripcionPath = path.join(audioDir, `${nombre}.json`);
+    const transcripcionPath = path.join(clipAudioDir, `${nombre}.json`);
     const tieneTranscripcion = fs.existsSync(transcripcionPath);
     const usaVoz = tieneTranscripcion && !clip.ignoreSpeech;
     const loCubreElCierre = esUltimo && Boolean(plan.finalOverlaySrc);
@@ -131,7 +135,7 @@ const main = () => {
     }
 
     // El audio del reel tiene que salir de la pista HQ, no de la de whisper.
-    if (usaVoz && !fs.existsSync(path.join(audioDir, 'hq', `${nombre}.wav`))) {
+    if (usaVoz && !fs.existsSync(path.join(clipAudioDir, 'hq', `${nombre}.wav`))) {
       problemas.push(
         `${etiqueta}: falta \`_audio/hq/${nombre}.wav\`. Sin eso el reel usa la pista de 16 kHz y suena opaco. Corre \`npm run audio\`.`,
       );

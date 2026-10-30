@@ -183,6 +183,24 @@ export const syncCaptions = async (propsFile: string, model: WhisperModel, langu
       // cantidad de palabras no coincida: "IKEA?" es una palabra y whisper la
       // oye como dos.
       const humanas = shot.words;
+
+      // Primero, emparejar palabra por palabra: cuando whisper oyó la MISMA
+      // palabra en el audio montado, su tiempo es el bueno. Solo las que no
+      // reconoce ("IKEA?" oída como "y que") se interpolan entre vecinas.
+      // Con el reparto por ritmo de abajo, el Video 44 dejó subtítulos 0,7 s
+      // adelantados al principio de una frase y 0,9 s atrasados al final: el
+      // ritmo "humano" venía de whisper -ml 1, que no es ritmo de nadie.
+      const alineadas = alinearPorTexto(humanas, suyas);
+      if (alineadas) {
+        shot.words = alineadas.map((w) => ({
+          text: w.text,
+          start: Math.max(w.start, 0),
+          end: Math.min(w.end, shot.durationInSeconds),
+        }));
+        bloqueados += humanas.length;
+        return;
+      }
+
       const h0 = humanas[0].start;
       const h1 = humanas[humanas.length - 1].end;
       const s0 = suyas[0].start;
@@ -216,6 +234,60 @@ export const syncCaptions = async (propsFile: string, model: WhisperModel, langu
     `✅ ${reasignadas} palabras resincronizadas contra el audio real → ${propsFile}` +
       (bloqueados ? ` (${bloqueados} con texto corregido a mano, retimadas)` : ''),
   );
+};
+
+const normal = (s: string) => s.toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
+
+/**
+ * Pega a cada palabra del texto bloqueado el tiempo de la MISMA palabra medida
+ * en el audio montado (emparejadas en orden, como un diff). Las que no tienen
+ * pareja se reparten entre las vecinas emparejadas. Devuelve null si menos de
+ * la mitad empareja: ahí la medición es demasiado pobre para mandar.
+ */
+export const alinearPorTexto = (texto: Word[], medidas: Word[]): Word[] | null => {
+  const a = texto.map((w) => normal(w.text));
+  const b = medidas.map((w) => normal(w.text));
+  // Subsecuencia común más larga: O(n·m), con frases de decenas de palabras.
+  const lcs = Array.from({length: a.length + 1}, () => new Array<number>(b.length + 1).fill(0));
+  for (let i = a.length - 1; i >= 0; i--) {
+    for (let j = b.length - 1; j >= 0; j--) {
+      lcs[i][j] = a[i] && a[i] === b[j] ? lcs[i + 1][j + 1] + 1 : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+    }
+  }
+  const pareja = new Array<number>(a.length).fill(-1);
+  for (let i = 0, j = 0; i < a.length && j < b.length; ) {
+    if (a[i] && a[i] === b[j]) {
+      pareja[i++] = j++;
+    } else if (lcs[i + 1][j] >= lcs[i][j + 1]) {
+      i++;
+    } else {
+      j++;
+    }
+  }
+  const emparejadas = pareja.filter((j) => j >= 0).length;
+  if (emparejadas < Math.max(2, texto.length / 2)) return null;
+
+  const salida = texto.map((w, i) =>
+    pareja[i] >= 0 ? {text: w.text, start: medidas[pareja[i]].start, end: medidas[pareja[i]].end} : null,
+  );
+  // Huecos: se reparten parejo entre el fin de la anterior emparejada y el
+  // inicio de la siguiente (o el borde de lo medido).
+  for (let i = 0; i < salida.length; ) {
+    if (salida[i]) {
+      i++;
+      continue;
+    }
+    let k = i;
+    while (k < salida.length && !salida[k]) k++;
+    const desde = i > 0 ? (salida[i - 1] as Word).end : medidas[0].start;
+    const hasta = k < salida.length ? (salida[k] as Word).start : medidas[medidas.length - 1].end;
+    const paso = Math.max(hasta - desde, 0.05 * (k - i)) / (k - i);
+    for (let n = i; n < k; n++) {
+      salida[n] = {text: texto[n].text, start: desde + paso * (n - i), end: desde + paso * (n - i + 1)};
+    }
+    i = k;
+  }
+  return salida as Word[];
 };
 
 const isMain = process.argv[1]

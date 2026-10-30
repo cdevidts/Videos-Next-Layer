@@ -1,5 +1,17 @@
 [
  {
+  "id": "emoji:✅",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_2705.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/2705/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
   "id": "emoji:🔥",
   "tipo": "sticker",
   "archivo": "assets/lottie/noto_1f525.json",
@@ -7,7 +19,21 @@
   "licencia": "CC BY 4.0",
   "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
   "intenciones": [],
-  "usadoEn": []
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "emoji:😩",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1f629.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f629/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "hugeicons:drill",
@@ -78,6 +104,32 @@
   "intenciones": [],
   "usadoEn": [
    "video-41"
+  ]
+ },
+ {
+  "id": "ph:cube-fill",
+  "tipo": "icon",
+  "archivo": "assets/icons/ph__cube-fill.svg",
+  "url": "https://api.iconify.design/ph/cube-fill.svg",
+  "licencia": "MIT (Phosphor)",
+  "intenciones": [
+   "cube"
+  ],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "ph:ruler-fill",
+  "tipo": "icon",
+  "archivo": "assets/icons/ph__ruler-fill.svg",
+  "url": "https://api.iconify.design/ph/ruler-fill.svg",
+  "licencia": "MIT (Phosphor)",
+  "intenciones": [
+   "ruler"
+  ],
+  "usadoEn": [
+   "video-44"
   ]
  },
  {

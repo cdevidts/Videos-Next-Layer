@@ -5,7 +5,8 @@ HyperFrames + Google Drive. Entra una carpeta de clips crudos, sale un reel list
 para publicar. **No es contenido de Cero Trade.**
 
 Este archivo se carga en cada turno: es corto a propósito. El detalle vive en la
-skill `reel-nextlayer` (el oficio) y en `.claude/skills/reel-nextlayer/references/lecciones.md`
+skill `reel-nextlayer` (el oficio), en `.claude/skills/reel-nextlayer/references/flujo.md`
+(el flujo real paso a paso, con checklist de calidad) y en `references/lecciones.md`
 (cada error ya pagado). El *por qué* de las decisiones, en `docs/journal.md`.
 
 ## "Haz el siguiente video"
@@ -13,7 +14,10 @@ skill `reel-nextlayer` (el oficio) y en `.claude/skills/reel-nextlayer/reference
 ```bash
 npm install                                   # si falta node_modules
 npm run next                                  # elige, baja TODO, transcribe, arma el digest
+npm run next -- --project "Video N" --solo-material  # los otros pendientes: el gancho puede estar ahí
+npm run tramos -- --project <slug> --aplicar  # retranscribe cada tramo aislado (revísalo)
 # → lee public/input/<slug>/DIGEST.md y abre CADA hoja de _digest/
+# → npm run frames -- --project <slug> --clip X --at 1,2.5,4 para fijar ventanas
 # → escribe plans/<slug>.json (parte de plans/_plantilla.json)
 npm run assets -- --plan plans/<slug>.json    # gráfica y sonidos para ESTE video; revisa la hoja de candidatos
 npm run check  -- --plan plans/<slug>.json    # compuerta: no renderiza nada que no pase
