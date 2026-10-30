@@ -1,4 +1,4 @@
-# El flujo real de producción (v1, Video 44, 30-oct-2026)
+# El flujo real de producción (Video 44, v1 a v3, 30-oct-2026)
 
 Esto es lo que se hizo para el primer reel armado con el pool completo de material
 suelto, en el orden en que se hizo, con lo que funcionó y lo que costó. La skill
@@ -132,12 +132,42 @@ El primer render de un video con clips 4K tarda ~20 min (proxies); los siguiente
 4. Mirar los frames del gancho: en el 44 el "?" del gancho quedaba suelto
    ("EXISTE ?") por ir fuera de los asteriscos.
 
+## 11. Panel de críticos sobre el render (la v2 → v3 del 44)
+
+Cris vio la v1 y dijo "bueno, pero poco cómico; mejora el timing, las gráficas, las
+referencias; el video instalando entre el pedido y cuando lo traigo no hace
+sentido". Lo que funcionó para pasar de eso a la v3:
+
+1. **Contar la historia en voz alta sin mirar la pantalla**: pedido → acepto →
+   busco → traigo → instalo. Si un plano cambia de lugar la causa, está mal
+   aunque se vea bien. Es lo primero que se arregla (v2).
+2. **Tres críticos independientes (Sonnet) sobre el render**, cada uno con una
+   mirada: timing cómico, historia/referencias, gráfica y sonido. Cada uno recibe el
+   render, `GUION.md`, `GRAFICA.jpg` y la guía de comedia, **no** mi opinión, y
+   devuelve hallazgos con instante exacto y el cambio exacto en el plan. Se
+   verifica cada hallazgo contra la fuente (frames, energía) antes de aplicarlo:
+   en el 44 uno pedía mover un sticker a un plano donde lo que parecía la pieza en
+   la mano era el celular.
+3. **Lo que casi siempre sale**: remates sin aire (la ventana no alcanza para
+   `pausaDespues`), una línea clave inaudible o sin subtítulo, gráficas sobre la
+   palabra graciosa, efectos con licencia dudosa, y planos de transición que
+   duran más que lo que cuentan.
+4. **Medir, no suponer**: el aire real de cada remate (nivel del audio del render
+   cerca del corte), el nivel de cada línea, y los ids de los efectos
+   (`lots-*` = licencia sin declarar).
+5. Un render por vuelta; mirar los frames de los remates y de los cortes que
+   cambiaron antes de volver a llamar a los críticos.
+
 ## Checklist de calidad (todo en verde antes de mostrarlo)
 
 - [ ] Cada clip del pool mirado en su hoja; los que no entran, con razón en el plan.
 - [ ] Transcripción tramo por tramo revisada contra la energía; nada inventado.
 - [ ] Gancho dicho en el video, ≤ 8 palabras, puntuación dentro del resaltado.
 - [ ] Un corte cada 3–5 s; ningún plano mudo > 3,5 s sin acción.
+- [ ] La historia se cuenta en orden de causa y efecto (pedido → busco → traigo → instalo).
+- [ ] Cada remate: velocidad natural, 0,3–0,8 s de aire REAL medido en el render, sin gráfica ni sonido sobre la palabra graciosa.
+- [ ] Toda línea que mueve la historia se oye y se lee (nivel, subtítulo).
+- [ ] Ningún efecto `lots-*` en `out/<slug>.reel.props.json`.
 - [ ] Último corte = producto, ≥ duración del cierre.
 - [ ] Overlays enganchados a la palabra, ≥ 0,6 s en pantalla, sin tapar cara ni subtítulo (`GRAFICA.jpg`).
 - [ ] Cada efecto corresponde a lo que se ve; whoosh solo en cambio de escena.

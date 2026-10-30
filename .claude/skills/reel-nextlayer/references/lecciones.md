@@ -52,9 +52,22 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   cosas" y la B "cinco". Transcribe cada tramo con voz AISLADO antes de elegir;
   whisper sobre el clip entero había puesto "Cinco" en un silencio y el subtítulo
   lo habría perdido.
+- **Una línea dicha lejos del micrófono no sale en el digest**: el "Dale, voy" del
+  7514 sonaba 15 dB bajo el resto y su tramo de energía medía 0,54 s, bajo el
+  mínimo de corte (`MIN_SHOT_SECONDS` 0,8): el clip caía a B-roll, sin subtítulo y
+  casi inaudible, justo en la bisagra de la historia. Arreglo: ensanchar el
+  tramo en `_audio/<clip>.json` (las palabras ya estaban) y subir la voz de ESE
+  clip con `"ganancia": 10` en el plan (copia del audio en `_audio/hq/`, no toca
+  los otros usos del clip).
 
 ## Subtítulos y sincronía
 
+- **El subtítulo del grupo siguiente entraba tarde** (arreglado en el Video 44 v3):
+  `KaraokeCaption` elegía con `findIndex` el PRIMER grupo activo, y el anterior
+  seguía activo 0,3 s después de su última palabra; el grupo siguiente aparecía
+  con la palabra ya dicha, y una palabra final sola ("hacer!") salía un frame.
+  `npm run sync` no lo ve (mide palabras contra audio, no lo que se dibuja): mira
+  los frames pegados a cada remate en el render.
 - **No infieras tiempos de subtítulos sobre el audio original**: tres métodos
   dejaron hasta 1,2 s de desfase porque después el audio se corta, se acelera y se
   monta. `syncCaptions` transcribe la pista YA montada.
@@ -133,6 +146,30 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   el audio sin música (`--codec=wav` con props sin `musicSrc`) y mide cada uno.
 - **Nunca `_audio/<clip>.wav` como pista del reel**: es mono 16 kHz para whisper y
   suena a teléfono. La pista sale de `_audio/hq/` (48 kHz estéreo).
+- **El aire de un remate tiene que existir en la ventana.** `pausaDespues` se topa
+  con `durationInSeconds`: con la ventana terminando 0,1 s después de la última
+  palabra, el aire real fue de 0,08 s aunque el plan pedía 0,6 (y el aviso salía
+  en la consola, no en el render). Al fijar `pausaDespues`, alarga la ventana
+  hasta 0,6 s más allá de la voz **y** comprueba en la fuente que ahí no
+  empieza otra frase. El corte siguiente al remate va sin whoosh
+  (`"whoosh": false` en el clip que entra): el aire no se rellena.
+- **Orden de causa y efecto antes que ritmo.** En la v1 la instalación del repuesto
+  quedaba entre el pedido del cliente y el momento en que lo traen: cada plano
+  era bueno y la historia no tenía sentido. Pedido → acepto → busco → traigo →
+  recién entonces se instala. El orden se prueba contando el reel en voz alta
+  sin mirar la pantalla.
+- **No pongas sticker ni sonido sobre la palabra graciosa.** Entra con la palabra
+  anterior y sale antes del remate (`at` + `duration`); el ✅ sobre "perfecto,
+  weón" lo enterraba. Una gráfica que repite la palabra (📏 sobre
+  "centímetros") rinde menos que una que agrega el chiste (💡 la idea, 🤫 el
+  escondite, 🏆 el trofeo). Para un `word` hay que contar con que whisper marca
+  la palabra ~0,4 s antes de que se oiga.
+- **Lots of Sounds no declara licencia por sonido**: no se usa salvo
+  `SFX_LOTS=1`. En la v2 del 44 la mayoría de los efectos salía de ahí sin que
+  nadie lo notara: `elegir` y `buscarEfecto` ahora los excluyen y todo sale de
+  Mixkit. Mira `out/<slug>.reel.props.json` y busca ids `lots-*`.
+- **Noto no trae todos los emoji animados** (📏 no, 🤦 no): `npm run assets` lo
+  dice y se elige otro con el mismo sentido (🎯 por "exactamente").
 - **Música sin Content ID**: nada comercial (ver bitácora).
 
 ## Herramientas

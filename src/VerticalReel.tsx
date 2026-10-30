@@ -132,9 +132,14 @@ const KaraokeCaption: React.FC<{shot: ReelShot; accentColor: string}> = ({
   const seconds = frame / fps;
   const groups = React.useMemo(() => groupWords(shot.words ?? []), [shot.words]);
 
-  const activeIndex = groups.findIndex(
-    (group) => seconds >= group[0].start - 0.14 && seconds < group[group.length - 1].end + 0.3,
-  );
+  // El grupo que corresponde es el ÚLTIMO que ya empezó: con findIndex ganaba el
+  // anterior mientras le durara el 0,3 s de permanencia, y el grupo siguiente
+  // entraba tarde (en el Video 44 la palabra final "hacer" apareció un frame,
+  // con "yo, mándamelo a" todavía en pantalla).
+  let activeIndex = -1;
+  groups.forEach((group, index) => {
+    if (seconds >= group[0].start - 0.14 && seconds < group[group.length - 1].end + 0.3) activeIndex = index;
+  });
   if (activeIndex === -1) return null;
 
   const group = groups[activeIndex];
@@ -477,6 +482,7 @@ const Hook: React.FC<{text: string; accentColor: string}> = ({text, accentColor}
 export const VerticalReel: React.FC<VerticalReelProps> = ({
   shots,
   hook,
+  ganchoSegundos,
   cta,
   ctaSub,
   finalOverlaySrc,
@@ -497,7 +503,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
 
   // El gancho es del primer corte: si sigue en pantalla cuando llega el segundo,
   // tapa lo que viene — y en un video corto lo que viene es el remate.
-  const hookFrames = Math.min(Math.round(fps * 2.2), shots[0] ? shotFrames(shots[0], fps) : Infinity);
+  const hookFrames = Math.min(Math.round(fps * (ganchoSegundos ?? 2.2)), shots[0] ? shotFrames(shots[0], fps) : Infinity);
   const ctaFrames = Math.round(fps * 2.4);
   const ctaStart = durationInFrames - ctaFrames;
   const ctaIn = spring({
@@ -611,7 +617,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
       {sfx?.whooshes?.length
         ? cuts
             .map((start, index) => ({start, index, shot: shots[index + 1]}))
-            .filter(({shot}) => shot?.isSceneChange)
+            .filter(({shot}) => shot?.isSceneChange && !shot.sinWhoosh)
             // El corte del reveal se lo queda su propio sonido. Un whoosh corto
             // encima de un swell largo se oyen como dos cosas peleando por el
             // mismo instante, justo donde el video tiene que respirar.

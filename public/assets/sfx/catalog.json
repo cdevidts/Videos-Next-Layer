@@ -380,7 +380,10 @@
   "colaSeg": 0.321,
   "nivelDb": -16.9,
   "brilloHz": 852,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1471",
@@ -396,7 +399,10 @@
   "colaSeg": 0.331,
   "nivelDb": -16.5,
   "brilloHz": 1607,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1461",
@@ -513,7 +519,10 @@
   "colaSeg": 0.842,
   "nivelDb": -15.3,
   "brilloHz": 612,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1328",
@@ -759,7 +768,10 @@
   "colaSeg": 0.391,
   "nivelDb": -14.9,
   "brilloHz": 2328,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-2050",
@@ -825,7 +837,10 @@
   "colaSeg": 0.311,
   "nivelDb": -11.4,
   "brilloHz": 2267,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1167",
@@ -1471,7 +1486,9 @@
   "nivelDb": -16.3,
   "brilloHz": 2120,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-2363",
@@ -2445,7 +2462,8 @@
   "brilloHz": 2004,
   "apto": true,
   "usadoEn": [
-   "video-41"
+   "video-41",
+   "video-44"
   ]
  },
  {
@@ -2729,7 +2747,10 @@
   "colaSeg": 0.03,
   "nivelDb": -22.7,
   "brilloHz": 1929,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1144",
@@ -2762,7 +2783,10 @@
   "colaSeg": 1.674,
   "nivelDb": -14.9,
   "brilloHz": 1681,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-794",
@@ -4278,7 +4302,10 @@
   "colaSeg": 0.13,
   "nivelDb": -14.8,
   "brilloHz": 1092,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1131",
@@ -5249,5 +5276,40 @@
   "brilloHz": 4856,
   "apto": false,
   "motivo": "casi no dura"
+ },
+ {
+  "id": "lots-fs-383063",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Ukulele with Vocals Loop",
+  "archivo": "assets/sfx/lots-fs-383063.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-383063/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 16.342,
+  "picoSeg": 6.184,
+  "ataqueSeg": 0.331,
+  "colaSeg": 0.682,
+  "nivelDb": -18.1,
+  "brilloHz": 1539,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-407258",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Idea Light Bulb Ding",
+  "archivo": "assets/sfx/lots-fs-407258.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-407258/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 3.358,
+  "picoSeg": 0.762,
+  "ataqueSeg": 0.06,
+  "colaSeg": 0.932,
+  "nivelDb": -18.3,
+  "brilloHz": 4123,
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  }
 ]

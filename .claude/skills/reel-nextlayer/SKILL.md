@@ -120,7 +120,10 @@ plan lo apaga: `"camara": "fija"` (sin zoom, golpe, destello ni deriva),
 `"transitionInFrames": 0` (corte seco), `"hook": ""` (sin texto de gancho),
 `"marca": false` (sin cierre ni tinte de marca), `"musicSrc": "ninguna"`, y
 `"pausaDespues"` en un clip para dejar correr un silencio que es parte del
-chiste. El Video 41 (un chiste) salió así porque Veronica lo pidió para ESE
+chiste (con la ventana del clip lo bastante larga: si no, no hay aire y solo
+el aviso de la consola lo dice), `"whoosh": false` en el clip que entra después
+de un remate, `"ganancia"` (dB) para una línea dicha lejos del micrófono y
+`"ganchoSegundos"` para que el gancho dure lo que tarda la frase que lo contesta. El Video 41 (un chiste) salió así porque Veronica lo pidió para ESE
 video; **no es una regla para la comedia** — eso lo deciden ellos, video a video.
 
 ### Marca en los reels: el Brand Book, con energía

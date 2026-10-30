@@ -12,10 +12,94 @@
   ]
  },
  {
+  "id": "emoji:🎯",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1f3af.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f3af/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "emoji:🏆",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1f3c6.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f3c6/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "emoji:💡",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1f4a1.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f4a1/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "emoji:💪",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1f4aa.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f4aa/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
   "id": "emoji:🔥",
   "tipo": "sticker",
   "archivo": "assets/lottie/noto_1f525.json",
   "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "emoji:🤫",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1f92b.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f92b/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "emoji:🫡",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1fae1.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1fae1/lottie.json",
+  "licencia": "CC BY 4.0",
+  "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
+  "intenciones": [],
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "emoji:😤",
+  "tipo": "sticker",
+  "archivo": "assets/lottie/noto_1f624.json",
+  "url": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f624/lottie.json",
   "licencia": "CC BY 4.0",
   "atribucion": "Noto Emoji Animation, Google (CC BY 4.0)",
   "intenciones": [],

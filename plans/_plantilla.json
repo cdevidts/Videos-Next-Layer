@@ -7,6 +7,8 @@
   "iconSet": "ph",
   "_marca": "Colores por defecto = Brand Book: primaryColor #011D62 (azul profundo, grade y cierre), secondaryColor #0382F7 (azul electrico, iconos), accentColor #FB830F (naranjo Next, resaltador y CTA). Solo se sobreescriben si ESTE video lo pide, con razon en una nota.",
   "_iconSet": "Un solo set por video (ph, tabler, hugeicons, lucide, fluent, material-symbols...). Si una intencion no existe ahi, assets usa otro y avisa.",
+  "ganchoSegundos": 2.2,
+  "_ganchoSegundos": "Cuanto sigue el gancho en pantalla (2,2 por defecto, nunca mas que el primer corte). Se alarga cuando la frase que lo contesta llega despues.",
   "transitionInFrames": 3,
   "sfxVolume": 0.3,
   "musicVolume": 0.16,
@@ -40,7 +42,11 @@
       "subtitulos": false,
       "_subtitulos": "false = la voz suena pero no se dibuja el subtitulo. Para cuando el gancho ya pone esas mismas palabras en grande.",
       "pausaDespues": 1,
-      "_pausaDespues": "Segundos que el corte sigue despues de la ultima palabra en vez de cortarse en el silencio (una pausa incomoda antes del remate). Topa con el final de la toma y avisa cuanto dio."
+      "_pausaDespues": "Segundos que el corte sigue despues de la ultima palabra en vez de cortarse en el silencio (una pausa incomoda antes del remate). Topa con el final de la ventana (startFromSeconds + durationInSeconds): alargala hasta 0,6 s mas alla de la voz y revisa que ahi no empiece otra frase. Avisa cuanto dio.",
+      "whoosh": false,
+      "_whoosh": "false = el corte que ENTRA a este clip va sin whoosh. Para el corte que sigue a un remate: el aire que se le da a la risa no se rellena.",
+      "ganancia": 10,
+      "_ganancia": "dB sobre la voz de este clip (copia del audio en _audio/hq/, no toca otros usos del clip). Para una linea dicha lejos del microfono que sonaba 15 dB bajo el resto."
     },
     {
       "file": "CLIP_DE_OTRO_VIDEO.MOV",

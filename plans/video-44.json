@@ -1,9 +1,9 @@
 {
   "project": "video-44",
   "dir": "public/input/video-44/Videos",
-  "_idea": "Repuestos que no existen: 'mándamelo a hacer'. El 44 trae el discurso (problema -> yo lo diseño -> mándamelo a hacer) cantado/actuado por Cristóbal; el 45 (misma sesión del 18-ago, mismo bidé) aporta el pedido concreto del cliente, la pieza puesta en la mano y el plano cenital donde se ve el soporte roto y la pieza negra impresa entrando. Cris autorizó mezclar clips de distintas carpetas (2026-10-30). El 45 conserva todo su material para su propio video.",
+  "_idea": "v2 (30-oct, pedido de Cris: 'bueno pero poco cómico; mejora timing, gráficas y referencias; el video instalando el repuesto entre el pedido y cuando lo traigo no hace sentido'). La historia va en orden: problema -> pedido concreto -> 'Dale, voy' -> búsqueda relámpago por la casa hasta el cajón secreto del aparador -> vuelve con la pieza '¡Mira, está perfecto!' -> recién ahí se instala -> CTA -> producto bajo el cierre. El chiste es la búsqueda: cortes cortos y acelerados, cada uno con su whoosh, y gráficas que nombran lo que pasa (💡 la idea, 🤫 el escondite). Usa el material del 45 (mismo rodaje); Cris autorizó mezclar.",
   "hook": "¿Tu repuesto *no existe?*",
-  "_hook": "Sale de lo que dice en el primer corte ('tengo un repuesto que no puedo encontrar o que no existe'). Una pregunta de problema con la palabra clave resaltada: elegido entre 3 candidatos, coincide con la propuesta independiente del agente de estructura.",
+  "_hook": "Sale de lo que dice en el primer corte. Elegido entre 3 candidatos y confirmado por el agente de estructura (v1).",
   "iconSet": "ph",
   "transitionInFrames": 3,
   "sfxVolume": 0.3,
@@ -13,92 +13,194 @@
       "file": "DSCF7505.MOV",
       "startFromSeconds": 2.3,
       "durationInSeconds": 5.05,
-      "speed": 1.1,
+      "speed": 1.25,
       "subtitulos": false,
-      "_toma": "Gancho. Patio, con energía: 'Ay, bueno, tengo un repuesto que no puedo encontrar o que no existe.' Sin subtítulo: el gancho grande ya lo dice, y dos textos a la vez se pisan. La voz entra a los 0,3 s del corte."
+      "_toma": "Gancho: '¡Ay, bueno! Tengo un repuesto que no puedo encontrar o que no existe.' Quejón a propósito. Sin subtítulo: el gancho grande ya lo dice.",
+      "_timing": "Setup rápido (x1,25): llega al problema enseguida, el tiempo va a los remates."
     },
     {
-      "file": "DSCF7506.MOV",
-      "startFromSeconds": 3.9,
-      "durationInSeconds": 5.4,
-      "speed": 1.1,
+      "file": "DSCF7505.MOV",
+      "startFromSeconds": 7.2,
+      "durationInSeconds": 2.3,
+      "speed": 1,
       "overlays": [
         {
-          "sticker": "emoji:😩",
-          "word": "rompió",
-          "pos": "right"
+          "sticker": "emoji:😤",
+          "at": 0.15,
+          "duration": 0.7,
+          "pos": "right",
+          "sfx": "ninguno"
         }
       ],
-      "_toma": "Setup concreto: 'Ay, se me rompió algo y yo no pude arreglarlo con pegamento.' En el marco de una puerta.",
-      "_overlay": "Primer render: enganchado a \"pegamento\" entraba 0,2 s antes del corte y no se veía (buildReel avisó). Va en \"rompió\"."
+      "_toma": "Remate inmediato, él mismo se contesta: '¡Mándalo a hacer weón!'. En la v1 se había sacado por el garabato y por repetir la idea; es justamente el golpe de comedia. Jump cut seco sobre la misma toma.",
+      "_timing": "Remate 1: '¡Mándalo a hacer, weón!' a velocidad natural. El 😤 entra con 'Mándalo' y sale antes de 'weón'; 0,5 s de aire sobre su cara antes del corte.",
+      "pausaDespues": 0.5
     },
     {
       "file": "DSCF7507.MOV",
       "proyecto": "video-45",
       "startFromSeconds": 14,
       "durationInSeconds": 5.3,
-      "speed": 1.1,
+      "speed": 1.2,
       "overlays": [
         {
-          "icon": "ph:ruler-fill",
-          "word": "centímetros"
+          "sticker": "emoji:🎯",
+          "word": "exactamente",
+          "pos": "left",
+          "sfx": "ninguno"
         }
       ],
-      "_toma": "El pedido a medida (del 45): 'Hermano, necesito exactamente una pieza como de 10 centímetros por 5'. Corta en el silencio de 19,25-19,35 s, antes de 'que me sostenga...' (medido por energía). Se ve a Cristóbal agachado frente al panel del bidé."
+      "_toma": "El caso real: 'Hermano, necesito exactamente una pieza como de 10 centímetros por 5'. Corta en el silencio de 19,25-19,35 s.",
+      "whoosh": false,
+      "_timing": "Sin whoosh en el corte de entrada: viene del aire del remate."
     },
     {
-      "file": "DSCF7506.MOV",
-      "startFromSeconds": 9.4,
-      "durationInSeconds": 3.75,
-      "speed": 1.1,
-      "overlays": [
-        {
-          "icon": "ph:cube-fill",
-          "word": "diseño"
-        }
-      ],
-      "_toma": "La respuesta: 'Yo lo diseño. Yo lo diseño. Yo lo arreglo.' con la pieza negra impresa junto a la cara. Tres frases medidas por energía (9,6-11,0 / 11,2-12,0 / 12,2-13,0 s): whisper se había comido una."
-    },
-    {
-      "file": "DSCF7515.MOV",
+      "file": "DSCF7514.MOV",
       "proyecto": "video-45",
-      "rotate": 90,
-      "startFromSeconds": 1,
-      "durationInSeconds": 3.0,
-      "speed": 2.0,
+      "startFromSeconds": 1.35,
+      "durationInSeconds": 1.25,
+      "speed": 1,
+      "_toma": "'Dale, voy.' en la puerta del baño (el objeto negro en su mano es el celular), y corte seco a la búsqueda: el chiste es que no lo piensa. v3: la línea sonaba 15 dB bajo el resto y sin subtítulo (el tramo medía 0,54 s); se ensanchó el tramo en _audio, sube 10 dB y lleva 🫡 ('a la orden').",
+      "ganancia": 10,
+      "overlays": [
+        {
+          "sticker": "emoji:🫡",
+          "at": 0.3,
+          "pos": "right",
+          "sfx": "ninguno"
+        }
+      ]
+    },
+    {
+      "file": "DSCF7510.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 2.5,
+      "durationInSeconds": 1.4,
+      "speed": 1.6,
       "ignoreSpeech": true,
-      "_toma": "Prueba (del 45), cenital grabado apaisado sin metadato: +90 deja el estanque arriba. 1-3 s soporte del panel roto; 4,5-6 s entra la pieza negra; 7 s el panel firme. 6 s de fuente en 3 s de pantalla (x2: se lee como arreglo rapido). Mudo a propósito: el audio de esa toma es dirección de rodaje ('pretende que estés como...').",
-      "_sfx": "Se probó \"buscar:plastic click\": salió un click de lápiz de 3,5 s y el efecto suena al inicio del corte, cuando todavía se ve el soporte roto, no cuando entra la pieza. Sin efecto propio: suena el whoosh del cambio de escena y la música."
+      "overlays": [
+        {
+          "sticker": "emoji:💡",
+          "at": 0.05,
+          "pos": "right"
+        }
+      ],
+      "_toma": "Se le prende la ampolleta (2,8 s se ilumina la cara) y sale disparado (4,3 s). x1,6. Mudo: lo que dice ahí no se entiende ('no lo puedo creer/ver'), y la ampolleta lo dice mejor."
+    },
+    {
+      "file": "DSCF7511.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 3,
+      "durationInSeconds": 1,
+      "speed": 2,
+      "ignoreSpeech": true,
+      "_toma": "Sube la escalera corriendo (3-5 s de fuente en 1 s)."
+    },
+    {
+      "file": "DSCF7516.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 5.2,
+      "durationInSeconds": 1.4,
+      "speed": 2,
+      "ignoreSpeech": true,
+      "overlays": [
+        {
+          "sticker": "emoji:🤫",
+          "at": 0.7,
+          "pos": "right"
+        }
+      ],
+      "_toma": "El aparador tallado: tira de las puertas y se abre el compartimento escondido (5,2-8 s de fuente a x2). v3: arranca ya tirando, 🤫 justo antes de la revelación."
+    },
+    {
+      "file": "DSCF7518.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 7,
+      "durationInSeconds": 1.2,
+      "speed": 1.6,
+      "ignoreSpeech": true,
+      "_toma": "Contraplano bajo: abre la caja de madera del cajón secreto."
+    },
+    {
+      "file": "DSCF7517.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 9.6,
+      "durationInSeconds": 0.8,
+      "speed": 1.2,
+      "ignoreSpeech": true,
+      "_toma": "Saca la pieza negra de la caja y la levanta."
+    },
+    {
+      "file": "DSCF7520.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 0.7,
+      "durationInSeconds": 2.6,
+      "speed": 1.1,
+      "subtitulos": false,
+      "_toma": "Agachado, la mira y la levanta celebrando; a los 3,2 s sale corriendo. Su grito se oye pero no se subtitula: whisper oye 'la corteo' y no se entiende (preguntado a Cris).",
+      "pausaDespues": 0.2
+    },
+    {
+      "file": "DSCF7512.MOV",
+      "proyecto": "video-45",
+      "startFromSeconds": 3.3,
+      "durationInSeconds": 1.3,
+      "speed": 1,
+      "ignoreSpeech": true,
+      "_toma": "Baja la escalera con la pieza en alto, como trofeo.",
+      "overlays": [
+        {
+          "sticker": "emoji:🏆",
+          "at": 0.15,
+          "pos": "left",
+          "sfx": "ninguno"
+        }
+      ]
     },
     {
       "file": "DSCF7514.MOV",
       "proyecto": "video-45",
       "startFromSeconds": 4.2,
-      "durationInSeconds": 4.7,
-      "speed": 1.1,
+      "durationInSeconds": 5.3,
+      "speed": 1,
+      "_toma": "Vuelve a la misma puerta (mismo encuadre que 'Dale, voy'): '¡Mira! ¡Mira! ¡Mira! ¡Mira, weón! ¡Está perfecto, weón!'. v3: sin gráfica encima de la palabra graciosa; el ✅ pasa a la instalación, donde la pieza calza.",
+      "pausaDespues": 0.6,
+      "_timing": "REMATE 2: velocidad natural y 0,6 s de aire real (la ventana ahora llega a 9,5 s; antes topaba en 8,9 y el aire era de 0,08 s)."
+    },
+    {
+      "file": "DSCF7515.MOV",
+      "proyecto": "video-45",
+      "rotate": 90,
+      "startFromSeconds": 2.4,
+      "durationInSeconds": 3.4,
+      "speed": 2,
+      "ignoreSpeech": true,
+      "_toma": "Instalación (cenital, +90), x2, fuente 2,4-9,2 s: la grieta, la pieza entra desde abajo, el panel queda firme; termina donde empieza el producto bajo el cierre. ✅ cuando la pieza calza.",
+      "whoosh": false,
       "overlays": [
         {
           "sticker": "emoji:✅",
-          "word": "perfecto",
+          "at": 2,
           "pos": "left"
         }
-      ],
-      "_toma": "Payoff con reacción (del 45): '¡Mira! ¡Mira! ¡Mira! ¡Mira, weón! ¡Está perfecto, weón!' entregando la pieza en la puerta del baño.",
-      "_overlay": "Segundo render: a la derecha tapaba la mano que entrega la pieza. Va a la izquierda."
+      ]
     },
     {
       "file": "DSCF7505.MOV",
-      "startFromSeconds": 9.1,
-      "durationInSeconds": 5.9,
+      "startFromSeconds": 10.8,
+      "durationInSeconds": 4.5,
       "speed": 1.1,
       "overlays": [
         {
-          "sticker": "emoji:🔥",
+          "sticker": "emoji:💪",
           "word": "hice",
-          "pos": "left"
+          "pos": "left",
+          "sfx": "ninguno",
+          "duration": 0.8
         }
       ],
-      "_toma": "CTA: '¡Mándamelo a hacer! Mándamelo a hacer, yo lo hago, esto lo hice yo, mándamelo a hacer' — levanta otra pieza impresa (beige, redonda; no se afirma qué es). Se deja fuera 7,2-9,2 s ('¡Mándalo a hacer weón!'): repite la idea con garabato. Termina antes de 15,3 s ('Mano de los 7', ininteligible). El cierre va encima."
+      "_toma": "CTA: 'mándamelo a hacer, yo lo hago, esto lo hice yo, mándamelo a hacer' levantando otra pieza impresa (beige; no se afirma qué es). Termina antes de 15,3 s (ininteligible).",
+      "pausaDespues": 0.35
     },
     {
       "file": "DSCF7515.MOV",
@@ -108,16 +210,24 @@
       "durationInSeconds": 3.2,
       "speed": 0.55,
       "ignoreSpeech": true,
-      "_toma": "Reveal bajo el cierre: el panel ya firme sobre la pieza negra (9,2-10,96 s de fuente, quieto: antes de 9 s se ve una mano abajo y a los 11 s entra alguien). Se agregó tras el primer render, donde el cierre caía encima de 'esto lo hice yo' y tapaba la pieza beige: el cierre arranca en el último corte, así que el último corte tiene que ser el producto y durar lo que el cierre (3,2 s). x0,55 para estirar 1,76 s de plano quieto."
+      "_toma": "Producto bajo el cierre: el panel firme sobre la pieza negra (9,2-10,96 s, quieto), dura lo que el cierre (3,2 s)."
     }
   ],
-  "descartados": [],
-  "_descartados_otros": "Del 45 quedan fuera (no son de este plan, pero se miraron): 7508 (mano en el panel; el 'Perfecto' cae sobre un plano oscuro), 7510/7511/7512/7516/7517/7518/7520 (la persecución por la casa y el cajón secreto: otra historia, sirve para el 45), 7507 fuera de 14-19,3 s (indicaciones de rodaje). Del 44: 7506 16,5-21,9 s y 32,8-39 s (planos oscuros/movidos al baño) y 7505 7,2-9,2 s.",
+  "descartados": [
+    {
+      "file": "DSCF7506.MOV",
+      "razon": "v2: 'se me rompió… con pegamento' repite el problema del gancho y 'yo lo diseño, yo lo arreglo' frenaba la historia; con la búsqueda del 45 el video ya iba en 36 s. Era el corazón de la v1."
+    }
+  ],
+  "_descartados_otros": "Fuera en la v2: 7506 completo ('se me rompió… con pegamento' y 'yo lo diseño, yo lo arreglo': con la búsqueda, el problema ya está dicho y el video se pasaba de 35 s), 7508 ('Perfecto' sobre un plano negro), 7507 fuera de 14-19,3 s (indicaciones de rodaje), 7505 15,3-16 s (ininteligible).",
   "sonido": {},
   "cierre": {
     "tagIzq": "¿NO EXISTE?",
-    "tagDer": "MÁNDALO A HACER",
+    "tagDer": "MÁNDAMELO A HACER",
     "bajadaMarca": "REPUESTOS IMPRESOS EN 3D"
   },
-  "_cierre": "Sin precio: nadie dice uno. '¿No existe?' y 'mándalo a hacer' salen de lo que se dice; la bajada dice qué es Next Layer en este video."
+  "_cierre": "Sin precio: nadie dice uno. '¿No existe?' y 'mándalo a hacer' salen de lo que se dice; la bajada dice qué es Next Layer en este video.",
+  "ganchoSegundos": 3.6,
+  "_ganchoSegundos": "El gancho sigue hasta 'o que no existe': la voz y el texto dicen 'no existe' a la vez.",
+  "_v3": "v3 (30-oct): aire real en los tres remates (pausaDespues con ventana que alcanza), 'Dale, voy' audible y subtitulado, gráficas que cuentan algo (😤 💡 🤫 🏆 ✅ 💪 🫡) y ninguna encima de la palabra graciosa, SFX solo de Mixkit, instalación con causa-efecto."
 }

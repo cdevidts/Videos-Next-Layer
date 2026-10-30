@@ -14,6 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {normalize, probe, run, type Giro} from './lib/media';
+import {ffmpegCompleto} from './lib/ffmpegFull';
 import {syncCaptions} from './syncCaptions';
 import {
   reelDurationInFrames,
@@ -68,6 +69,17 @@ type PlanClip = {
    */
   pausaDespues?: number;
   /**
+   * false: el corte que ENTRA a este clip va sin whoosh. Para el corte que sigue
+   * a un remate: el aire que se le da a la risa no se rellena con un efecto.
+   */
+  whoosh?: false;
+  /**
+   * Sube (o baja) la voz de este clip, en dB. Para una línea dicha lejos del
+   * micrófono (en el Video 44 "Dale, voy" sonaba 15 dB bajo el resto). Sale de
+   * una copia del audio en _audio/hq/, así que no toca a los otros usos del clip.
+   */
+  ganancia?: number;
+  /**
    * Voz en off de Sonido/ que suena sobre este clip, relativa a la carpeta del
    * proyecto (ej. "Sonido/Audios/VO1.wav"). Para B-roll o planos donde no se
    * habla a cámara. Los subtítulos salen de su transcripción.
@@ -119,6 +131,8 @@ type Plan = {
   sonido?: {transiciones?: string; apertura?: string; riser?: string; impacto?: string; ui?: string};
   dir: string;
   hook: string;
+  /** Segundos que el gancho sigue en pantalla; ver VerticalReelProps. */
+  ganchoSegundos?: number;
   cta?: string;
   ctaSub?: string;
   /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
@@ -332,7 +346,15 @@ const main = async () => {
     // audio opaco.
     const hqFile = path.join(clipAudioDir, 'hq', `${name}.wav`);
     const legacyFile = path.join(clipAudioDir, `${name}.wav`);
-    const audioFile = fs.existsSync(hqFile) ? hqFile : legacyFile;
+    let audioFile = fs.existsSync(hqFile) ? hqFile : legacyFile;
+    if (item.ganancia && fs.existsSync(audioFile)) {
+      const conGanancia = path.join(path.dirname(audioFile), `${name}__g${item.ganancia}.wav`);
+      if (!fs.existsSync(conGanancia)) {
+        // Limitador: subir 10 dB una voz lejana no debe clipear si hay un grito cerca.
+        run(ffmpegCompleto(), ['-nostdin', '-loglevel', 'error', '-y', '-i', audioFile, '-af', `volume=${item.ganancia}dB,alimiter=limit=0.9`, conGanancia]);
+      }
+      audioFile = conGanancia;
+    }
     if (!fs.existsSync(hqFile) && fs.existsSync(legacyFile)) {
       console.warn(
         `⚠️  ${name}: usando audio de 16 kHz (calidad teléfono). Corre \`npm run audio\` para generar _audio/hq/.`,
@@ -408,6 +430,7 @@ const main = async () => {
             sfx: index === 0 ? resolverSfx(item.sfx, project) : undefined,
             wordsLocked: transcript.correctedByHuman || transcript.tramosAislados || undefined,
             hideCaptions: item.subtitulos === false || undefined,
+            sinWhoosh: (index === 0 && item.whoosh === false) || undefined,
           });
         }
         const cut = (windowEnd - windowStart) - ranges.reduce((s, r) => s + (r.end - r.start), 0);
@@ -462,6 +485,7 @@ const main = async () => {
       label: item.label,
       caption: vo.words?.length ? undefined : item.caption,
       sfx: resolverSfx(item.sfx, project),
+      sinWhoosh: item.whoosh === false || undefined,
       speed: item.speed && item.speed !== 1 && !item.voiceover ? item.speed : undefined,
       ...vo,
     });
@@ -539,6 +563,7 @@ const main = async () => {
   const props: VerticalReelProps = {
     shots,
     hook: plan.hook,
+    ganchoSegundos: plan.ganchoSegundos,
     // Vacíos explícitos: si faltan, Remotion completa con los defaults de
     // Root.tsx ("Next Layer") y el cierre de texto aparece igual.
     cta: conMarca ? plan.cta : '',
