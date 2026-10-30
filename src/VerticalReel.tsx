@@ -138,9 +138,9 @@ const KaraokeCaption: React.FC<{shot: ReelShot; accentColor: string}> = ({
   // con "yo, mándamelo a" todavía en pantalla).
   let activeIndex = -1;
   groups.forEach((group, index) => {
-    if (seconds >= group[0].start - 0.14 && seconds < group[group.length - 1].end + 0.3) activeIndex = index;
+    if (seconds >= group[0].start - 0.14) activeIndex = index;
   });
-  if (activeIndex === -1) return null;
+  if (activeIndex === -1 || seconds >= groups[activeIndex][groups[activeIndex].length - 1].end + 0.3) return null;
 
   const group = groups[activeIndex];
   const groupStartFrame = Math.round((group[0].start - 0.14) * fps);
@@ -503,7 +503,7 @@ export const VerticalReel: React.FC<VerticalReelProps> = ({
 
   // El gancho es del primer corte: si sigue en pantalla cuando llega el segundo,
   // tapa lo que viene — y en un video corto lo que viene es el remate.
-  const hookFrames = Math.min(Math.round(fps * (ganchoSegundos ?? 2.2)), shots[0] ? shotFrames(shots[0], fps) : Infinity);
+  const hookFrames = Math.min(Math.max(1, Math.round(fps * (ganchoSegundos ?? 2.2))), shots[0] ? shotFrames(shots[0], fps) : Infinity);
   const ctaFrames = Math.round(fps * 2.4);
   const ctaStart = durationInFrames - ctaFrames;
   const ctaIn = spring({

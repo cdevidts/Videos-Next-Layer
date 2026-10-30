@@ -45,6 +45,7 @@ type Plan = {
   project?: string;
   dir: string;
   hook: string;
+  ganchoSegundos?: number;
   cta?: string;
   /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
   finalOverlaySrc?: string;
@@ -73,6 +74,8 @@ const main = () => {
     // Vacío a propósito: el video engancha por lo que se dice o se ve (una
     // línea de comedia que ya es el título). Se avisa, no se frena.
     avisos.push('Sin texto de gancho ("hook": ""): el primer 1,5 s tiene que enganchar solo con la toma.');
+  } else if (plan.ganchoSegundos !== undefined && !(plan.ganchoSegundos > 0)) {
+    problemas.push('"ganchoSegundos" tiene que ser un número mayor que 0 (para quitar el gancho: "hook": "").');
   } else if (!plan.hook?.trim()) {
     problemas.push('El plan no tiene gancho. Los primeros 1,5s deciden si alguien sigue viendo. Si va sin texto a propósito, "hook": "".');
   } else {
@@ -220,13 +223,20 @@ const main = () => {
   // El render no busca en internet ni decide: todo tiene que venir fijado por
   // `npm run assets`. Si no, el reel sale distinto cada vez que se renderiza.
   const indice = new Set(leerIndice().map((a) => a.id));
-  const catalogo = new Set(leerCatalogo().map((e) => e.id));
+  const efectos = leerCatalogo();
+  const catalogo = new Set(efectos.map((e) => e.id));
+  const sinLicencia = new Set(efectos.filter((e) => e.fuente === 'lotsofsounds').map((e) => e.id));
   const revisarSfx = (valor: string | undefined, donde: string) => {
     if (!valor || valor === 'ninguno' || valor.startsWith('@')) return;
     if (valor.startsWith('buscar:')) {
       problemas.push(`${donde}: sonido "${valor}" sin fijar. Corre \`npm run assets -- --plan ${planPath}\`.`);
     } else if (valor.startsWith('sfx:')) {
       if (!catalogo.has(valor.slice(4))) problemas.push(`${donde}: ${valor} no está en el catálogo de sonidos.`);
+      else if (sinLicencia.has(valor.slice(4)) && process.env.SFX_LOTS !== '1') {
+        problemas.push(
+          `${donde}: ${valor} es de Lots of Sounds, que no declara licencia por sonido. Elige uno de Mixkit (\`"buscar:<términos>"\`) o define SFX_LOTS=1 bajo tu responsabilidad.`,
+        );
+      }
     } else if (!fs.existsSync(path.join('public', 'sfx', valor))) {
       problemas.push(`${donde}: no existe public/sfx/${valor}. Corre \`npm run sfx\`.`);
     }

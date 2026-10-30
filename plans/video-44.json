@@ -39,20 +39,22 @@
     {
       "file": "DSCF7507.MOV",
       "proyecto": "video-45",
-      "startFromSeconds": 14,
-      "durationInSeconds": 5.3,
-      "speed": 1.2,
+      "startFromSeconds": 14.8,
+      "durationInSeconds": 4.5,
+      "speed": 1.3,
       "overlays": [
         {
-          "sticker": "emoji:🎯",
-          "word": "exactamente",
+          "sticker": "emoji:🤏",
+          "at": 1.9,
+          "duration": 1.2,
           "pos": "left",
           "sfx": "ninguno"
         }
       ],
-      "_toma": "El caso real: 'Hermano, necesito exactamente una pieza como de 10 centímetros por 5'. Corta en el silencio de 19,25-19,35 s.",
+      "_toma": "El caso real: 'necesito exactamente una pieza como de 10 centímetros por 5'. v3: entra en 'necesito' (la voz sube en 14,95 s; 'Hermano,' suena 20 dB bajo y dejaba 1,1 s de hueco tras el remate), x1,3 y +3 dB. Corta en el silencio de 19,25-19,35 s.",
       "whoosh": false,
-      "_timing": "Sin whoosh en el corte de entrada: viene del aire del remate."
+      "_timing": "Sin whoosh en el corte de entrada: viene del aire del remate.",
+      "ganancia": 3
     },
     {
       "file": "DSCF7514.MOV",
@@ -65,7 +67,7 @@
       "overlays": [
         {
           "sticker": "emoji:🫡",
-          "at": 0.3,
+          "at": 0.2,
           "pos": "right",
           "sfx": "ninguno"
         }
@@ -74,18 +76,19 @@
     {
       "file": "DSCF7510.MOV",
       "proyecto": "video-45",
-      "startFromSeconds": 2.5,
-      "durationInSeconds": 1.4,
-      "speed": 1.6,
+      "startFromSeconds": 1.2,
+      "durationInSeconds": 1.75,
+      "speed": 1.8,
       "ignoreSpeech": true,
       "overlays": [
         {
           "sticker": "emoji:💡",
-          "at": 0.05,
-          "pos": "right"
+          "at": 0,
+          "x": 76,
+          "y": 22
         }
       ],
-      "_toma": "Se le prende la ampolleta (2,8 s se ilumina la cara) y sale disparado (4,3 s). x1,6. Mudo: lo que dice ahí no se entiende ('no lo puedo creer/ver'), y la ampolleta lo dice mejor."
+      "_toma": "Piensa (mira abajo), se le ilumina la cara (2,4 s), abre los brazos (3-3,6 s) y sale disparado (4,2 s); x1,8. v3: arranca antes y la ampolleta (que se enciende ~1 s después de entrar) se prende justo cuando abre los brazos. Mudo: lo que dice no se entiende."
     },
     {
       "file": "DSCF7511.MOV",
@@ -99,18 +102,18 @@
     {
       "file": "DSCF7516.MOV",
       "proyecto": "video-45",
-      "startFromSeconds": 5.2,
+      "startFromSeconds": 5.8,
       "durationInSeconds": 1.4,
       "speed": 2,
       "ignoreSpeech": true,
       "overlays": [
         {
           "sticker": "emoji:🤫",
-          "at": 0.7,
+          "at": 0.4,
           "pos": "right"
         }
       ],
-      "_toma": "El aparador tallado: tira de las puertas y se abre el compartimento escondido (5,2-8 s de fuente a x2). v3: arranca ya tirando, 🤫 justo antes de la revelación."
+      "_toma": "El aparador tallado: tira de las puertas y se abre el compartimento escondido (5,8-8,6 s de fuente a x2). v3: la puerta se entreabre a los 0,6 s y la revelación queda 0,5 s a la vista; 🤫 justo antes."
     },
     {
       "file": "DSCF7518.MOV",
@@ -138,7 +141,8 @@
       "speed": 1.1,
       "subtitulos": false,
       "_toma": "Agachado, la mira y la levanta celebrando; a los 3,2 s sale corriendo. Su grito se oye pero no se subtitula: whisper oye 'la corteo' y no se entiende (preguntado a Cris).",
-      "pausaDespues": 0.2
+      "pausaDespues": 0.2,
+      "ganancia": -5
     },
     {
       "file": "DSCF7512.MOV",
@@ -151,7 +155,8 @@
       "overlays": [
         {
           "sticker": "emoji:🏆",
-          "at": 0.15,
+          "at": 0.5,
+          "duration": 0.8,
           "pos": "left",
           "sfx": "ninguno"
         }
@@ -208,7 +213,7 @@
       "rotate": 90,
       "startFromSeconds": 9.2,
       "durationInSeconds": 3.2,
-      "speed": 0.55,
+      "speed": 0.45,
       "ignoreSpeech": true,
       "_toma": "Producto bajo el cierre: el panel firme sobre la pieza negra (9,2-10,96 s, quieto), dura lo que el cierre (3,2 s)."
     }

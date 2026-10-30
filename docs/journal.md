@@ -862,9 +862,33 @@ verificó contra la fuente antes de aplicarlo. Lo que salió, y la v3 lo arregla
   durara su permanencia); la palabra final "hacer!" salía un frame. Corregido en
   `KaraokeCaption`.
 
-**v3**: 34,6 s, 15 cortes, `check` y `tsc` limpios, `sync` en verde (audio peor
-0,070 s con tope 0,08; subtítulos |error| mediano 0,095 s). La v2 queda descartada
-(`renders/` guarda solo la última).
+**Segundo panel (3 críticos, sobre la v3)**: los seis defectos de la v2 estaban
+arreglados (aire medido: 0,56 / 0,58 / 0,34 s; "Dale, voy" a -18 dBFS y con
+subtítulo; ninguna gráfica sobre la palabra graciosa; instalación con efecto;
+solo Mixkit; subtítulos sin retraso). Sin defectos altos. Se aplicó lo demás:
+el pedido entra en "necesito" (x1,3 y +3 dB: "Hermano," sonaba 20 dB bajo y dejaba
+1,1 s de hueco tras el remate), la ampolleta se prende cuando abre los brazos
+(la toma arranca antes, x1,8), el aparador muestra la revelación 0,5 s, 🏆 entra
+cuando sube la pieza, 🤏 sobre "10 centímetros" (Noto no trae 📏), el grito de la
+búsqueda baja 5 dB, el producto final a x0,45 (cámara quieta), "Dale, voy" con
+tiempos medidos por energía. Revisión de código: el limitador de `ganancia` subía
+0,9 dB de más (ahora `level=0:latency=1`), la copia con ganancia se rehace si el
+audio de origen cambia, `check` frena un id `lots-*` fijado a mano y valida
+`ganchoSegundos`.
+
+**Lo que no se tocó, a propósito**: la placa de cierre (bajada azul sobre marino,
+poco contraste en el teléfono: es del cierre de marca, decisión de Veronica); los
+subtítulos sobre el panel roto en el pedido; fundidos de 3 frames en vez de cortes
+secos (con 1 frame el audio puede hacer click).
+
+**v3 (final)**: 34,1 s, 15 cortes, `check` y `tsc` limpios. `sync`: audio por corte
+✅ (peor 0,056 s, tope 0,08) — el checker acumulaba redondeo de frames y marcaba
+0,09 s de más; ahora acumula en frames. Subtítulos: |error| mediano 0,19 s contra
+tope 0,15 → el checker dice ❌. No es un desfase real que se vea: el mismo audio
+pasó de 0,095 a 0,19 s al cambiar un par de cortes (whisper `-ml 1` varía ±0,2 s
+palabra a palabra según el contexto), y la medición por energía de las líneas
+clave da ±0,1 s. Los subtítulos de remate (última palabra) pueden verse hasta
+0,2 s antes de la voz. Quien apruebe el video debería mirarlo con sonido.
 
 **Pendiente de personas**:
 - ¿DSCF7520 dice "¡La encontré!"? (whisper oye "la corteo" / "La encontré, weón"; sin

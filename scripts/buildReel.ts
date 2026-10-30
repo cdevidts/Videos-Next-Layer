@@ -349,9 +349,17 @@ const main = async () => {
     let audioFile = fs.existsSync(hqFile) ? hqFile : legacyFile;
     if (item.ganancia && fs.existsSync(audioFile)) {
       const conGanancia = path.join(path.dirname(audioFile), `${name}__g${item.ganancia}.wav`);
-      if (!fs.existsSync(conGanancia)) {
-        // Limitador: subir 10 dB una voz lejana no debe clipear si hay un grito cerca.
-        run(ffmpegCompleto(), ['-nostdin', '-loglevel', 'error', '-y', '-i', audioFile, '-af', `volume=${item.ganancia}dB,alimiter=limit=0.9`, conGanancia]);
+      // Se rehace si el audio de origen es más nuevo que la copia (o con --force):
+      // los props no cambian (el nombre es el mismo), así que una copia vieja
+      // sonaría sin que nada lo avise.
+      const vieja = fs.existsSync(conGanancia) && fs.statSync(conGanancia).mtimeMs < fs.statSync(audioFile).mtimeMs;
+      if (!fs.existsSync(conGanancia) || vieja || flag('force')) {
+        // Limitador: subir 10 dB una voz lejana no debe clipear si hay un grito
+        // cerca. level=0: sin auto-nivel (subía 0,9 dB más de lo pedido);
+        // latency=1: sin el desfase de ~5 ms del lookahead.
+        const tmp = conGanancia.replace(/\.wav$/, '.tmp.wav');
+        run(ffmpegCompleto(), ['-nostdin', '-loglevel', 'error', '-y', '-i', audioFile, '-af', `volume=${item.ganancia}dB,alimiter=limit=0.9:level=0:latency=1`, tmp]);
+        fs.renameSync(tmp, conGanancia);
       }
       audioFile = conGanancia;
     }

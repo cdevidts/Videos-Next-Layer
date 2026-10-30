@@ -68,6 +68,20 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   con la palabra ya dicha, y una palabra final sola ("hacer!") salía un frame.
   `npm run sync` no lo ve (mide palabras contra audio, no lo que se dibuja): mira
   los frames pegados a cada remate en el render.
+- **El checker de sincronía acumulaba redondeo** (arreglado en el 44): `checkSync`
+  sumaba las duraciones en segundos, pero Remotion redondea cada corte a frames
+  (`shotFrames`); con duraciones como 1,75 s (52,5 frames) el cursor se corría
+  hasta medio frame por corte y los últimos cortes salían a 0,09 s "de desfase"
+  sin que nada se hubiera movido. Ahora acumula en frames.
+- **Los tiempos de palabra de whisper `-ml 1` no son la verdad ni sobre el tramo
+  aislado**: "Dale, voy" (0,4 s de voz, a -32 dB) salía 0,35 s antes y con "voy"
+  estirado hasta 2,43 s; las últimas palabras de un remate, 0,2 s atrasadas. La
+  medición de verdad es el nivel de energía a 20 ms (el onset de la palabra es
+  una subida de >10 dB). Para la línea que mueve la historia, mide el onset y
+  deja los tiempos en `_audio/<clip>.json`; `npm run sync` en subtítulos es un
+  instrumento ruidoso (el mismo audio pasó de 0,095 a 0,19 s de |error| mediano
+  al cambiar un par de cortes): si falla, mira palabra por palabra (whisper `-ml 1`
+  sobre el render contra `out/<slug>.reel.props.json`) antes de tocar nada.
 - **No infieras tiempos de subtítulos sobre el audio original**: tres métodos
   dejaron hasta 1,2 s de desfase porque después el audio se corta, se acelera y se
   monta. `syncCaptions` transcribe la pista YA montada.
