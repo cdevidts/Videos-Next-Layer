@@ -224,6 +224,12 @@ Si el plano pide algo específico (una sierra, una caja registradora):
 `"sfx": "buscar:circular saw"`. Si un automático no calza con el video:
 `"sonido": {"impacto": "ninguno"}`. El catálogo es el default, no una obligación.
 
+### Licencias de lo que se baja
+`"buscar:<términos>"` también consulta Lots of Sounds, que **no declara licencia por sonido**:
+para un reel comercial, prefiere Mixkit (`assets` avisa). Los emoji animados de Noto son
+**CC BY 4.0**: pon el crédito en la descripción del post. Freesound: solo CC0 y a mano (su
+API es no comercial). Detalle en `references/comedia-y-ritmo.md` §5.
+
 ### 3. Audio opaco
 Nunca uses `_audio/<clip>.wav` como pista del reel: es mono 16 kHz porque lo
 exige whisper y suena a teléfono. La pista buena es `_audio/hq/<clip>.wav`
