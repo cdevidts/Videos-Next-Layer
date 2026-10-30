@@ -5,7 +5,8 @@ HyperFrames + Google Drive. Entra una carpeta de clips crudos, sale un reel list
 para publicar. **No es contenido de Cero Trade.**
 
 Este archivo se carga en cada turno: es corto a propósito. El detalle vive en la
-skill `reel-nextlayer` (el oficio) y en `.claude/skills/reel-nextlayer/references/lecciones.md`
+skill `reel-nextlayer` (el oficio), en `.claude/skills/reel-nextlayer/references/flujo.md`
+(el flujo real paso a paso, con checklist de calidad) y en `references/lecciones.md`
 (cada error ya pagado). El *por qué* de las decisiones, en `docs/journal.md`.
 
 ## "Haz el siguiente video"
@@ -13,7 +14,10 @@ skill `reel-nextlayer` (el oficio) y en `.claude/skills/reel-nextlayer/reference
 ```bash
 npm install                                   # si falta node_modules
 npm run next                                  # elige, baja TODO, transcribe, arma el digest
+npm run next -- --project "Video N" --solo-material  # los otros pendientes: el gancho puede estar ahí
+npm run tramos -- --project <slug> --aplicar  # retranscribe cada tramo aislado (revísalo)
 # → lee public/input/<slug>/DIGEST.md y abre CADA hoja de _digest/
+# → npm run frames -- --project <slug> --clip X --at 1,2.5,4 para fijar ventanas
 # → escribe plans/<slug>.json (parte de plans/_plantilla.json)
 npm run assets -- --plan plans/<slug>.json    # gráfica y sonidos para ESTE video; revisa la hoja de candidatos
 npm run check  -- --plan plans/<slug>.json    # compuerta: no renderiza nada que no pase
@@ -59,7 +63,7 @@ Pedida por Veronica como núcleo del repositorio. Cada punto dice cómo se cumpl
 | No dibujar formas planas; íconos por API | Iconify, sets MIT/ISC/Apache (`npm run assets`) |
 | Media de apoyo | SourceSplash (sin su relleno de Picsum) y Wikimedia Commons |
 | Tipografía de Google Fonts | Las del Brand Book: **Montserrat Black** (display) e **Inter** (texto), **bajadas** a `public/fonts/` (`npm run fonts`): el Chrome del render no siempre sale a internet |
-| SFX por API, términos exactos | Catálogo medido de Mixkit + Lots of Sounds (`npm run sfx-catalog`); `"buscar:<términos>"` para algo específico |
+| SFX por API, términos exactos | Catálogo medido de Mixkit (`npm run sfx-catalog`); Lots of Sounds solo con `SFX_LOTS=1`: no declara licencia por sonido; `"buscar:<términos>"` para algo específico |
 | Paleta del Brand Book: #011D62, #0382F7, #FB830F | Default del código: azul profundo en el grade y el cierre, azul eléctrico en íconos, naranjo Next en acentos y CTA. La marca es técnica en B2B; en reels se mueve con energía (ver *Marca en los reels* en la skill) |
 | Nada lineal: `spring()` y ease-in-out | `VerticalReel` y `Overlays.tsx` |
 | Whoosh grave en cada cambio de escena | Automático, rotando, graves del catálogo, el pico cae en el corte |

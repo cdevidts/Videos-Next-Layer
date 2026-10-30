@@ -380,7 +380,10 @@
   "colaSeg": 0.321,
   "nivelDb": -16.9,
   "brilloHz": 852,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1471",
@@ -396,7 +399,10 @@
   "colaSeg": 0.331,
   "nivelDb": -16.5,
   "brilloHz": 1607,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1461",
@@ -513,7 +519,10 @@
   "colaSeg": 0.842,
   "nivelDb": -15.3,
   "brilloHz": 612,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1328",
@@ -759,7 +768,10 @@
   "colaSeg": 0.391,
   "nivelDb": -14.9,
   "brilloHz": 2328,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-2050",
@@ -825,7 +837,10 @@
   "colaSeg": 0.311,
   "nivelDb": -11.4,
   "brilloHz": 2267,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1167",
@@ -1381,7 +1396,8 @@
   "brilloHz": 902,
   "apto": true,
   "usadoEn": [
-   "video-41"
+   "video-41",
+   "video-44"
   ]
  },
  {
@@ -1434,7 +1450,8 @@
   "brilloHz": 3579,
   "apto": true,
   "usadoEn": [
-   "video-41"
+   "video-41",
+   "video-44"
   ]
  },
  {
@@ -1469,7 +1486,9 @@
   "nivelDb": -16.3,
   "brilloHz": 2120,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-2363",
@@ -2443,7 +2462,8 @@
   "brilloHz": 2004,
   "apto": true,
   "usadoEn": [
-   "video-41"
+   "video-41",
+   "video-44"
   ]
  },
  {
@@ -2727,7 +2747,10 @@
   "colaSeg": 0.03,
   "nivelDb": -22.7,
   "brilloHz": 1929,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-1144",
@@ -2760,7 +2783,10 @@
   "colaSeg": 1.674,
   "nivelDb": -14.9,
   "brilloHz": 1681,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "mixkit-794",
@@ -2861,7 +2887,9 @@
   "nivelDb": -22.9,
   "brilloHz": 859,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "lots-fs-127197",
@@ -2878,7 +2906,9 @@
   "nivelDb": -22.4,
   "brilloHz": 824,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "lots-fs-150950",
@@ -2895,7 +2925,9 @@
   "nivelDb": -15.1,
   "brilloHz": 1905,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "lots-fs-161098",
@@ -2912,7 +2944,9 @@
   "nivelDb": -10.4,
   "brilloHz": 2172,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "lots-fs-169867",
@@ -2929,7 +2963,9 @@
   "nivelDb": -18.1,
   "brilloHz": 340,
   "apto": true,
-  "usadoEn": []
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "lots-fs-181889",
@@ -3208,7 +3244,8 @@
   "brilloHz": 1282,
   "apto": true,
   "usadoEn": [
-   "video-41"
+   "video-41",
+   "video-44"
   ]
  },
  {
@@ -3428,7 +3465,10 @@
   "colaSeg": 0.18,
   "nivelDb": -23.9,
   "brilloHz": 5851,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "lots-fs-171697",
@@ -3444,7 +3484,10 @@
   "colaSeg": 0.04,
   "nivelDb": -25.3,
   "brilloHz": 4733,
-  "apto": true
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  },
  {
   "id": "lots-fs-179045",
@@ -4244,5 +4287,1029 @@
   "nivelDb": -22.4,
   "brilloHz": 4553,
   "apto": true
+ },
+ {
+  "id": "mixkit-1464",
+  "fuente": "mixkit",
+  "rol": "whoosh",
+  "nombre": "Quick swoosh accent",
+  "archivo": "assets/sfx/mixkit-1464.mp3",
+  "url": "https://assets.mixkit.co/active_storage/sfx/1464/1464-preview.mp3",
+  "licencia": "Mixkit Free License",
+  "duracion": 1.1,
+  "picoSeg": 0.11,
+  "ataqueSeg": 0.09,
+  "colaSeg": 0.13,
+  "nivelDb": -14.8,
+  "brilloHz": 1092,
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "mixkit-1131",
+  "fuente": "mixkit",
+  "rol": "click",
+  "nombre": "Mechanical tool click",
+  "archivo": "assets/sfx/mixkit-1131.mp3",
+  "url": "https://assets.mixkit.co/active_storage/sfx/1131/1131-preview.mp3",
+  "licencia": "Mixkit Free License",
+  "duracion": 4.143,
+  "picoSeg": 0.531,
+  "ataqueSeg": 0,
+  "colaSeg": 0.03,
+  "nivelDb": -20.5,
+  "brilloHz": 4572,
+  "apto": false,
+  "motivo": "muy largo para un click"
+ },
+ {
+  "id": "mixkit-1686",
+  "fuente": "mixkit",
+  "rol": "impact",
+  "nombre": "Underground explosion impact echo",
+  "archivo": "assets/sfx/mixkit-1686.mp3",
+  "url": "https://assets.mixkit.co/active_storage/sfx/1686/1686-preview.mp3",
+  "licencia": "Mixkit Free License",
+  "duracion": 4.101,
+  "picoSeg": 0.09,
+  "ataqueSeg": 0.09,
+  "colaSeg": 2.085,
+  "nivelDb": -14.3,
+  "brilloHz": 422,
+  "apto": false,
+  "motivo": "ataque lento: no golpea"
+ },
+ {
+  "id": "mixkit-2917",
+  "fuente": "mixkit",
+  "rol": "impact",
+  "nombre": "Suspence cinematic impact",
+  "archivo": "assets/sfx/mixkit-2917.mp3",
+  "url": "https://assets.mixkit.co/active_storage/sfx/2917/2917-preview.mp3",
+  "licencia": "Mixkit Free License",
+  "duracion": 10.977,
+  "picoSeg": 7.507,
+  "ataqueSeg": 6.475,
+  "colaSeg": 1.594,
+  "nivelDb": -9.6,
+  "brilloHz": 263,
+  "apto": false,
+  "motivo": "ataque lento: no golpea"
+ },
+ {
+  "id": "lots-fs-171255",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Sliding Trailer Woosh",
+  "archivo": "assets/sfx/lots-fs-171255.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-171255/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.627,
+  "picoSeg": 0.531,
+  "ataqueSeg": 0.461,
+  "colaSeg": 0.641,
+  "nivelDb": -17.6,
+  "brilloHz": 3921,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-178832",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Funky Phase Whoosh Pass",
+  "archivo": "assets/sfx/lots-fs-178832.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-178832/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 39.627,
+  "picoSeg": 33.516,
+  "ataqueSeg": 0.01,
+  "colaSeg": 0.15,
+  "nivelDb": -39.5,
+  "brilloHz": 2409,
+  "apto": false,
+  "motivo": "muy largo para un corte"
+ },
+ {
+  "id": "lots-fs-186374",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Bonfire Being Lit",
+  "archivo": "assets/sfx/lots-fs-186374.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-186374/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 7.523,
+  "picoSeg": 1.413,
+  "ataqueSeg": 0.06,
+  "colaSeg": 0.13,
+  "nivelDb": -5.3,
+  "brilloHz": 447,
+  "apto": false,
+  "motivo": "muy largo para un corte"
+ },
+ {
+  "id": "lots-fs-332003",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Dynamic Whoosh",
+  "archivo": "assets/sfx/lots-fs-332003.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-332003/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.729,
+  "picoSeg": 0.361,
+  "ataqueSeg": 0.14,
+  "colaSeg": 0.21,
+  "nivelDb": -19,
+  "brilloHz": 4792,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-351256",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Deep Transition Whoosh",
+  "archivo": "assets/sfx/lots-fs-351256.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-351256/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 3.156,
+  "picoSeg": 0.481,
+  "ataqueSeg": 0.17,
+  "colaSeg": 0.692,
+  "nivelDb": -17.5,
+  "brilloHz": 1532,
+  "apto": false,
+  "motivo": "muy largo para un corte"
+ },
+ {
+  "id": "lots-fs-351259",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Deep White Noise Whoosh",
+  "archivo": "assets/sfx/lots-fs-351259.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-351259/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 3.06,
+  "picoSeg": 0.581,
+  "ataqueSeg": 0.311,
+  "colaSeg": 0.601,
+  "nivelDb": -16.8,
+  "brilloHz": 1279,
+  "apto": false,
+  "motivo": "muy largo para un corte"
+ },
+ {
+  "id": "lots-fs-369502",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Deep White Noise Whoosh 3",
+  "archivo": "assets/sfx/lots-fs-369502.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-369502/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 8.752,
+  "picoSeg": 2.856,
+  "ataqueSeg": 1.964,
+  "colaSeg": 2.185,
+  "nivelDb": -14.6,
+  "brilloHz": 1422,
+  "apto": false,
+  "motivo": "muy largo para un corte"
+ },
+ {
+  "id": "lots-fs-37596",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Sword Metal Clash",
+  "archivo": "assets/sfx/lots-fs-37596.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-37596/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.927,
+  "picoSeg": 0.09,
+  "ataqueSeg": 0.06,
+  "colaSeg": 0.451,
+  "nivelDb": -20.6,
+  "brilloHz": 4528,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-381410",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Outdoor Basketball Shot",
+  "archivo": "assets/sfx/lots-fs-381410.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-381410/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 12.844,
+  "picoSeg": 3.378,
+  "ataqueSeg": 0,
+  "colaSeg": 0.05,
+  "nivelDb": -34.3,
+  "brilloHz": 915,
+  "apto": false,
+  "motivo": "muy largo para un corte"
+ },
+ {
+  "id": "lots-fs-389590",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Swing Whoosh Attack",
+  "archivo": "assets/sfx/lots-fs-389590.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-389590/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.315,
+  "picoSeg": 0.09,
+  "ataqueSeg": 0.03,
+  "colaSeg": 0.08,
+  "nivelDb": -28.2,
+  "brilloHz": 1754,
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "lots-fs-395358",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Heavy Body Hit",
+  "archivo": "assets/sfx/lots-fs-395358.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-395358/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.478,
+  "picoSeg": 0.09,
+  "ataqueSeg": 0.03,
+  "colaSeg": 0.301,
+  "nivelDb": -8.2,
+  "brilloHz": 2668,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-395359",
+  "fuente": "lotsofsounds",
+  "rol": "whoosh",
+  "nombre": "Body Smash Hit",
+  "archivo": "assets/sfx/lots-fs-395359.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-395359/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.649,
+  "picoSeg": 0.09,
+  "ataqueSeg": 0.02,
+  "colaSeg": 0.401,
+  "nivelDb": -8.5,
+  "brilloHz": 2686,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-119460",
+  "fuente": "lotsofsounds",
+  "rol": "pop",
+  "nombre": "Aluminum Can",
+  "archivo": "assets/sfx/lots-fs-119460.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-119460/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.653,
+  "picoSeg": 0.11,
+  "ataqueSeg": 0.01,
+  "colaSeg": 0.03,
+  "nivelDb": -24.6,
+  "brilloHz": 3860,
+  "apto": false,
+  "motivo": "muy largo para un pop"
+ },
+ {
+  "id": "lots-fs-119461",
+  "fuente": "lotsofsounds",
+  "rol": "pop",
+  "nombre": "Aluminum Can",
+  "archivo": "assets/sfx/lots-fs-119461.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-119461/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.619,
+  "picoSeg": 1.123,
+  "ataqueSeg": 0,
+  "colaSeg": 0.07,
+  "nivelDb": -22.9,
+  "brilloHz": 4822,
+  "apto": false,
+  "motivo": "muy largo para un pop"
+ },
+ {
+  "id": "lots-fs-146931",
+  "fuente": "lotsofsounds",
+  "rol": "pop",
+  "nombre": "Kite Snag",
+  "archivo": "assets/sfx/lots-fs-146931.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-146931/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.254,
+  "picoSeg": 0.882,
+  "ataqueSeg": 0.02,
+  "colaSeg": 0.251,
+  "nivelDb": -16.1,
+  "brilloHz": 5096,
+  "apto": false,
+  "motivo": "muy largo para un pop"
+ },
+ {
+  "id": "lots-fs-160711",
+  "fuente": "lotsofsounds",
+  "rol": "pop",
+  "nombre": "Funky Breakbeat",
+  "archivo": "assets/sfx/lots-fs-160711.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-160711/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 10.667,
+  "picoSeg": 0.03,
+  "ataqueSeg": 0.03,
+  "colaSeg": 1.904,
+  "nivelDb": -11.3,
+  "brilloHz": 1371,
+  "apto": false,
+  "motivo": "muy largo para un pop"
+ },
+ {
+  "id": "lots-fs-149177",
+  "fuente": "lotsofsounds",
+  "rol": "click",
+  "nombre": "Rifle Shot And Reload",
+  "archivo": "assets/sfx/lots-fs-149177.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-149177/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.528,
+  "picoSeg": 0.13,
+  "ataqueSeg": 0.11,
+  "colaSeg": 0.742,
+  "nivelDb": -17.8,
+  "brilloHz": 2049,
+  "apto": false,
+  "motivo": "muy largo para un click"
+ },
+ {
+  "id": "lots-fs-106128",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Halldoor Door Echo",
+  "archivo": "assets/sfx/lots-fs-106128.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-106128/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.906,
+  "picoSeg": 0.461,
+  "ataqueSeg": 0.03,
+  "colaSeg": 0.451,
+  "nivelDb": -22.5,
+  "brilloHz": 3119,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-144946",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Knock Door Impact",
+  "archivo": "assets/sfx/lots-fs-144946.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-144946/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.169,
+  "picoSeg": 0.22,
+  "ataqueSeg": 0,
+  "colaSeg": 0.03,
+  "nivelDb": -19,
+  "brilloHz": 732,
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "lots-fs-144947",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Knock Door Impact",
+  "archivo": "assets/sfx/lots-fs-144947.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-144947/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.171,
+  "picoSeg": 0.231,
+  "ataqueSeg": 0,
+  "colaSeg": 0.02,
+  "nivelDb": -17.7,
+  "brilloHz": 687,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-144948",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Knock Door Impact",
+  "archivo": "assets/sfx/lots-fs-144948.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-144948/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.71,
+  "picoSeg": 0.19,
+  "ataqueSeg": 0,
+  "colaSeg": 0.03,
+  "nivelDb": -15.7,
+  "brilloHz": 953,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-144949",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Knock Door Impact",
+  "archivo": "assets/sfx/lots-fs-144949.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-144949/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.752,
+  "picoSeg": 0.2,
+  "ataqueSeg": 0.01,
+  "colaSeg": 0.02,
+  "nivelDb": -16,
+  "brilloHz": 703,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-144950",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Knock Door Four",
+  "archivo": "assets/sfx/lots-fs-144950.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-144950/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.27,
+  "picoSeg": 0.581,
+  "ataqueSeg": 0.01,
+  "colaSeg": 0.02,
+  "nivelDb": -20.1,
+  "brilloHz": 687,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-127845",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Tank Cannon Fire",
+  "archivo": "assets/sfx/lots-fs-127845.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-127845/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 4.45,
+  "picoSeg": 0.05,
+  "ataqueSeg": 0.05,
+  "colaSeg": 1.373,
+  "nivelDb": -9.3,
+  "brilloHz": 2135,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-149966",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Muffled Distant Explosion",
+  "archivo": "assets/sfx/lots-fs-149966.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-149966/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 5.143,
+  "picoSeg": 0.01,
+  "ataqueSeg": 0,
+  "colaSeg": 0.942,
+  "nivelDb": -10.8,
+  "brilloHz": 176,
+  "apto": false,
+  "motivo": "demasiado largo"
+ },
+ {
+  "id": "lots-fs-156498",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Distant Explosion",
+  "archivo": "assets/sfx/lots-fs-156498.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-156498/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 13.084,
+  "picoSeg": 0.02,
+  "ataqueSeg": 0.01,
+  "colaSeg": 0.822,
+  "nivelDb": -23.4,
+  "brilloHz": 597,
+  "apto": false,
+  "motivo": "demasiado largo"
+ },
+ {
+  "id": "lots-fs-156499",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Medium Far Explosion",
+  "archivo": "assets/sfx/lots-fs-156499.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-156499/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 13.078,
+  "picoSeg": 0.04,
+  "ataqueSeg": 0.04,
+  "colaSeg": 1.564,
+  "nivelDb": -19.4,
+  "brilloHz": 435,
+  "apto": false,
+  "motivo": "demasiado largo"
+ },
+ {
+  "id": "lots-fs-156500",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Big Far Explosion",
+  "archivo": "assets/sfx/lots-fs-156500.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-156500/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 13.073,
+  "picoSeg": 0.411,
+  "ataqueSeg": 0.411,
+  "colaSeg": 1.995,
+  "nivelDb": -17.4,
+  "brilloHz": 99,
+  "apto": false,
+  "motivo": "ataque lento: no golpea"
+ },
+ {
+  "id": "lots-fs-160724",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Funky Breakbeat",
+  "archivo": "assets/sfx/lots-fs-160724.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-160724/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 10.667,
+  "picoSeg": 8.038,
+  "ataqueSeg": 0.04,
+  "colaSeg": 2.616,
+  "nivelDb": -13.1,
+  "brilloHz": 2265,
+  "apto": false,
+  "motivo": "demasiado largo"
+ },
+ {
+  "id": "lots-fs-165909",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Vocal Explosion",
+  "archivo": "assets/sfx/lots-fs-165909.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-165909/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 6.768,
+  "picoSeg": 1.724,
+  "ataqueSeg": 0.471,
+  "colaSeg": 2.095,
+  "nivelDb": -20.3,
+  "brilloHz": 2045,
+  "apto": false,
+  "motivo": "ataque lento: no golpea"
+ },
+ {
+  "id": "lots-fs-165910",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Pitched Explosion",
+  "archivo": "assets/sfx/lots-fs-165910.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-165910/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 7.827,
+  "picoSeg": 0.882,
+  "ataqueSeg": 0.04,
+  "colaSeg": 3.177,
+  "nivelDb": -20.2,
+  "brilloHz": 2340,
+  "apto": false,
+  "motivo": "demasiado largo"
+ },
+ {
+  "id": "lots-fs-165911",
+  "fuente": "lotsofsounds",
+  "rol": "impact",
+  "nombre": "Explosion Sound",
+  "archivo": "assets/sfx/lots-fs-165911.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-165911/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 7.599,
+  "picoSeg": 0.661,
+  "ataqueSeg": 0.02,
+  "colaSeg": 2.476,
+  "nivelDb": -20.7,
+  "brilloHz": 2006,
+  "apto": false,
+  "motivo": "demasiado largo"
+ },
+ {
+  "id": "lots-fs-251462",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Dance Bass Sub Hit",
+  "archivo": "assets/sfx/lots-fs-251462.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-251462/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 7.385,
+  "picoSeg": 6.956,
+  "ataqueSeg": 0.722,
+  "colaSeg": 0.411,
+  "nivelDb": -7.4,
+  "brilloHz": 1054,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-336206",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Drop Transition Effect",
+  "archivo": "assets/sfx/lots-fs-336206.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336206/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 13.636,
+  "picoSeg": 8.289,
+  "ataqueSeg": 3.408,
+  "colaSeg": 1.273,
+  "nivelDb": -14.6,
+  "brilloHz": 5067,
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "lots-fs-336207",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Electronic Drop Effect",
+  "archivo": "assets/sfx/lots-fs-336207.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336207/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 13.636,
+  "picoSeg": 8.108,
+  "ataqueSeg": 7.166,
+  "colaSeg": 1.453,
+  "nivelDb": -8.3,
+  "brilloHz": 4197,
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
+ },
+ {
+  "id": "lots-fs-336208",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Drop Sound Effect",
+  "archivo": "assets/sfx/lots-fs-336208.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336208/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 15.818,
+  "picoSeg": 6.214,
+  "ataqueSeg": 5.322,
+  "colaSeg": 4.33,
+  "nivelDb": -15.9,
+  "brilloHz": 3807,
+  "apto": false,
+  "motivo": "el pico no está al final: no sube"
+ },
+ {
+  "id": "lots-fs-336209",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Drop Sound Effect",
+  "archivo": "assets/sfx/lots-fs-336209.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336209/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 13.636,
+  "picoSeg": 8.63,
+  "ataqueSeg": 7.647,
+  "colaSeg": 1.052,
+  "nivelDb": -11.2,
+  "brilloHz": 4025,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-336210",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Drop Effect 7",
+  "archivo": "assets/sfx/lots-fs-336210.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336210/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 7.636,
+  "picoSeg": 2.806,
+  "ataqueSeg": 1.223,
+  "colaSeg": 1.203,
+  "nivelDb": -15.5,
+  "brilloHz": 2294,
+  "apto": false,
+  "motivo": "el pico no está al final: no sube"
+ },
+ {
+  "id": "lots-fs-336211",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Drop Effect 6",
+  "archivo": "assets/sfx/lots-fs-336211.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336211/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 10.909,
+  "picoSeg": 4.941,
+  "ataqueSeg": 3.909,
+  "colaSeg": 2.275,
+  "nivelDb": -10.7,
+  "brilloHz": 1614,
+  "apto": false,
+  "motivo": "el pico no está al final: no sube"
+ },
+ {
+  "id": "lots-fs-336212",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Drop Effect 5",
+  "archivo": "assets/sfx/lots-fs-336212.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336212/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 7.636,
+  "picoSeg": 1.483,
+  "ataqueSeg": 0.03,
+  "colaSeg": 1.153,
+  "nivelDb": -14.5,
+  "brilloHz": 4186,
+  "apto": false,
+  "motivo": "el pico no está al final: no sube"
+ },
+ {
+  "id": "lots-fs-336213",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Drop Effect 4",
+  "archivo": "assets/sfx/lots-fs-336213.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336213/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 6.545,
+  "picoSeg": 0.922,
+  "ataqueSeg": 0.01,
+  "colaSeg": 2.927,
+  "nivelDb": -10.1,
+  "brilloHz": 3973,
+  "apto": false,
+  "motivo": "el pico no está al final: no sube"
+ },
+ {
+  "id": "lots-fs-336214",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Drop Effect 9",
+  "archivo": "assets/sfx/lots-fs-336214.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336214/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 10.364,
+  "picoSeg": 1.032,
+  "ataqueSeg": 0.241,
+  "colaSeg": 3.678,
+  "nivelDb": -12.8,
+  "brilloHz": 3307,
+  "apto": false,
+  "motivo": "el pico no está al final: no sube"
+ },
+ {
+  "id": "lots-fs-336215",
+  "fuente": "lotsofsounds",
+  "rol": "riser",
+  "nombre": "Hip-Hop Beat 80 BPM",
+  "archivo": "assets/sfx/lots-fs-336215.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-336215/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 21.818,
+  "picoSeg": 0.992,
+  "ataqueSeg": 0.16,
+  "colaSeg": 14.723,
+  "nivelDb": -12.2,
+  "brilloHz": 2918,
+  "apto": false,
+  "motivo": "el pico no está al final: no sube"
+ },
+ {
+  "id": "lots-fs-222510",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Telephone Handling Clicks",
+  "archivo": "assets/sfx/lots-fs-222510.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-222510/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 27.035,
+  "picoSeg": 20.707,
+  "ataqueSeg": 0,
+  "colaSeg": 0.331,
+  "nivelDb": -20.4,
+  "brilloHz": 2766,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-259664",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Cork Bottle Bottlecork",
+  "archivo": "assets/sfx/lots-fs-259664.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-259664/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.399,
+  "picoSeg": 0.04,
+  "ataqueSeg": 0,
+  "colaSeg": 0.05,
+  "nivelDb": -14.8,
+  "brilloHz": 1402,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-259665",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Cork Bottle Bottlecork",
+  "archivo": "assets/sfx/lots-fs-259665.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-259665/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.21,
+  "picoSeg": 0,
+  "ataqueSeg": 0,
+  "colaSeg": 0.07,
+  "nivelDb": -18.1,
+  "brilloHz": 871,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-376648",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Pen Click Unclick",
+  "archivo": "assets/sfx/lots-fs-376648.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-376648/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 3.567,
+  "picoSeg": 1.353,
+  "ataqueSeg": 0,
+  "colaSeg": 0.04,
+  "nivelDb": -30.2,
+  "brilloHz": 5965,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-385893",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "View Master Click",
+  "archivo": "assets/sfx/lots-fs-385893.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-385893/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 25.786,
+  "picoSeg": 0.852,
+  "ataqueSeg": 0.01,
+  "colaSeg": 0.05,
+  "nivelDb": -21.7,
+  "brilloHz": 4955,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-448393",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Satisfying Plastic Handle Unlock",
+  "archivo": "assets/sfx/lots-fs-448393.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-448393/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 1.334,
+  "picoSeg": 0.561,
+  "ataqueSeg": 0.01,
+  "colaSeg": 0.16,
+  "nivelDb": -20.3,
+  "brilloHz": 2474,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-872332",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Click Button Clicking",
+  "archivo": "assets/sfx/lots-fs-872332.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-872332/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.423,
+  "picoSeg": 0,
+  "ataqueSeg": 0,
+  "colaSeg": 0.02,
+  "nivelDb": -13.3,
+  "brilloHz": 909,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-872333",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Click Button Clicking",
+  "archivo": "assets/sfx/lots-fs-872333.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-872333/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.328,
+  "picoSeg": 0,
+  "ataqueSeg": 0,
+  "colaSeg": 0.02,
+  "nivelDb": -17.5,
+  "brilloHz": 5135,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-872334",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Click Button Clicking",
+  "archivo": "assets/sfx/lots-fs-872334.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-872334/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.393,
+  "picoSeg": 0,
+  "ataqueSeg": 0,
+  "colaSeg": 0.02,
+  "nivelDb": -14.6,
+  "brilloHz": 1397,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-872335",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Click Button Clicking",
+  "archivo": "assets/sfx/lots-fs-872335.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-872335/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.454,
+  "picoSeg": 0,
+  "ataqueSeg": 0,
+  "colaSeg": 0.02,
+  "nivelDb": -14,
+  "brilloHz": 2235,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-872336",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Click Button Clicking",
+  "archivo": "assets/sfx/lots-fs-872336.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-872336/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.484,
+  "picoSeg": 0,
+  "ataqueSeg": 0,
+  "colaSeg": 0.01,
+  "nivelDb": -14.9,
+  "brilloHz": 1588,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-872337",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Click Button Clicking",
+  "archivo": "assets/sfx/lots-fs-872337.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-872337/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 0.131,
+  "picoSeg": 0,
+  "ataqueSeg": 0,
+  "colaSeg": 0.02,
+  "nivelDb": -23.7,
+  "brilloHz": 4856,
+  "apto": false,
+  "motivo": "casi no dura"
+ },
+ {
+  "id": "lots-fs-383063",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Ukulele with Vocals Loop",
+  "archivo": "assets/sfx/lots-fs-383063.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-383063/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 16.342,
+  "picoSeg": 6.184,
+  "ataqueSeg": 0.331,
+  "colaSeg": 0.682,
+  "nivelDb": -18.1,
+  "brilloHz": 1539,
+  "apto": true
+ },
+ {
+  "id": "lots-fs-407258",
+  "fuente": "lotsofsounds",
+  "rol": "foley",
+  "nombre": "Idea Light Bulb Ding",
+  "archivo": "assets/sfx/lots-fs-407258.mp3",
+  "url": "https://api.lotsofsounds.com/api/v1/sounds/sample/fs-407258/stream",
+  "licencia": "Lots of Sounds (muestra gratuita, sin licencia declarada por sonido)",
+  "duracion": 3.358,
+  "picoSeg": 0.762,
+  "ataqueSeg": 0.06,
+  "colaSeg": 0.932,
+  "nivelDb": -18.3,
+  "brilloHz": 4123,
+  "apto": true,
+  "usadoEn": [
+   "video-44"
+  ]
  }
 ]

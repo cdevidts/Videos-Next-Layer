@@ -751,3 +751,150 @@ naranjo barre bien sobre Montserrat.
 marca nueva para que Veronica compare; el 46 queda como está (entregado). Si en
 el render real el gancho se siente chico, subirlo a 110 px es un cambio de una
 línea en `VerticalReel.tsx`.
+
+## 2026-10-30 · Video 44 "Mándamelo a hacer" — primer reel armado con el pool completo
+
+Cris pidió un hilo que mirara de verdad los clips sueltos, encontrara el mejor
+gancho aunque hubiera que mezclar carpetas, editara un pendiente y dejara escrito
+el flujo real para repetirlo con calidad máxima. Se permitió ayuda de un agente
+Sonnet.
+
+**Material** (compuerta OK en los cuatro): 43 (1 clip), 44 (2), 41 (2), 45 (11).
+Cada hoja mirada; transcripción tramo por tramo.
+- **44 y 45 son la misma historia** (sesión del 18-ago, mismo bidé, misma pieza
+  negra impresa que sostiene el panel). El 44 es la versión a cámara, medio
+  cantada ("tengo un repuesto que no puedo encontrar o que no existe… ¡mándamelo
+  a hacer! yo lo diseño, yo lo arreglo"); el 45 la actuada (el cliente pide "una
+  pieza de 10 cm por 5", persecución por la casa, cajón secreto, "¡está
+  perfecto!", y un cenital donde se ve el soporte roto y la pieza entrando).
+- **43**: parodia de Russell (*Up*) en la puerta, cámara en el suelo, grabado de
+  costado (rotar −90). Nada de impresión 3D en cuadro: se preguntó para qué es.
+- **41**: ya renderizado, esperando a Veronica; no se tocó.
+
+**Decisión**: Video 44, reforzado con 4 planos del 45 (`"proyecto": "video-45"`).
+Gancho **¿Tu repuesto no existe?** sobre "tengo un repuesto que no puedo
+encontrar o que no existe": problema del espectador, dicho en cámara. Un agente
+Sonnet con el inventario y sin mi conclusión llegó al mismo gancho y a casi la
+misma estructura; aportó que el "Perfecto" del 7508 era dudoso (cae sobre negro).
+
+**Montaje (30,7 s, 9 cortes)**: gancho → "se me rompió algo y no pude arreglarlo
+con pegamento" → cliente "necesito exactamente una pieza como de 10 centímetros
+por 5" → "yo lo diseño, yo lo diseño, yo lo arreglo" con la pieza → cenital x2:
+soporte roto, entra la pieza, panel firme → "¡mira, mira, está perfecto!" →
+"¡mándamelo a hacer! … esto lo hice yo" → el panel arreglado bajo el cierre
+(¿NO EXISTE? · MÁNDALO A HACER · Next Layer, REPUESTOS IMPRESOS EN 3D).
+
+**Descartado**: 7505 7,2–9,2 s ("¡mándalo a hacer weón!", repite la idea), 7506
+16,5–21,9 y 32,8–39 s (planos oscuros/movidos), 7508 ("Perfecto" sobre negro),
+la persecución y el cajón del 45 (otra historia: es el material del 45), el
+efecto "plastic click" (un click de lápiz que sonaba sobre el soporte roto).
+
+**Lo que se agregó al sistema** (sirve para todos los videos):
+- `"proyecto"` por clip en el plan: clips de otra carpeta con sus proxies y
+  transcripciones. `npm run next -- --solo-material` baja un video sin marcarlo
+  en curso.
+- `npm run tramos`: retranscribe cada tramo aislado (whisper `-ml 1`), filtra lo
+  que whisper inventa en silencio y marca `tramosAislados` (se bloquea como una
+  corrección).
+- `npm run frames`: tira de frames en los instantes que uno elige, con giro.
+- `syncCaptions` empareja palabra por palabra contra el audio montado
+  (`alinearPorTexto`) en vez de copiar el ritmo interno del texto bloqueado. El
+  primer render daba ❌ en sync (|error| mediano 0,181 s, un corte con 0,7/0,9 s);
+  con esto, 0,096 s.
+- `references/flujo.md` en la skill: el flujo real paso a paso con su checklist
+  de calidad. Lecciones nuevas en `lecciones.md`.
+
+**Pescado al revisar** (3 renders): sticker invisible (enganchado a la última
+palabra del corte), "?" del gancho suelto, la placa del cierre tapando el CTA,
+el ✅ tapando la mano que entrega la pieza, una mano al borde del plano final, y
+renders que caían en el bundle con la caché de webpack tibia (se apagó en
+`remotion.config.ts`).
+
+**Pendiente de personas**:
+- Veronica/Cris aprueban el render → `videos.json` "entregado".
+- ¿Las líneas cantadas del 44 son una canción conocida (parodia) o propia?
+- ¿Para qué se grabó el 43 (Russell)? Puede ser gancho de otro video.
+- El 45 sigue pendiente con su material (persecución, cajón secreto); tiene un
+  proyecto de Premiere, confirmar con Veronica si ya se publicó.
+
+## 2026-10-30 · Video 44, v2 y v3 — "poco cómico" y la instalación en el lugar equivocado
+
+Cris vio la v1 y dijo: "bueno, pero poco cómico; mejora el timing, las gráficas,
+las referencias; pones el video instalando el repuesto entre el pedido y cuando lo
+traigo, eso no hace sentido". Tenía razón en las dos cosas: la v1 era una
+presentación del servicio, no una escena.
+
+**v2 (historia en orden de causa y efecto, 35,6 s, 15 cortes)**: problema → "¡mándalo
+a hacer, weón!" (se contesta solo) → el cliente pide "10 por 5" → "Dale, voy" →
+búsqueda relámpago por la casa (ampolleta, escalera, aparador, caja del cajón
+secreto, la pieza en alto, el grito agachado) → vuelve a la MISMA puerta con la
+pieza ("¡mira, mira, está perfecto, weón!") → recién ahí la instalación → CTA → el
+panel arreglado bajo el cierre. Material del 45 (`"proyecto": "video-45"`); el 7506
+completo ("se me rompió… con pegamento", "yo lo diseño, yo lo arreglo") salió: con
+la búsqueda el problema ya estaba dicho y el video se pasaba de 35 s.
+
+**Panel de tres críticos (Sonnet) sobre el render v2**, cada uno con una mirada
+(timing cómico, historia, gráfica y sonido) y sin mi opinión; cada hallazgo se
+verificó contra la fuente antes de aplicarlo. Lo que salió, y la v3 lo arregla:
+- **Los tres remates sin aire**: `pausaDespues` se topa con la ventana, y la
+  ventana terminaba 0,08 s después de la última palabra (el aviso salía en la
+  consola, no en el render). Ahora: ventana 2,3 s / 5,3 s / 4,5 s y 0,5 / 0,6 /
+  ~0,35 s de aire real; el corte que sigue a un remate va sin whoosh (campo nuevo
+  `"whoosh": false`).
+- **"Dale, voy" inaudible y sin subtítulo**: la bisagra de la historia sonaba 15 dB
+  bajo el resto y su tramo de energía medía 0,54 s (< 0,8 s) → caía a B-roll. Se
+  ensanchó el tramo en `_audio`, se sube con `"ganancia": 10` (campo nuevo, copia
+  del audio) y lleva 🫡.
+- **Gráfica**: ya no hay etiquetas que repiten la palabra sobre la palabra graciosa.
+  😤 entra con "Mándalo" y sale antes de "weón"; 🎯 en "exactamente" (Noto no tiene
+  📏 animado); 💡 la idea, 🤫 justo antes de abrir el aparador, 🏆 la bajada con la
+  pieza, ✅ cuando la pieza calza en la instalación (antes tapaba "perfecto, weón"),
+  💪 en "esto lo hice" sin sonido y corta antes del callback.
+- **Instalación con causa-efecto**: fuente 2,4–9,2 s a x2 (la grieta, la pieza
+  entra, el panel queda firme) y termina donde empieza el producto bajo el cierre.
+- **Gancho** `"ganchoSegundos": 3.6` (campo nuevo): sigue en pantalla mientras él
+  dice "o que no existe".
+- **Licencia de los SFX**: casi todos los efectos de la v2 eran de Lots of Sounds,
+  que no declara licencia por sonido. `elegir` y `buscarEfecto` ahora los excluyen
+  salvo `SFX_LOTS=1`: los de la v3 son todos Mixkit.
+- **Bug del renderer** (afectaba a todos los reels): el subtítulo del grupo
+  siguiente entraba hasta 0,3 s tarde (`findIndex` elegía el grupo anterior mientras
+  durara su permanencia); la palabra final "hacer!" salía un frame. Corregido en
+  `KaraokeCaption`.
+
+**Segundo panel (3 críticos, sobre la v3)**: los seis defectos de la v2 estaban
+arreglados (aire medido: 0,56 / 0,58 / 0,34 s; "Dale, voy" a -18 dBFS y con
+subtítulo; ninguna gráfica sobre la palabra graciosa; instalación con efecto;
+solo Mixkit; subtítulos sin retraso). Sin defectos altos. Se aplicó lo demás:
+el pedido entra en "necesito" (x1,3 y +3 dB: "Hermano," sonaba 20 dB bajo y dejaba
+1,1 s de hueco tras el remate), la ampolleta se prende cuando abre los brazos
+(la toma arranca antes, x1,8), el aparador muestra la revelación 0,5 s, 🏆 entra
+cuando sube la pieza, 🤏 sobre "10 centímetros" (Noto no trae 📏), el grito de la
+búsqueda baja 5 dB, el producto final a x0,45 (cámara quieta), "Dale, voy" con
+tiempos medidos por energía. Revisión de código: el limitador de `ganancia` subía
+0,9 dB de más (ahora `level=0:latency=1`), la copia con ganancia se rehace si el
+audio de origen cambia, `check` frena un id `lots-*` fijado a mano y valida
+`ganchoSegundos`.
+
+**Lo que no se tocó, a propósito**: la placa de cierre (bajada azul sobre marino,
+poco contraste en el teléfono: es del cierre de marca, decisión de Veronica); los
+subtítulos sobre el panel roto en el pedido; fundidos de 3 frames en vez de cortes
+secos (con 1 frame el audio puede hacer click).
+
+**v3 (final)**: 34,1 s, 15 cortes, `check` y `tsc` limpios. `sync`: audio por corte
+✅ (peor 0,056 s, tope 0,08) — el checker acumulaba redondeo de frames y marcaba
+0,09 s de más; ahora acumula en frames. Subtítulos: |error| mediano 0,19 s contra
+tope 0,15 → el checker dice ❌. No es un desfase real que se vea: el mismo audio
+pasó de 0,095 a 0,19 s al cambiar un par de cortes (whisper `-ml 1` varía ±0,2 s
+palabra a palabra según el contexto), y la medición por energía de las líneas
+clave da ±0,1 s. Los subtítulos de remate (última palabra) pueden verse hasta
+0,2 s antes de la voz. Quien apruebe el video debería mirarlo con sonido.
+
+**Pendiente de personas**:
+- ¿DSCF7520 dice "¡La encontré!"? (whisper oye "la corteo" / "La encontré, weón"; sin
+  respuesta el grito sigue sin subtítulo.) ¿Y "Dale, voy" o "Dale, wey"?
+- ¿Qué es el disco beige que levanta en el CTA (DSCF7505)? Si no es una pieza
+  impresa, "esto lo hice yo" apunta a otra cosa.
+- ¿Las líneas cantadas del 44 son una canción conocida? ¿Para qué se grabó el 43?
+- Crédito en la descripción del post: Noto Emoji Animation, Google (CC BY 4.0).
+- Veronica/Cris aprueban → `videos.json` "entregado". No se publicó nada.

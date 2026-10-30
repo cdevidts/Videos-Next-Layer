@@ -26,6 +26,8 @@ const arg = (name: string): string | undefined => {
 
 type PlanClip = {
   file: string;
+  /** Otro proyecto de donde sale el clip (public/input/<proyecto>/Videos). */
+  proyecto?: string;
   caption?: string;
   startFromSeconds?: number;
   durationInSeconds?: number;
@@ -43,6 +45,7 @@ type Plan = {
   project?: string;
   dir: string;
   hook: string;
+  ganchoSegundos?: number;
   cta?: string;
   /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
   finalOverlaySrc?: string;
@@ -71,6 +74,8 @@ const main = () => {
     // Vacío a propósito: el video engancha por lo que se dice o se ve (una
     // línea de comedia que ya es el título). Se avisa, no se frena.
     avisos.push('Sin texto de gancho ("hook": ""): el primer 1,5 s tiene que enganchar solo con la toma.');
+  } else if (plan.ganchoSegundos !== undefined && !(plan.ganchoSegundos > 0)) {
+    problemas.push('"ganchoSegundos" tiene que ser un número mayor que 0 (para quitar el gancho: "hook": "").');
   } else if (!plan.hook?.trim()) {
     problemas.push('El plan no tiene gancho. Los primeros 1,5s deciden si alguien sigue viendo. Si va sin texto a propósito, "hook": "".');
   } else {
@@ -90,8 +95,10 @@ const main = () => {
   for (const [i, clip] of (plan.clips ?? []).entries()) {
     const etiqueta = `clip ${i + 1} (${clip.file})`;
     const esUltimo = i === (plan.clips ?? []).length - 1;
-    const source = path.resolve(plan.dir, clip.file);
-    usados.add(clip.file);
+    const clipDir = clip.proyecto ? path.join(path.dirname(projectDir), clip.proyecto, 'Videos') : plan.dir;
+    const clipAudioDir = clip.proyecto ? path.join(path.dirname(clipDir), '_audio') : audioDir;
+    const source = path.resolve(clipDir, clip.file);
+    if (!clip.proyecto) usados.add(clip.file);
 
     if (!fs.existsSync(source)) {
       problemas.push(`${etiqueta}: no existe el archivo. Corre \`npm run fetch-drive\`.`);
@@ -120,7 +127,7 @@ const main = () => {
     // avisa cuando el hueco es largo de verdad, y nunca sobre el último corte
     // si el cierre de HyperFrames ya va montado encima.
     const nombre = path.basename(clip.file, path.extname(clip.file));
-    const transcripcionPath = path.join(audioDir, `${nombre}.json`);
+    const transcripcionPath = path.join(clipAudioDir, `${nombre}.json`);
     const tieneTranscripcion = fs.existsSync(transcripcionPath);
     const usaVoz = tieneTranscripcion && !clip.ignoreSpeech;
     const loCubreElCierre = esUltimo && Boolean(plan.finalOverlaySrc);
@@ -131,7 +138,7 @@ const main = () => {
     }
 
     // El audio del reel tiene que salir de la pista HQ, no de la de whisper.
-    if (usaVoz && !fs.existsSync(path.join(audioDir, 'hq', `${nombre}.wav`))) {
+    if (usaVoz && !fs.existsSync(path.join(clipAudioDir, 'hq', `${nombre}.wav`))) {
       problemas.push(
         `${etiqueta}: falta \`_audio/hq/${nombre}.wav\`. Sin eso el reel usa la pista de 16 kHz y suena opaco. Corre \`npm run audio\`.`,
       );
@@ -216,13 +223,20 @@ const main = () => {
   // El render no busca en internet ni decide: todo tiene que venir fijado por
   // `npm run assets`. Si no, el reel sale distinto cada vez que se renderiza.
   const indice = new Set(leerIndice().map((a) => a.id));
-  const catalogo = new Set(leerCatalogo().map((e) => e.id));
+  const efectos = leerCatalogo();
+  const catalogo = new Set(efectos.map((e) => e.id));
+  const sinLicencia = new Set(efectos.filter((e) => e.fuente === 'lotsofsounds').map((e) => e.id));
   const revisarSfx = (valor: string | undefined, donde: string) => {
     if (!valor || valor === 'ninguno' || valor.startsWith('@')) return;
     if (valor.startsWith('buscar:')) {
       problemas.push(`${donde}: sonido "${valor}" sin fijar. Corre \`npm run assets -- --plan ${planPath}\`.`);
     } else if (valor.startsWith('sfx:')) {
       if (!catalogo.has(valor.slice(4))) problemas.push(`${donde}: ${valor} no está en el catálogo de sonidos.`);
+      else if (sinLicencia.has(valor.slice(4)) && process.env.SFX_LOTS !== '1') {
+        problemas.push(
+          `${donde}: ${valor} es de Lots of Sounds, que no declara licencia por sonido. Elige uno de Mixkit (\`"buscar:<términos>"\`) o define SFX_LOTS=1 bajo tu responsabilidad.`,
+        );
+      }
     } else if (!fs.existsSync(path.join('public', 'sfx', valor))) {
       problemas.push(`${donde}: no existe public/sfx/${valor}. Corre \`npm run sfx\`.`);
     }

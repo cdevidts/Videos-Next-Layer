@@ -41,13 +41,47 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   suelo el sensor no sabe dónde es arriba y graba apaisado SIN metadato. En el
   Video 41 una persona acostada quedaba de costado y el recorte le cortaba la
   cabeza y los pies, o sea el chiste. Va `"rotate"` en el plan.
+- **Whisper -ml 1 sobre un tramo tampoco es la verdad**: dos corridas sobre el
+  mismo tramo del 7506 dieron "yo lo diseño" una y dos veces. Se desempata
+  contando frases por energía (RMS cada 0,1 s). Y sus tiempos internos no son
+  ritmo de nadie: bloqueados tal cual dejaron subtítulos 0,7 s adelantados al
+  inicio de una frase y 0,9 s atrasados al final. Desde el Video 44
+  `syncCaptions` empareja palabra por palabra contra el audio montado
+  (`alinearPorTexto`) y solo interpola las que whisper no reconoce.
 - **Una línea dicha dos veces** es común: en el Video 41 la toma A decía "cuatro
   cosas" y la B "cinco". Transcribe cada tramo con voz AISLADO antes de elegir;
   whisper sobre el clip entero había puesto "Cinco" en un silencio y el subtítulo
   lo habría perdido.
+- **Una línea dicha lejos del micrófono no sale en el digest**: el "Dale, voy" del
+  7514 sonaba 15 dB bajo el resto y su tramo de energía medía 0,54 s, bajo el
+  mínimo de corte (`MIN_SHOT_SECONDS` 0,8): el clip caía a B-roll, sin subtítulo y
+  casi inaudible, justo en la bisagra de la historia. Arreglo: ensanchar el
+  tramo en `_audio/<clip>.json` (las palabras ya estaban) y subir la voz de ESE
+  clip con `"ganancia": 10` en el plan (copia del audio en `_audio/hq/`, no toca
+  los otros usos del clip).
 
 ## Subtítulos y sincronía
 
+- **El subtítulo del grupo siguiente entraba tarde** (arreglado en el Video 44 v3):
+  `KaraokeCaption` elegía con `findIndex` el PRIMER grupo activo, y el anterior
+  seguía activo 0,3 s después de su última palabra; el grupo siguiente aparecía
+  con la palabra ya dicha, y una palabra final sola ("hacer!") salía un frame.
+  `npm run sync` no lo ve (mide palabras contra audio, no lo que se dibuja): mira
+  los frames pegados a cada remate en el render.
+- **El checker de sincronía acumulaba redondeo** (arreglado en el 44): `checkSync`
+  sumaba las duraciones en segundos, pero Remotion redondea cada corte a frames
+  (`shotFrames`); con duraciones como 1,75 s (52,5 frames) el cursor se corría
+  hasta medio frame por corte y los últimos cortes salían a 0,09 s "de desfase"
+  sin que nada se hubiera movido. Ahora acumula en frames.
+- **Los tiempos de palabra de whisper `-ml 1` no son la verdad ni sobre el tramo
+  aislado**: "Dale, voy" (0,4 s de voz, a -32 dB) salía 0,35 s antes y con "voy"
+  estirado hasta 2,43 s; las últimas palabras de un remate, 0,2 s atrasadas. La
+  medición de verdad es el nivel de energía a 20 ms (el onset de la palabra es
+  una subida de >10 dB). Para la línea que mueve la historia, mide el onset y
+  deja los tiempos en `_audio/<clip>.json`; `npm run sync` en subtítulos es un
+  instrumento ruidoso (el mismo audio pasó de 0,095 a 0,19 s de |error| mediano
+  al cambiar un par de cortes): si falla, mira palabra por palabra (whisper `-ml 1`
+  sobre el render contra `out/<slug>.reel.props.json`) antes de tocar nada.
 - **No infieras tiempos de subtítulos sobre el audio original**: tres métodos
   dejaron hasta 1,2 s de desfase porque después el audio se corta, se acelera y se
   monta. `syncCaptions` transcribe la pista YA montada.
@@ -84,11 +118,21 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
 - **La cara es sagrada.** En la primera prueba la foto tapaba la cara entera y el
   sticker quedaba en la mandíbula. Los defaults van al torso; verifica con
   `GRAFICA.jpg` de `npm run watch`.
-- **Un overlay que vive menos de 0,6 s no existe.** `buildReel` avisa.
+- **Un overlay que vive menos de 0,6 s no existe.** `buildReel` avisa. Pasa
+  cuando la palabra es la última del corte ("pegamento" en el 44): engánchalo a
+  una palabra anterior.
+- **El sticker tampoco tapa la acción**, no solo la cara: el ✅ del 44 caía sobre
+  la mano que entrega la pieza.
+- **La puntuación del gancho va dentro del resaltado**: `*no existe*?` dejaba el
+  "?" suelto en otra línea ("EXISTE ?"); va `*no existe?*`.
 - **Para señalar algo que se ve (x/y), calibra sobre el RENDER con grilla**, no
   sobre el proxy: el reel aplica un zoom leve al plano. En el Video 41 los números
   de las bobinas quedaron sobre las patas del trípode y no se sabía qué numeraban.
   Y ponlos en el borde del objeto o encima si es grande, nunca entre dos objetos.
+- **El último corte es el producto y dura lo que el cierre (3,2 s).** El cierre
+  arranca en el último corte: en el primer render del 44 ese corte era el CTA
+  hablado y la placa tapó "esto lo hice yo". Se agregó un plano final del panel
+  arreglado.
 - **El cierre lo dibuja HyperFrames**, no React: `brand/cierre/index.html` con
   variables, renderizado a WebM/VP9 con alfa por video (`public/cierres/`), y
   Remotion lo compone con `<OffthreadVideo transparent>`. Sí carga Anton (una
@@ -116,6 +160,30 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   el audio sin música (`--codec=wav` con props sin `musicSrc`) y mide cada uno.
 - **Nunca `_audio/<clip>.wav` como pista del reel**: es mono 16 kHz para whisper y
   suena a teléfono. La pista sale de `_audio/hq/` (48 kHz estéreo).
+- **El aire de un remate tiene que existir en la ventana.** `pausaDespues` se topa
+  con `durationInSeconds`: con la ventana terminando 0,1 s después de la última
+  palabra, el aire real fue de 0,08 s aunque el plan pedía 0,6 (y el aviso salía
+  en la consola, no en el render). Al fijar `pausaDespues`, alarga la ventana
+  hasta 0,6 s más allá de la voz **y** comprueba en la fuente que ahí no
+  empieza otra frase. El corte siguiente al remate va sin whoosh
+  (`"whoosh": false` en el clip que entra): el aire no se rellena.
+- **Orden de causa y efecto antes que ritmo.** En la v1 la instalación del repuesto
+  quedaba entre el pedido del cliente y el momento en que lo traen: cada plano
+  era bueno y la historia no tenía sentido. Pedido → acepto → busco → traigo →
+  recién entonces se instala. El orden se prueba contando el reel en voz alta
+  sin mirar la pantalla.
+- **No pongas sticker ni sonido sobre la palabra graciosa.** Entra con la palabra
+  anterior y sale antes del remate (`at` + `duration`); el ✅ sobre "perfecto,
+  weón" lo enterraba. Una gráfica que repite la palabra (📏 sobre
+  "centímetros") rinde menos que una que agrega el chiste (💡 la idea, 🤫 el
+  escondite, 🏆 el trofeo). Para un `word` hay que contar con que whisper marca
+  la palabra ~0,4 s antes de que se oiga.
+- **Lots of Sounds no declara licencia por sonido**: no se usa salvo
+  `SFX_LOTS=1`. En la v2 del 44 la mayoría de los efectos salía de ahí sin que
+  nadie lo notara: `elegir` y `buscarEfecto` ahora los excluyen y todo sale de
+  Mixkit. Mira `out/<slug>.reel.props.json` y busca ids `lots-*`.
+- **Noto no trae todos los emoji animados** (📏 no, 🤦 no): `npm run assets` lo
+  dice y se elige otro con el mismo sentido (🎯 por "exactamente").
 - **Música sin Content ID**: nada comercial (ver bitácora).
 
 ## Herramientas
@@ -141,6 +209,12 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   el mismo problema que las credenciales. No integrado.
 - **Lots of Sounds**: la muestra gratuita da 12 resultados por término y no declara
   licencia por sonido; en empate se prefiere Mixkit.
+- **La caché de webpack tumbaba renders**: con la caché tibia, un render después
+  de cambiar el plan fallaba a veces en el bundle con `TypeError: Cannot read
+  properties of undefined (reading 'length')` en `wasm-hash.js`, sin relación con
+  el cambio; borrando `node_modules/.cache/webpack` salía bien. No se aisló la
+  causa (no eran los symlinks rotos de `.claude/skills`, se probó).
+  `remotion.config.ts` la apaga (`setCachingEnabled(false)`).
 - **No esperes con `pgrep -f`**: el shell que espera contiene el patrón y se
   encuentra a sí mismo. Espera por el archivo de salida.
 

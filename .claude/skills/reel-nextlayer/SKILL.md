@@ -14,6 +14,10 @@ te equivocaste de marca.
 Cada error ya pagado, por tema (material, subtítulos, tipografía, gráfica, sonido,
 herramientas), está en `references/lecciones.md`. Léelo cuando toques ese tema.
 
+El flujo real de producción, paso a paso y con su checklist de calidad (bajar el
+pool completo, transcribir por tramos, gancho con segunda opinión, frames para
+cortar, revisión), está en `references/flujo.md`. Síguelo al armar un video.
+
 ## Antes que nada: mira el video, no los frames
 
 **`npm run watch -- <render.mp4>`** deja en `out/watch/<nombre>/GUION.md` una fila
@@ -52,12 +56,15 @@ pocos tokens: los scripts miden y resumen, el agente lee resúmenes y decide.
    hoja de `_digest/` (una imagen por clip: frames parejos con lo que se dice en
    cada uno). No abras frames sueltos: la hoja es más barata y dice más. En el
    Video 46 el mejor material quedó fuera dos veces por no mirarlo.
-3. **Lee las transcripciones antes de escribir textos.** El gancho puede estar
+3. **`npm run tramos -- --project <slug>`** retranscribe cada tramo aislado
+   (whisper sobre el clip entero pierde frases). **Lee las transcripciones antes de escribir textos.** El gancho puede estar
    dicho en cámara. Si whisper devolvió algo sin sentido, sospecha de jerga
    chilena ("once lucas" → "once lugar") y **pregunta** antes de descartar.
 4. **Escribe `plans/<slug>.json`** partiendo de `plans/_plantilla.json`: cortes,
    gancho, overlays, voces en off sobre B-roll, sonidos específicos, cierre. Cada
-   clip del proyecto va al plan o a `descartados` con su razón.
+   clip del proyecto va al plan o a `descartados` con su razón. Un clip de otra
+   carpeta va con `"proyecto": "video-NN"` (bájala con `--solo-material`), y
+   `npm run frames` saca la tira de frames exactos para fijar cada ventana.
 5. **`npm run assets -- --plan ...`** — busca la gráfica y los sonidos para ESTE
    video y los fija en el plan. Abre la hoja `out/assets/<slug>-candidatos.jpg`
    (una sola imagen para todo el video) y cambia el id de lo que no calce.
@@ -113,7 +120,10 @@ plan lo apaga: `"camara": "fija"` (sin zoom, golpe, destello ni deriva),
 `"transitionInFrames": 0` (corte seco), `"hook": ""` (sin texto de gancho),
 `"marca": false` (sin cierre ni tinte de marca), `"musicSrc": "ninguna"`, y
 `"pausaDespues"` en un clip para dejar correr un silencio que es parte del
-chiste. El Video 41 (un chiste) salió así porque Veronica lo pidió para ESE
+chiste (con la ventana del clip lo bastante larga: si no, no hay aire y solo
+el aviso de la consola lo dice), `"whoosh": false` en el clip que entra después
+de un remate, `"ganancia"` (dB) para una línea dicha lejos del micrófono y
+`"ganchoSegundos"` para que el gancho dure lo que tarda la frase que lo contesta. El Video 41 (un chiste) salió así porque Veronica lo pidió para ESE
 video; **no es una regla para la comedia** — eso lo deciden ellos, video a video.
 
 ### Marca en los reels: el Brand Book, con energía
