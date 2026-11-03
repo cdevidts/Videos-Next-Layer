@@ -54,6 +54,9 @@ type Shot = {
   hideCaptions?: boolean;
 };
 
+/** Lo mismo que shotFrames de src/lib/reel.ts: Remotion redondea cada corte a frames. */
+const framesDe = (shot: Shot): number => Math.max(Math.round(shot.durationInSeconds * FPS), 2);
+
 const ff = (args: string[], capture = true): Buffer => {
   const cmd = hasSystemFfmpeg() ? ['ffmpeg'] : ['npx', 'remotion', 'ffmpeg'];
   const r = spawnSync(cmd[0], [...cmd.slice(1), ...args], {
@@ -149,7 +152,11 @@ const main = async () => {
   const desfases: number[] = [];
   for (const [i, shot] of props.shots.entries()) {
     const inicio = cursor;
-    cursor += shot.durationInSeconds - T;
+    // En frames, como arma la línea de tiempo Remotion (shotFrames): con la
+    // duración en segundos sin redondear el cursor se corría hasta 0,5 frame por
+    // corte y el desfase "medido" crecía a lo largo del reel (en el Video 44 los
+    // últimos cortes salían a 0,09 s sin que nada se hubiera movido).
+    cursor += (framesDe(shot) - (props.transitionInFrames ?? 3)) / FPS;
     if (!shot.words?.length || !shot.audioSrc) continue;
 
     // (a) invariante del plan: imagen y sonido tienen que pedir el mismo instante.
@@ -251,7 +258,7 @@ const main = async () => {
       for (const w of shot.hideCaptions ? [] : (shot.words ?? [])) {
         esperadas.push({text: limpiar(w.text), t: c2 + (w.start + w.end) / 2});
       }
-      c2 += shot.durationInSeconds - T;
+      c2 += (framesDe(shot) - (props.transitionInFrames ?? 3)) / FPS;
     }
 
     const dif: number[] = [];

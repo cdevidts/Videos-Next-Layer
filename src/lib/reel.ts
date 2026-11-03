@@ -27,6 +27,12 @@ export type ReelShot = {
    */
   isSceneChange?: boolean;
   /**
+   * true: este corte no lleva el whoosh de cambio de escena aunque venga de otro
+   * clip. Para el corte que sigue a un remate: el aire que se le da a la risa
+   * no se rellena con un efecto.
+   */
+  sinWhoosh?: boolean;
+  /**
    * Efecto puntual que corresponde a lo que se ve en este corte
    * (ej. "taladro" sobre el plano del taladro).
    */
@@ -105,6 +111,12 @@ export type VerticalReelProps = {
   shots: ReelShot[];
   /** Gancho de apertura. Usa *asteriscos* para resaltar palabras. */
   hook: string;
+  /**
+   * Segundos que el gancho sigue en pantalla (2,2 por defecto, y nunca más que
+   * el primer corte). Se alarga cuando la frase que lo contesta llega después:
+   * el gancho y la voz dicen "no existe" a la vez.
+   */
+  ganchoSegundos?: number;
   cta?: string;
   ctaSub?: string;
   /**

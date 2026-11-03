@@ -14,6 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {normalize, probe, run, type Giro} from './lib/media';
+import {ffmpegCompleto} from './lib/ffmpegFull';
 import {syncCaptions} from './syncCaptions';
 import {
   reelDurationInFrames,
@@ -39,6 +40,12 @@ const flag = (name: string) => argv.includes(`--${name}`);
 
 type PlanClip = {
   file: string;
+  /**
+   * Otro proyecto de donde sale el clip (ej. "video-45"): se busca en
+   * public/input/<proyecto>/Videos y usa los proxies y transcripciones de ESE
+   * proyecto. Para armar un reel mezclando material de varias carpetas.
+   */
+  proyecto?: string;
   label?: string;
   caption?: string;
   startFromSeconds?: number;
@@ -61,6 +68,17 @@ type PlanClip = {
    * pausa incómoda antes del remate). Topa con la ventana y con el clip.
    */
   pausaDespues?: number;
+  /**
+   * false: el corte que ENTRA a este clip va sin whoosh. Para el corte que sigue
+   * a un remate: el aire que se le da a la risa no se rellena con un efecto.
+   */
+  whoosh?: false;
+  /**
+   * Sube (o baja) la voz de este clip, en dB. Para una línea dicha lejos del
+   * micrófono (en el Video 44 "Dale, voy" sonaba 15 dB bajo el resto). Sale de
+   * una copia del audio en _audio/hq/, así que no toca a los otros usos del clip.
+   */
+  ganancia?: number;
   /**
    * Voz en off de Sonido/ que suena sobre este clip, relativa a la carpeta del
    * proyecto (ej. "Sonido/Audios/VO1.wav"). Para B-roll o planos donde no se
@@ -113,6 +131,8 @@ type Plan = {
   sonido?: {transiciones?: string; apertura?: string; riser?: string; impacto?: string; ui?: string};
   dir: string;
   hook: string;
+  /** Segundos que el gancho sigue en pantalla; ver VerticalReelProps. */
+  ganchoSegundos?: number;
   cta?: string;
   ctaSub?: string;
   /** Cierre con alfa hecho en HyperFrames, relativo a public/. */
@@ -147,6 +167,8 @@ type Transcript = {
   speech: Array<{start: number; end: number}>;
   /** Transcripción arreglada por una persona: no se vuelve a transcribir nunca. */
   correctedByHuman?: boolean;
+  /** Palabras rehechas tramo por tramo (`npm run tramos`): se bloquean igual. */
+  tramosAislados?: boolean;
 };
 
 const VIDEO_EXTENSIONS = ['.mp4', '.mov', '.m4v', '.webm', '.mkv'];
@@ -302,11 +324,14 @@ const main = async () => {
   const siguienteUi = () => (ui.length ? ui[turnoUi++ % ui.length] : undefined);
 
   for (const item of items) {
-    const source = path.resolve(plan.dir, item.file);
+    const clipDir = item.proyecto ? path.join(path.dirname(projectDir), item.proyecto, 'Videos') : plan.dir;
+    const source = path.resolve(clipDir, item.file);
     if (!fs.existsSync(source)) throw new Error(`No existe el clip del plan: ${source}`);
+    const clipAudioDir = item.proyecto ? path.join(path.dirname(clipDir), '_audio') : audioDir;
+    const clipNormalizedDir = item.proyecto ? path.join(path.dirname(clipDir), '_normalized') : normalizedDir;
 
     const name = path.basename(item.file, path.extname(item.file));
-    const proxy = normalize(source, normalizedDir, fps, false, item.rotate);
+    const proxy = normalize(source, clipNormalizedDir, fps, false, item.rotate);
     const info = probe(proxy);
     const src = publicPath(proxy);
 
@@ -315,13 +340,29 @@ const main = async () => {
       ? Math.min(windowStart + item.durationInSeconds, info.durationInSeconds)
       : info.durationInSeconds;
 
-    const transcript = item.ignoreSpeech ? null : loadTranscript(audioDir, name);
+    const transcript = item.ignoreSpeech ? null : loadTranscript(clipAudioDir, name);
     // La pista del reel sale de _audio/hq (48 kHz estéreo). La de la raíz de
     // _audio es mono 16 kHz y existe solo para whisper: usarla acá deja el
     // audio opaco.
-    const hqFile = path.join(audioDir, 'hq', `${name}.wav`);
-    const legacyFile = path.join(audioDir, `${name}.wav`);
-    const audioFile = fs.existsSync(hqFile) ? hqFile : legacyFile;
+    const hqFile = path.join(clipAudioDir, 'hq', `${name}.wav`);
+    const legacyFile = path.join(clipAudioDir, `${name}.wav`);
+    let audioFile = fs.existsSync(hqFile) ? hqFile : legacyFile;
+    if (item.ganancia && fs.existsSync(audioFile)) {
+      const conGanancia = path.join(path.dirname(audioFile), `${name}__g${item.ganancia}.wav`);
+      // Se rehace si el audio de origen es más nuevo que la copia (o con --force):
+      // los props no cambian (el nombre es el mismo), así que una copia vieja
+      // sonaría sin que nada lo avise.
+      const vieja = fs.existsSync(conGanancia) && fs.statSync(conGanancia).mtimeMs < fs.statSync(audioFile).mtimeMs;
+      if (!fs.existsSync(conGanancia) || vieja || flag('force')) {
+        // Limitador: subir 10 dB una voz lejana no debe clipear si hay un grito
+        // cerca. level=0: sin auto-nivel (subía 0,9 dB más de lo pedido);
+        // latency=1: sin el desfase de ~5 ms del lookahead.
+        const tmp = conGanancia.replace(/\.wav$/, '.tmp.wav');
+        run(ffmpegCompleto(), ['-nostdin', '-loglevel', 'error', '-y', '-i', audioFile, '-af', `volume=${item.ganancia}dB,alimiter=limit=0.9:level=0:latency=1`, tmp]);
+        fs.renameSync(tmp, conGanancia);
+      }
+      audioFile = conGanancia;
+    }
     if (!fs.existsSync(hqFile) && fs.existsSync(legacyFile)) {
       console.warn(
         `⚠️  ${name}: usando audio de 16 kHz (calidad teléfono). Corre \`npm run audio\` para generar _audio/hq/.`,
@@ -395,8 +436,9 @@ const main = async () => {
             audioStartFromSeconds: Number(range.start.toFixed(3)),
             speed: speed === 1 ? undefined : speed,
             sfx: index === 0 ? resolverSfx(item.sfx, project) : undefined,
-            wordsLocked: transcript.correctedByHuman || undefined,
+            wordsLocked: transcript.correctedByHuman || transcript.tramosAislados || undefined,
             hideCaptions: item.subtitulos === false || undefined,
+            sinWhoosh: (index === 0 && item.whoosh === false) || undefined,
           });
         }
         const cut = (windowEnd - windowStart) - ranges.reduce((s, r) => s + (r.end - r.start), 0);
@@ -451,6 +493,7 @@ const main = async () => {
       label: item.label,
       caption: vo.words?.length ? undefined : item.caption,
       sfx: resolverSfx(item.sfx, project),
+      sinWhoosh: item.whoosh === false || undefined,
       speed: item.speed && item.speed !== 1 && !item.voiceover ? item.speed : undefined,
       ...vo,
     });
@@ -528,6 +571,7 @@ const main = async () => {
   const props: VerticalReelProps = {
     shots,
     hook: plan.hook,
+    ganchoSegundos: plan.ganchoSegundos,
     // Vacíos explícitos: si faltan, Remotion completa con los defaults de
     // Root.tsx ("Next Layer") y el cierre de texto aparece igual.
     cta: conMarca ? plan.cta : '',
