@@ -898,3 +898,52 @@ clave da ±0,1 s. Los subtítulos de remate (última palabra) pueden verse hasta
 - ¿Las líneas cantadas del 44 son una canción conocida? ¿Para qué se grabó el 43?
 - Crédito en la descripción del post: Noto Emoji Animation, Google (CC BY 4.0).
 - Veronica/Cris aprueban → `videos.json` "entregado". No se publicó nada.
+
+## 2026-11-03 · Video 44 v3: Cris lo rechaza para publicar; se anota y se esperan referencias
+
+Cris vio la v3 ("bastante bueno") y devolvió cuatro defectos de fondo. **No se
+volvió a editar ni a renderizar el video**: su pedido fue dejarlo anotado, porque
+va a empezar a subir referencias ("claramente no lo estás haciendo demasiado
+bien"). El 44 queda `en-curso`, **no** `entregado`, y nada se publicó.
+
+**Qué dijo, y dónde quedó escrito cada cosa**:
+
+1. **Colores oscuros, sin corrección por toma.** `npm run color` existía pero no
+   estaba en el flujo, y los críticos nunca recibieron la pregunta "¿se ve oscuro?
+   ¿salta de oscuro a claro?". Ahora: `flujo.md` paso 8b + checklist; skill,
+   *Reglas duras de Cris*, regla 2.
+2. **Emoji como iconografía: estrictamente prohibido.** La v3 usó ocho stickers de
+   Noto (😤 💡 🤫 🏆 ✅ 💪 🫡 🤏). Cris prefiere fotos de Google o íconos que se vean
+   profesionales. Escrito en `CLAUDE.md` (regla 7), en la skill (regla 1 y fila de
+   stickers), en `lecciones.md` y en `plans/_plantilla.json` (el ejemplo ya no es
+   un emoji). Se usó el emoji porque era lo más rápido de animar; ahí se gana
+   tiempo y se pierde la marca.
+3. **Se mezclaron dos videos.** El **44** es Cris diciendo "mándamelo a hacer" y
+   pasando por cosas de su casa hechas por él. El **45** es la imitación de un reel
+   de Instagram donde piden una pieza extraña que no tienen: ese video se hace
+   **casi completo**, con a lo más un par de clips del otro. La v3 lo mezcló en
+   partes iguales. En la sesión del 30-oct se trató 44 y 45 como "el mismo rodaje"
+   y como un pool único porque Cris había dicho "no me importa si mezclas videos de
+   todas partes"; ese permiso era para *buscar* el mejor gancho, no para entregar un
+   reel con dos historias. Regla 3 de la skill: un reel = un video, y mezclar
+   rodajes solo si Cris lo pide para ese reel.
+4. **La música suena a tutorial.** La cama por defecto no calza con un reel de
+   comedia. Regla 4: `musicSrc` se elige por video y se oye contra la voz.
+
+**Respuestas a las preguntas abiertas**: DSCF7520 **sí** dice "¡La encontré!"; el
+disco beige del cierre es **la tapa de una piscina**, no una pieza impresa (la
+placa decía "esto lo hice yo" sobre un objeto que no hizo: regla 5, no afirmar lo
+que no se sabe). No hace falta la aprobación de Veronica para mergear los PR. Cris
+no tiene el link de "It Reels Maker".
+
+**Lo que espera a una persona**:
+- Cris sube referencias (cómo hacer reels de ese tipo). Formato acordado con él: el
+  reel de referencia como **mp4** (o el link de Instagram) con una **nota de qué copiar**
+  (ritmo, color, tipografía, música, gráfica), en una subcarpeta por reel de la carpeta
+  de Drive del proyecto. Cuando lleguen: rehacer el
+  **45** casi completo (la imitación), con su ritmo, y el **44** como video aparte,
+  con color igualado, sin emoji y con otra música. Antes de tocar nada, leer
+  `lecciones.md`, *Feedback de Cris sobre el Video 44 v3*.
+- El plan para centralizar el contexto de Next Layer sigue abierto (no es de este
+  hilo).
+- El 43 y los otros pendientes siguen igual.

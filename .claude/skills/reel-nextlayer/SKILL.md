@@ -18,6 +18,29 @@ El flujo real de producción, paso a paso y con su checklist de calidad (bajar e
 pool completo, transcribir por tramos, gancho con segunda opinión, frames para
 cortar, revisión), está en `references/flujo.md`. Síguelo al armar un video.
 
+## Reglas duras de Cris (3-nov-2026, tras ver el Video 44 v3)
+
+Dichas por la dueña, no son gusto del agente. Si una de estas falla, el video no se
+muestra aunque `check`, `sync` y los críticos digan que está bien:
+
+1. **Emoji prohibido como iconografía.** Ni `emoji:` ni Noto animado ni emoji en
+   pantalla. La gráfica es una **foto** (de Google/Pexels/Wikimedia, de algo que se
+   nombra) o un **ícono que se vea profesional** (Iconify en un set parejo, o uno
+   dibujado a medida con calidad de marca). Si no hay con qué, no va gráfica.
+2. **Color corregido por toma.** Las tomas distintas no pueden saltar de brillo,
+   temperatura ni saturación, y el reel no puede verse oscuro. Corre
+   `npm run color` (iguala hacia la mediana del proyecto) y MIRA el resultado en la
+   hoja de contactos del render antes de entregar. En el 44 v3 nadie corrigió el
+   color y salió "muy oscuro".
+3. **Un reel, un video.** No se mezclan dos rodajes/historias. Si dos videos del
+   pool comparten set, son dos reels. Si hace falta algún plano de otro, que sea un
+   par y que la persona lo autorice (ver el caso en `references/lecciones.md`).
+4. **La música tiene que calzar con el tono.** La cama por defecto suena a tutorial:
+   para humor o historia se elige otra por video (`musicSrc`) y se oye antes de
+   entregar.
+5. **No se afirma lo que no se sabe.** "Esto lo hice yo" sobre un objeto que no es
+   una pieza impresa es una mentira en pantalla; ante la duda, se pregunta.
+
 ## Antes que nada: mira el video, no los frames
 
 **`npm run watch -- <render.mp4>`** deja en `out/watch/<nombre>/GUION.md` una fila
@@ -172,7 +195,7 @@ En el plan, `overlays` en el clip; `npm run assets` busca y fija:
 | Qué | Cuándo | Fuente |
 | --- | --- | --- |
 | `icon` | Un objeto o concepto que se nombra: la herramienta, la medida, el precio | Iconify, un set por video (`iconSet`) |
-| `sticker` | Una reacción o emoción: 🔥 🤯 💸 ✅ | `emoji:🔥` (Noto animado, parejo) o búsqueda LottieFiles (estilo variable) |
+| `sticker` | Una reacción o emoción. **Sin emoji (prohibido desde el 3-nov, ver Reglas duras)** | Animación LottieFiles que se vea profesional, o ícono propio; si no hay, `photo` o `icon` |
 | `photo` | Algo que se menciona y no está en el material: una tienda, un producto de referencia | SourceSplash (Pexels) o Wikimedia |
 
 Criterio:
@@ -487,6 +510,10 @@ resamplear. Entre 1.1 y 1.2 no se nota como "acelerado", solo se siente más
 Se eligió midiendo, no de oído a ciegas: varía solo 6 dB a lo largo del tema, así
 que no salta por encima del diálogo. Las alternativas variaban 21 y 35 dB y
 peleaban con la voz. **Si cambias la música, mide la variación de nivel primero.**
+
+Ojo: esa cama es de tono *tutorial*. Para un reel de humor o de historia (Video 44
+v3) Cris dijo que "suena a tutorial": elige la música por video con `musicSrc` y
+escúchala contra la voz antes de entregar.
 
 Para usar otra: `npm run reel -- --plan plans/<proyecto>.json --music <ruta>`.
 Nunca uses música comercial: Content ID la marca en Instagram y YouTube. El único

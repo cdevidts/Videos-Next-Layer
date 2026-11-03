@@ -26,7 +26,7 @@
           "word": "medidas"
         },
         {
-          "sticker": "emoji:🔥",
+          "photo": "impresora 3d imprimiendo",
           "word": "perfecto",
           "pos": "right"
         },
@@ -38,7 +38,7 @@
           "size": 120
         }
       ],
-      "_overlays": "UNO de icon/sticker/photo por entrada. 'word' lo engancha al instante en que se dice. pos: left | right | lower | center | top. sfx de entrada automatico; 'ninguno' lo quita. x/y (% del cuadro) clavan el elemento en un punto exacto para senalar algo que se ve; se calibran sobre el RENDER con grilla, no sobre el proxy.",
+      "_overlays": "UNO de icon/sticker/photo por entrada. Sin emoji (prohibido por Cris, 3-nov): foto o icono que se vea profesional. 'word' lo engancha al instante en que se dice. pos: left | right | lower | center | top. sfx de entrada automatico; 'ninguno' lo quita. x/y (% del cuadro) clavan el elemento en un punto exacto para senalar algo que se ve; se calibran sobre el RENDER con grilla, no sobre el proxy.",
       "subtitulos": false,
       "_subtitulos": "false = la voz suena pero no se dibuja el subtitulo. Para cuando el gancho ya pone esas mismas palabras en grande.",
       "pausaDespues": 1,

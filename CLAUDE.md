@@ -49,6 +49,8 @@ lleva el estado de cada video de Drive: **nunca re-renderices uno `entregado`**.
 7. **La gráfica se baja, no se dibuja, y se elige para cada video.** Iconify,
    LottieFiles, Noto, SourceSplash, Wikimedia — todo vía `npm run assets`. Lo ya
    descargado no tiene prioridad: si el video pide otra cosa, se busca otra cosa.
+   **Emoji estrictamente prohibido como iconografía** (Cris, 3-nov): fotos o íconos
+   que se vean profesionales. Más reglas duras en la skill, *Reglas duras de Cris*.
 
 ## Directiva de dirección de arte y sonido
 

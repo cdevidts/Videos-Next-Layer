@@ -60,6 +60,38 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   clip con `"ganancia": 10` en el plan (copia del audio en `_audio/hq/`, no toca
   los otros usos del clip).
 
+## Feedback de Cris sobre el Video 44 v3 (3-nov-2026)
+
+Cris vio la v3 ("bastante bueno") y la rechazó para publicar. Textual, resumido:
+colores muy oscuros y sin corrección por toma; los emojis como iconografía están
+"estrictamente prohibidos" (prefiere fotos de Google o íconos generados que queden
+profesionales); se mezclaron dos videos; el disco del final es la tapa de una
+piscina; la música suena a tutorial. Lo que sigue es lo que hay que cambiar en el
+OFICIO, no en ese video (no se vuelve a editar hasta que Cris suba referencias).
+
+- **El 44 y el 45 son dos videos distintos.** El **44** es Cris diciendo
+  "¡mándamelo a hacer!" mientras pasa por distintas cosas de su casa hechas por él.
+  El **45** es la imitación de un reel de Instagram donde te piden una pieza rara
+  que no tienes: ese se hace completo, con a lo más un par de clips del otro. La v3
+  hizo la historia del 45 y le metió el gancho y el cierre del 44 — dos videos en
+  uno. "Mismo bidé, mismo rodaje" no basta para unirlos: la unidad es la **historia
+  que cada video quería contar**, y un video pedido por la persona manda sobre lo
+  que parezca mejor gancho. Antes de mezclar, preguntar.
+- **Color**: `npm run color` existía y el flujo no lo incluía. Las tomas del 44/45
+  van de interior oscuro a patio con sol; el reel salió oscuro. Hay que corregirlo
+  y verificarlo (paso 8b del flujo). Los críticos no lo vieron porque nadie les pidió
+  mirar color: **un revisor solo ve lo que se le pide ver**.
+- **Emoji**: se interpretó "la gráfica se baja de APIs" como Noto animado (CC BY).
+  Para Cris el emoji es amateur. Fotos o íconos profesionales.
+- **Música de tutorial**: la cama por defecto del repo no sirve para humor/historia.
+- **"Esto lo hice yo" sobre el disco beige**: era la tapa de una piscina, no una
+  pieza impresa. Se había dejado como pregunta abierta y aun así el clip entró.
+  Respuestas de Cris: DSCF7520 sí dice **"¡La encontré!"** (llevaba el grito sin
+  subtítulo; con `correctedByHuman` ya se puede subtitular).
+- **El método falló en lo importante**: dos paneles de críticos, sync en verde y
+  renders pulidos no sustituyen una referencia. Cris va a subir referencias de lo
+  que quiere; hasta entonces, ni más pulido ni otra versión del 44.
+
 ## Subtítulos y sincronía
 
 - **El subtítulo del grupo siguiente entraba tarde** (arreglado en el Video 44 v3):
@@ -182,8 +214,9 @@ aparece. Si vas a tocar lo que dice un título, lee el párrafo entero.
   `SFX_LOTS=1`. En la v2 del 44 la mayoría de los efectos salía de ahí sin que
   nadie lo notara: `elegir` y `buscarEfecto` ahora los excluyen y todo sale de
   Mixkit. Mira `out/<slug>.reel.props.json` y busca ids `lots-*`.
-- **Noto no trae todos los emoji animados** (📏 no, 🤦 no): `npm run assets` lo
-  dice y se elige otro con el mismo sentido (🎯 por "exactamente").
+- **Noto/emoji ya no se usa** (Cris, 3-nov: "estrictamente prohibido"): ver la
+  sección *Feedback de Cris sobre el Video 44 v3*. Lo que quedó de aquí: Noto no
+  trae todos los emoji animados y `npm run assets` lo dice, pero ya no importa.
 - **Música sin Content ID**: nada comercial (ver bitácora).
 
 ## Herramientas

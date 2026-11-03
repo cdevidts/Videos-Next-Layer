@@ -109,8 +109,17 @@ cierre tapó "esto lo hice yo").
 `npm run assets` y abrir `out/assets/<slug>-candidatos.jpg`. Un efecto que no
 corresponde a la imagen se saca aunque el buscador lo haya encontrado ("plastic
 click" devolvió un click de lápiz de 3,5 s que sonaba sobre el soporte roto, no
-cuando entra la pieza). Noto no tiene todos los emoji animados (🤦 no): assets lo
-dice y se elige otro.
+cuando entra la pieza). **Sin emoji** (prohibido por Cris el 3-nov): la gráfica es
+una foto o un ícono que se vea profesional; el Video 44 v3 usó emoji de Noto y por
+eso se rechazó.
+
+## 8b. Color y música antes de renderizar
+
+`npm run color -- --dir public/input/<slug>` mide cada toma y las iguala hacia la
+mediana (con clips de otra carpeta, córrelo en cada una y compara medianas). Después
+de renderizar, abre la hoja de contactos completa y pregunta: ¿el reel salta de
+oscuro a claro?, ¿se ve oscuro en general? La música: `musicSrc` por video, no la
+cama de tutorial por defecto, y oída contra la voz. El Video 44 v3 falló en las dos.
 
 ## 9. Compuertas antes de renderizar
 
@@ -171,6 +180,8 @@ sentido". Lo que funcionó para pasar de eso a la v3:
 - [ ] Último corte = producto, ≥ duración del cierre.
 - [ ] Overlays enganchados a la palabra, ≥ 0,6 s en pantalla, sin tapar cara ni subtítulo (`GRAFICA.jpg`).
 - [ ] Cada efecto corresponde a lo que se ve; whoosh solo en cambio de escena.
+- [ ] Cero emoji. Color igualado entre tomas y el reel no se ve oscuro. Música que calza con el tono.
+- [ ] Todos los clips son de UN solo video (una historia, un rodaje).
 - [ ] `check`, `tsc`, `fonts-check` y `sync` en verde.
 - [ ] `GUION.md` leído de corrido: lo que se oye calza con lo que se ve.
 - [ ] Journal, `videos.json` y PR; Veronica aprueba antes de "entregado".
