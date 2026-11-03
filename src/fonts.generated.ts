@@ -3,10 +3,10 @@ export type FontFace = {family: string; weight: string; style: string; file: str
 
 export const FONT_FACES: FontFace[] = [
   {
-    "family": "Anton",
-    "weight": "400",
+    "family": "Montserrat",
+    "weight": "900",
     "style": "normal",
-    "file": "fonts/Anton-400-normal.woff2"
+    "file": "fonts/Montserrat-900-normal.woff2"
   },
   {
     "family": "Inter",

@@ -106,7 +106,7 @@ const main = async () => {
     startFromSeconds,
     durationInSeconds:
       maxSeconds > 0 ? Math.min(usableSeconds, maxSeconds) + startFromSeconds : info.durationInSeconds,
-    accentColor: arg('accent') ?? process.env.ACCENT_COLOR ?? '#22D3EE',
+    accentColor: arg('accent') ?? process.env.ACCENT_COLOR ?? '#FB830F',
   };
 
   fs.mkdirSync(path.dirname(output), {recursive: true});

@@ -535,9 +535,9 @@ const main = async () => {
     finalOverlaySrc,
     conMarca,
     camaraFija: plan.camara === 'fija',
-    accentColor: plan.accentColor ?? '#FF6600',
-    primaryColor: plan.primaryColor ?? '#0047AB',
-    secondaryColor: plan.secondaryColor ?? '#00D4FF',
+    accentColor: plan.accentColor ?? '#FB830F',
+    primaryColor: plan.primaryColor ?? '#011D62',
+    secondaryColor: plan.secondaryColor ?? '#0382F7',
     musicSrc:
       musica === 'ninguna'
         ? ''

@@ -23,7 +23,7 @@ const clipDefaults: VerticalClipProps = {
   videoVolume: 1,
   audioVolume: 0.6,
   startFromSeconds: 0,
-  accentColor: '#22D3EE',
+  accentColor: '#FB830F',
 };
 
 /** Props de ejemplo: scripts/buildReel.ts escribe los reales en out/*.props.json. */
@@ -35,9 +35,9 @@ const reelDefaults: VerticalReelProps = {
   hook: 'Un gancho *corto*',
   cta: 'Next Layer',
   ctaSub: 'Impresión 3D',
-  accentColor: '#FF6600',
-  primaryColor: '#0047AB',
-  secondaryColor: '#00D4FF',
+  accentColor: '#FB830F',
+  primaryColor: '#011D62',
+  secondaryColor: '#0382F7',
   sfx: {
     whooshes: ['whoosh-1', 'whoosh-2', 'whoosh-3'].map((n) => ({src: `sfx/${n}.mp3`, picoSeg: 0.15, gananciaDb: 0})),
     riserApertura: {src: 'sfx/riser.mp3', picoSeg: 0, gananciaDb: 0},
