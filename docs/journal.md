@@ -741,8 +741,8 @@ digitalsoulia nada más aplica a este repo: no hay skill de memoria ni Graphify 
 esa página; `book-to-skill` serviría para el Brand Book PDF cuando esté en Drive;
 `no-ai-slop` solo tiene ejemplos en inglés.
 
-**Pendiente**: que Cris guarde las skills propuestas (`nextlayer-contexto-vivo`,
-`nextlayer-memoria`) desde la tarjeta del hilo; cuando aparezca una comunidad
+**Cerrado 2026-11-03**: Cris guardó las dos skills (`nextlayer-contexto-vivo`,
+`nextlayer-memoria`) y aprobó el merge. Queda: cuando aparezca una comunidad
 nueva, revisar el nombre que le pone Haiku.
 
 ## 2026-10-29 · La marca de los reels pasa al Brand Book, con energía
