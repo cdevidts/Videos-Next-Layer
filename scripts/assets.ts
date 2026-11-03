@@ -8,7 +8,7 @@
  *   npm run assets -- --buscar sfx "circular saw"
  *   npm run assets -- --list
  *
- * Con --plan: cada intención del plan ("drill", "emoji:🔥", "ikea store",
+ * Con --plan: cada intención del plan ("drill", "ikea store",
  * "buscar:circular saw", "@impact") se busca en ese momento y se FIJA en el
  * plan como id exacto. Dos razones: el render no decide nada —la elección
  * queda escrita donde se puede revisar— y re-renderizar da exactamente lo mismo.
@@ -244,13 +244,13 @@ const buscar = async (tipo: string, intencion: string) => {
     }
   } else if (tipo === 'sticker') {
     if (/^emoji:/.test(intencion)) {
-      console.log('  Los emoji de Noto se ven como el emoji: no hace falta previsualizar.');
+      console.log('  OJO: emoji como gráfica está prohibido por Cris (3-nov). Busca una foto (photo) o un ícono (icon).');
       return;
     }
     const lotties = await buscarLottie(intencion, 8);
     lotties.forEach((l, i) => console.log(`  ${String(i + 1).padStart(2)}. ${l.id}  ${l.url}`));
     console.log('\n  Los Lottie de LottieFiles son de autores distintos y su estilo varía mucho: si el');
-    console.log('  primero no calza, fija otro id en el plan. Un emoji de Noto ("emoji:🔥") es más parejo.');
+    console.log('  primero no calza, fija otro id en el plan. No uses emoji de Noto ("emoji:"): están prohibidos.');
   } else if (tipo === 'sfx') {
     const efectos = (await buscarEfecto(intencion)).slice(0, 10);
     efectos.forEach((e, i) =>

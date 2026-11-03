@@ -969,3 +969,23 @@ no tiene el link de "It Reels Maker".
 - El plan para centralizar el contexto de Next Layer sigue abierto (no es de este
   hilo).
 - El 43 y los otros pendientes siguen igual.
+
+## 2026-11-03 · La guía de comedia (PR #5) se mergea y se alinea con el feedback de Cris
+
+Cris pidió hacer todos los PR sin la aprobación de Veronica, así que el #5 salió de
+borrador y se mergeó tal cual. La guía `references/comedia-y-ritmo.md` se había
+escrito antes de que Cris rechazara el Video 44 v3 y dos pasajes chocaban con él, por
+eso va un seguimiento que no cambia su sustancia:
+
+- §1 trataba el 44 y el 45 como una sola historia ("cliente necesita una pieza…").
+  Ahora son dos videos, cada uno con su línea; la del 45 sale de los clips y queda
+  "a confirmar con las referencias".
+- §5 recomendaba el emoji animado de Noto con crédito. Ahora dice que no se usa. El
+  hint de `npm run assets` (una línea de texto) tampoco lo recomienda, y la plantilla
+  de planes cambió su ejemplo `noto:keycap-1` (un emoji) por `ph:number-circle-one`.
+- Música (§3) y checklist (§4: cero emoji, color igualado, un solo video, música) con
+  lo que Cris pidió. La guía declara que las *Reglas duras de Cris* de la skill mandan.
+
+**Lo que no se hizo**: bloquear `emoji:` en `npm run check`. Sería la compuerta de
+verdad, pero el plan del 44 v3 (que Cris pidió no tocar) todavía los usa y `check` lo
+frenaría; conviene decidirlo cuando se rehaga el 44.

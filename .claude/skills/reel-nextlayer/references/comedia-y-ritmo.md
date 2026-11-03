@@ -4,6 +4,10 @@ Léelo **antes de ordenar los cortes** de un reel con humor o con historia (Vide
 43, 41). Nació del hilo "Mejorar storytelling y timing cómico" (oct 2026), después de
 que Cris encontrara el Video 44 poco cómico, con mal timing y un orden ilógico.
 
+**Esta guía va por debajo de las *Reglas duras de Cris* de `SKILL.md`** (3-nov-2026, tras
+rechazar el Video 44 v3): sin emoji como gráfica, color igualado entre tomas, un reel = un
+video, música que no suene a tutorial. Donde una línea de abajo choque con eso, manda eso.
+
 Qué es hallazgo y qué es oficio: *(fuente)* salió de una búsqueda y se abrió la página;
 *(oficio)* es criterio de edición establecido que se anota acá para que sea checklist.
 **Ninguna fuente trata de reels comerciales ni de impresión 3D**: son heurísticas de TV, cine
@@ -15,10 +19,19 @@ Antes de tocar el plan, escribe la historia en una línea y los beats en una lis
 
 `Quién quiere qué → qué se lo impide → el giro → la resolución → (el remate)`
 
-Para el 44/45: *cliente necesita una pieza que no existe → no la encuentra en ningún lado →
-Cristóbal la diseña e imprime → "¡está perfecto!"*. Si el orden de los clips no sigue esa
-línea, el video se siente ilógico aunque cada plano sea bueno. Regla: **la causa se ve
-antes que el efecto** (la pieza rota antes de la pieza nueva; el pedido antes de la entrega).
+El 44 y el 45 son **dos videos distintos** (Cris, 3-nov), cada uno con su línea:
+
+- **44**: Cris a cámara dice "tengo un repuesto que no existe… ¡mándamelo a hacer!" y pasa
+  por cosas de su casa hechas por él.
+- **45**: imitación de un reel de Instagram donde piden una pieza extraña que no tiene;
+  por los clips: *piden la pieza → la busca por la casa → la trae → "¡está perfecto!"*
+  (a confirmar con las referencias que suba Cris). Se hace casi completo, con a lo más un
+  par de clips del 44.
+
+Si el orden de los clips no sigue la línea del video, se siente ilógico aunque cada plano
+sea bueno. Regla: **la causa se ve antes que el efecto** (la pieza rota antes de la pieza
+nueva; el pedido antes de la entrega). Y **una historia por reel**: los clips de otro
+rodaje solo entran si Cris lo pide para ese reel.
 
 ## 2. Estructura del chiste
 
@@ -92,7 +105,8 @@ mezcla a −7 LUFS (el repo normaliza a −14).
 - Setup rápido (`speed` 1.1–1.15 y cortes secos), remate a velocidad natural.
 - Un mismo sonido o gráfica **no** debe pisar el remate: el sonido va en el setup o
   después de la pausa. Un whoosh encima de la palabra graciosa la entierra.
-- Música: la cama baja en el remate o se corta un instante. El silencio de música es
+- Música: elígela por video y oye que calce con el tono; la cama por defecto sonó a
+  tutorial en el 44 y Cris la rechazó. La cama baja en el remate o se corta un instante. El silencio de música es
   un recurso, a diferencia del silencio digital de la sección Sonido (ahí sigue habiendo
   ambiente).
 - Mide, no adivines: `npm run watch` → `GUION.md` muestra en qué segundo cae cada palabra
@@ -109,6 +123,10 @@ mezcla a −7 LUFS (el repo normaliza a −14).
 6. ¿El producto/servicio aparece como **solución dentro de la historia**, no como aviso?
 7. ¿Se entiende el reel solo, sin pronombres que apunten a algo que no se ve? ¿Hay un rehook (nueva pregunta o giro) entre los 3 y 10 s?
 8. `GUION.md` leído de corrido: ¿se entiende sin ver imagen? ¿el remate se oye limpio?
+9. ¿Cero emoji en la gráfica? Foto o ícono que se vea profesional, o sin gráfica.
+10. ¿Color igualado entre tomas (`npm run color`) y el reel no se ve oscuro en la hoja de contactos?
+11. ¿Todos los clips son de UN solo video (una historia, un rodaje)?
+12. ¿La música calza con el tono y no suena a tutorial?
 
 ## 5. Bancos de recursos (licencias verificadas)
 
@@ -120,7 +138,7 @@ mezcla a −7 LUFS (el repo normaliza a −14).
 | SFX | **Freesound** | CC0 / CC BY / CC BY-NC por sonido | **La API es gratis solo para uso no comercial**; Next Layer es comercial → no integrar la API sin permiso escrito de UPF. A mano, solo CC0, desde el sitio. |
 | SFX | **Lots of Sounds** (lo que trae `buscar:`) | **Sin licencia declarada** | `buscar:` también consulta esta fuente: para un reel comercial, descartar esos candidatos (ahora `assets` avisa). |
 | Gráfica | **LottieFiles** | Lottie Simple License: comercial gratis, crédito recomendado | Ya integrado (`buscarLottie`). Revisar cada animación. |
-| Gráfica | **Noto animado** (`emoji:🔥`) | **CC BY 4.0: exige crédito** | Ya integrado. `@remotion/animated-emoji` es redundante. Poner el crédito en la descripción del post. |
+| Gráfica | **Noto animado** (`emoji:🔥`) | CC BY 4.0: exige crédito | **No usar: emoji como gráfica está prohibido por Cris (3-nov).** Sigue integrado en el código por historia; no se elige. |
 | Motor | **Remotion** | **Gratis hasta 3 personas**; desde 4, de pago | Cris confirmó (30-oct-2026) que es 1 persona: dentro de lo gratis. Revisar si el equipo supera 3. |
 
 No existe rimshot en Mixkit ni en OpenGameArt-CC0 (los "joke drums" de Mixkit lo reemplazan);
