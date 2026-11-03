@@ -14,6 +14,33 @@ te equivocaste de marca.
 Cada error ya pagado, por tema (material, subtítulos, tipografía, gráfica, sonido,
 herramientas), está en `references/lecciones.md`. Léelo cuando toques ese tema.
 
+El flujo real de producción, paso a paso y con su checklist de calidad (bajar el
+pool completo, transcribir por tramos, gancho con segunda opinión, frames para
+cortar, revisión), está en `references/flujo.md`. Síguelo al armar un video.
+
+## Reglas duras de Cris (3-nov-2026, tras ver el Video 44 v3)
+
+Dichas por la dueña, no son gusto del agente. Si una de estas falla, el video no se
+muestra aunque `check`, `sync` y los críticos digan que está bien:
+
+1. **Emoji prohibido como iconografía.** Ni `emoji:` ni Noto animado ni emoji en
+   pantalla. La gráfica es una **foto** (de Google/Pexels/Wikimedia, de algo que se
+   nombra) o un **ícono que se vea profesional** (Iconify en un set parejo, o uno
+   dibujado a medida con calidad de marca). Si no hay con qué, no va gráfica.
+2. **Color corregido por toma.** Las tomas distintas no pueden saltar de brillo,
+   temperatura ni saturación, y el reel no puede verse oscuro. Corre
+   `npm run color` (iguala hacia la mediana del proyecto) y MIRA el resultado en la
+   hoja de contactos del render antes de entregar. En el 44 v3 nadie corrigió el
+   color y salió "muy oscuro".
+3. **Un reel, un video.** No se mezclan dos rodajes/historias. Si dos videos del
+   pool comparten set, son dos reels. Si hace falta algún plano de otro, que sea un
+   par y que la persona lo autorice (ver el caso en `references/lecciones.md`).
+4. **La música tiene que calzar con el tono.** La cama por defecto suena a tutorial:
+   para humor o historia se elige otra por video (`musicSrc`) y se oye antes de
+   entregar.
+5. **No se afirma lo que no se sabe.** "Esto lo hice yo" sobre un objeto que no es
+   una pieza impresa es una mentira en pantalla; ante la duda, se pregunta.
+
 ## Antes que nada: mira el video, no los frames
 
 **`npm run watch -- <render.mp4>`** deja en `out/watch/<nombre>/GUION.md` una fila
@@ -52,12 +79,15 @@ pocos tokens: los scripts miden y resumen, el agente lee resúmenes y decide.
    hoja de `_digest/` (una imagen por clip: frames parejos con lo que se dice en
    cada uno). No abras frames sueltos: la hoja es más barata y dice más. En el
    Video 46 el mejor material quedó fuera dos veces por no mirarlo.
-3. **Lee las transcripciones antes de escribir textos.** El gancho puede estar
+3. **`npm run tramos -- --project <slug>`** retranscribe cada tramo aislado
+   (whisper sobre el clip entero pierde frases). **Lee las transcripciones antes de escribir textos.** El gancho puede estar
    dicho en cámara. Si whisper devolvió algo sin sentido, sospecha de jerga
    chilena ("once lucas" → "once lugar") y **pregunta** antes de descartar.
 4. **Escribe `plans/<slug>.json`** partiendo de `plans/_plantilla.json`: cortes,
    gancho, overlays, voces en off sobre B-roll, sonidos específicos, cierre. Cada
-   clip del proyecto va al plan o a `descartados` con su razón.
+   clip del proyecto va al plan o a `descartados` con su razón. Un clip de otra
+   carpeta va con `"proyecto": "video-NN"` (bájala con `--solo-material`), y
+   `npm run frames` saca la tira de frames exactos para fijar cada ventana.
 5. **`npm run assets -- --plan ...`** — busca la gráfica y los sonidos para ESTE
    video y los fija en el plan. Abre la hoja `out/assets/<slug>-candidatos.jpg`
    (una sola imagen para todo el video) y cambia el id de lo que no calce.
@@ -113,7 +143,10 @@ plan lo apaga: `"camara": "fija"` (sin zoom, golpe, destello ni deriva),
 `"transitionInFrames": 0` (corte seco), `"hook": ""` (sin texto de gancho),
 `"marca": false` (sin cierre ni tinte de marca), `"musicSrc": "ninguna"`, y
 `"pausaDespues"` en un clip para dejar correr un silencio que es parte del
-chiste. El Video 41 (un chiste) salió así porque Veronica lo pidió para ESE
+chiste (con la ventana del clip lo bastante larga: si no, no hay aire y solo
+el aviso de la consola lo dice), `"whoosh": false` en el clip que entra después
+de un remate, `"ganancia"` (dB) para una línea dicha lejos del micrófono y
+`"ganchoSegundos"` para que el gancho dure lo que tarda la frase que lo contesta. El Video 41 (un chiste) salió así porque Veronica lo pidió para ESE
 video; **no es una regla para la comedia** — eso lo deciden ellos, video a video.
 
 ### Marca en los reels: el Brand Book, con energía
@@ -162,7 +195,7 @@ En el plan, `overlays` en el clip; `npm run assets` busca y fija:
 | Qué | Cuándo | Fuente |
 | --- | --- | --- |
 | `icon` | Un objeto o concepto que se nombra: la herramienta, la medida, el precio | Iconify, un set por video (`iconSet`) |
-| `sticker` | Una reacción o emoción: 🔥 🤯 💸 ✅ | `emoji:🔥` (Noto animado, parejo) o búsqueda LottieFiles (estilo variable) |
+| `sticker` | Una reacción o emoción. **Sin emoji (prohibido desde el 3-nov, ver Reglas duras)** | Animación LottieFiles que se vea profesional, o ícono propio; si no hay, `photo` o `icon` |
 | `photo` | Algo que se menciona y no está en el material: una tienda, un producto de referencia | SourceSplash (Pexels) o Wikimedia |
 
 Criterio:
@@ -477,6 +510,10 @@ resamplear. Entre 1.1 y 1.2 no se nota como "acelerado", solo se siente más
 Se eligió midiendo, no de oído a ciegas: varía solo 6 dB a lo largo del tema, así
 que no salta por encima del diálogo. Las alternativas variaban 21 y 35 dB y
 peleaban con la voz. **Si cambias la música, mide la variación de nivel primero.**
+
+Ojo: esa cama es de tono *tutorial*. Para un reel de humor o de historia (Video 44
+v3) Cris dijo que "suena a tutorial": elige la música por video con `musicSrc` y
+escúchala contra la voz antes de entregar.
 
 Para usar otra: `npm run reel -- --plan plans/<proyecto>.json --music <ruta>`.
 Nunca uses música comercial: Content ID la marca en Instagram y YouTube. El único

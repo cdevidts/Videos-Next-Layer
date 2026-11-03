@@ -24,17 +24,21 @@
       "slug": "video-45",
       "estado": "pendiente",
       "clipsEnDrive": 11,
-      "nota": "Proyecto/ tiene NL45.prproj: se edito en Premiere. Confirmar con Veronica antes de hacerlo de nuevo. Es el unico con un archivo en Sonido/."
+      "nota": "Proyecto/ tiene NL45.prproj: se edito en Premiere. Confirmar con Veronica antes de hacerlo de nuevo. Es el unico con un archivo en Sonido/. Mismo rodaje y bidé que el 44; el 44 usa 7507, 7514 y 7515. Le queda la persecucion por la casa y el cajon secreto. Cris (3-nov): el 45 es la imitacion de un reel de Instagram donde piden una pieza extraña que no tienen; se hace casi COMPLETO, con a lo mas un par de clips del 44, y es otro video que el 44. Esperando sus referencias; no lo edites antes."
     },
     "Video 44": {
       "slug": "video-44",
-      "estado": "pendiente",
-      "clipsEnDrive": 2
+      "estado": "en-curso",
+      "clipsEnDrive": 2,
+      "plan": "plans/video-44.json",
+      "render": "renders/video-44-reel.mp4",
+      "nota": "v3 30-oct (34,1 s) RECHAZADA por Cris el 3-nov para publicar: colores oscuros sin corrección por toma, emoji como gráfica (prohibido), mezcla el 44 con el 45 (son dos videos) y música de tutorial. No se re-editó a propósito: Cris va a subir referencias. No marcar entregado. Detalle en docs/journal.md (3-nov) y en la skill, Reglas duras de Cris."
     },
     "Video 43": {
       "slug": "video-43",
       "estado": "pendiente",
-      "clipsEnDrive": 1
+      "clipsEnDrive": 1,
+      "nota": "Parodia de Russell (Up) en la puerta, camara en el suelo y de costado (rotar -90). Sin impresion 3D en cuadro: preguntar para que se grabo."
     },
     "Video 41": {
       "slug": "video-41",

@@ -3,6 +3,9 @@
  *
  *   npm run next                          # el siguiente proyecto sin entregar
  *   npm run next -- --project "Video 43"  # uno en particular
+ *   npm run next -- --project "Video 45" --solo-material
+ *       # lo baja y lo transcribe para usar sus clips en OTRO video, sin
+ *       # marcarlo "en-curso" (el 44 se armó con planos del 45)
  *
  * Elige el proyecto, lo baja entero con la compuerta de conteo, extrae audio,
  * transcribe y arma el digest. Se detiene justo donde empieza el criterio:
@@ -75,7 +78,7 @@ const main = async () => {
   // 4. Registro: en curso, para que la próxima sesión lo retome.
   const registro = leerRegistro();
   const entrada = registro.videos[m.proyecto];
-  if (entrada && entrada.estado !== 'entregado') {
+  if (entrada && entrada.estado !== 'entregado' && !argv.includes('--solo-material')) {
     entrada.estado = 'en-curso';
     fs.writeFileSync(REGISTRO, `${JSON.stringify(registro, null, 2)}\n`);
   }
@@ -87,11 +90,12 @@ const main = async () => {
 
   1. Lee ${path.join(dir, 'DIGEST.md')} y abre CADA hoja de _digest/
      (${m.archivos.filter((a) => a.tipo === 'clip').length} clips — ninguno se descarta sin mirarlo).
-  2. Escribe ${plan}${fs.existsSync(plan) ? ' (ya existe: revísalo)' : ` partiendo de plans/_plantilla.json`}.
-  3. npm run assets -- --plan ${plan}     # íconos, stickers, fotos, efectos
-  4. npm run check  -- --plan ${plan}
-  5. npm run reel   -- --plan ${plan}
-  6. npm run watch  -- renders/${m.slug}-reel.mp4   y lee GUION.md
+  2. npm run tramos -- --project ${m.slug}   # retranscribe cada tramo aislado; compáralo con la hoja
+  3. Escribe ${plan}${fs.existsSync(plan) ? ' (ya existe: revísalo)' : ` partiendo de plans/_plantilla.json`}.
+  4. npm run assets -- --plan ${plan}     # íconos, stickers, fotos, efectos
+  5. npm run check  -- --plan ${plan}
+  6. npm run reel   -- --plan ${plan}
+  7. npm run watch  -- renders/${m.slug}-reel.mp4   y lee GUION.md
 ────────────────────────────────────────────────────────────────`);
 };
 

@@ -48,8 +48,16 @@ export const elegir = (
   n: number,
   opciones: {proyecto: string; grave?: boolean; excluir?: string[]},
 ): SfxRef[] => {
+  // Lots of Sounds no declara licencia por sonido: para una marca que publica en
+  // Instagram no entra salvo que alguien lo pida a propósito (SFX_LOTS=1).
+  const conLots = process.env.SFX_LOTS === '1';
   let aptos = leerCatalogo().filter(
-    (e) => e.rol === rol && e.apto && fs.existsSync(path.join('public', e.archivo)) && !opciones.excluir?.includes(e.id),
+    (e) =>
+      e.rol === rol &&
+      e.apto &&
+      (conLots || e.fuente !== 'lotsofsounds') &&
+      fs.existsSync(path.join('public', e.archivo)) &&
+      !opciones.excluir?.includes(e.id),
   );
   if (!aptos.length) return [];
   if (opciones.grave) {

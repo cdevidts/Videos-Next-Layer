@@ -7,8 +7,9 @@
  * análisis y de hojas de contacto usan el de sistema (`/usr/bin/ffmpeg`, que en
  * la imagen de Claude Code en la nube viene completo, con librsvg incluso).
  *
- * El render del reel NO depende de esto: solo el análisis. Si falta, se dice qué
- * instalar en vez de caer a medias.
+ * El render del reel NO depende de esto, salvo si el plan pide `ganancia` en un
+ * clip (la copia del audio lleva `volume` y `alimiter`, que el recortado no
+ * tiene). Si falta, se dice qué instalar en vez de caer a medias.
  */
 import {execFileSync} from 'node:child_process';
 

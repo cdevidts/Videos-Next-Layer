@@ -109,7 +109,11 @@ const FORMA: Record<Rol, (e: Efecto) => string | null> = {
  */
 export const buscarEfecto = async (terminos: string, duracionDeseada?: number): Promise<Efecto[]> => {
   const encontrados: Efecto[] = [];
-  const lots = await fetch(`https://api.lotsofsounds.com/api/v1/sounds/sample?q=${encodeURIComponent(terminos)}`).catch(() => null);
+  // Sin licencia declarada por sonido: solo con SFX_LOTS=1 (ver `elegir` en lib/sonido.ts).
+  const lots =
+    process.env.SFX_LOTS === '1'
+      ? await fetch(`https://api.lotsofsounds.com/api/v1/sounds/sample?q=${encodeURIComponent(terminos)}`).catch(() => null)
+      : null;
   if (lots?.ok) {
     const d = (await lots.json()) as {data?: Array<{id: string; name: string}>};
     for (const x of d.data ?? []) {
