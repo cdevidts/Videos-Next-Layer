@@ -61,6 +61,10 @@ const fijarSfx = async (valor: string | undefined, proyecto: string, duracion?: 
     const [mejor] = await buscarEfecto(terminos, duracion);
     if (!mejor) throw new Error(`No encontré un sonido para "${terminos}". Prueba otros términos en inglés.`);
     console.log(`   🔊 "${terminos}" → ${mejor.id}  ${mejor.nombre} (${mejor.duracion}s)`);
+    if (mejor.fuente === 'lotsofsounds') {
+      console.log('   ⚠️  Lots of Sounds no declara licencia por sonido: para un reel comercial prefiere uno de Mixkit');
+      console.log('      (prueba otros términos o fija un id sfx:mixkit-… del catálogo).');
+    }
     return `sfx:${mejor.id}`;
   }
   if (valor.startsWith('@')) {
