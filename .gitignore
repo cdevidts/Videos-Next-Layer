@@ -32,3 +32,10 @@ public/sfx/
 public/assets/sfx/*.mp3
 public/assets/lottie/
 public/assets/photos/
+
+# Grafo de conocimiento (graphify): se commitea graph.json + GRAPH_REPORT.md,
+# no la cache ni el HTML (se regeneran con `npm run grafo`).
+graphify-out/cache/
+graphify-out/graph.html
+graphify-out/GRAPH_TREE.html
+graphify-out/20*/

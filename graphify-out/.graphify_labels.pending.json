@@ -1,0 +1,17 @@
+{
+  "0": "sfxCatalog.ts",
+  "1": "run",
+  "2": "ref_node_fs",
+  "7": "Reels de Next Layer",
+  "13": "transcribeTramos.ts",
+  "20": "El flujo real de producción (Video 44, v1 a v3, 30-oct-2026)",
+  "22": "checkSync.ts",
+  "23": "extractAudio.ts",
+  "25": "status.ts",
+  "26": "watchReel.ts",
+  "27": "Instrucciones para el agente",
+  "28": "processClip.ts",
+  "29": "probe",
+  "30": "media.ts",
+  "31": "cierre.ts"
+}

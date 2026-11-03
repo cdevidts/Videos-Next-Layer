@@ -1,0 +1,9 @@
+# Ruido para el grafo: librerias minificadas y media bajada
+*.min.js
+brand/cierre/gsap.min.js
+public/assets/
+public/input/
+out/
+renders/
+node_modules/
+graphify-out/
