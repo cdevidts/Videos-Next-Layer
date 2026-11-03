@@ -4,130 +4,135 @@
 - cluster-only mode — file stats not available
 
 ## Summary
-- 611 nodes · 1128 edges · 27 communities (26 shown, 1 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 32 edges (avg confidence: 0.93)
-- Token cost: 49,634 input · 365 output
+- 654 nodes · 1200 edges · 32 communities (31 shown, 1 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.94)
+- Token cost: 50,308 input · 465 output
 
 ## Graph Freshness
-- Built from commit: `0d761607`
+- Built from commit: `859ec474`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Plan build and transcript loading
-- Audio sync and probing
-- Font and audio extraction
-- Reel pipeline instructions
-- Package dependencies
-- Drive clip fetching
-- Asset and overlay selection
-- Reels skill playbook
-- Transcript digest builder
+- Lessons and Video 44 feedback
+- Color matching and analysis
+- Font and sound fetching
+- Remotion reel rendering and captions
+- Package dependencies and metadata
+- Google Drive clip fetching
+- Asset and plan helpers
+- Reel production playbook
+- Pipeline status and clip checks
 - npm script commands
 - Project decision journal
-- Transcription and energy analysis
-- TypeScript configuration
-- Lessons learned and tooling
-- Audio design rules
+- Clip transcription and energy
+- TypeScript compiler configuration
+- Frame and transcript tooling
+- Sound design rules
 - HyperFrames configuration
-- Drive setup README
-- Cierre package scripts
-- AGENTS.md HyperFrames guide
-- Cierre CLAUDE.md guide
-- Pace and speed adjustment
-- Graph build script
-- Caption sync and timing
-- Reel hook and graphics craft
-- Project context map
-- Font and effect diagnostics
-- Video verification notes
+- Drive setup and workflow README
+- Closing package scripts
+- AGENTS.md HyperFrames guidance
+- Closing CLAUDE.md HyperFrames guidance
+- Production workflow for reels
+- Graph regeneration script
+- Audio sync checking
+- Audio extraction from video
+- Context map and closing protocol
+- Project status reporting
+- Watch and review reel output
+- Repo CLAUDE.md agent instructions
+- Subtitle processing
+- Reel review tooling
+- Media normalization and ffmpeg
+- Closing HTML generation
 
 ## God Nodes (most connected - your core abstractions)
-1. `scripts` - 31 edges
-2. `Bitácora de decisiones` - 23 edges
+1. `scripts` - 33 edges
+2. `Bitácora de decisiones` - 27 edges
 3. `run()` - 21 edges
 4. `VerticalReel()` - 19 edges
-5. `main()` - 17 edges
-6. `Reels de Next Layer` - 16 edges
-7. `compilerOptions` - 14 edges
-8. `probe()` - 13 edges
-9. `fetchDriveClip()` - 12 edges
-10. `conPlan()` - 12 edges
+5. `main()` - 18 edges
+6. `Reels de Next Layer` - 17 edges
+7. `El flujo real de producción (Video 44, v1 a v3, 30-oct-2026)` - 16 edges
+8. `syncCaptions()` - 14 edges
+9. `compilerOptions` - 14 edges
+10. `probe()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `La cadena para que una corrección humana sobreviva` --references--> `syncCaptions()`  [INFERRED]
-  docs/journal.md → scripts/syncCaptions.ts
-- `Gráfica: cinética, no diapositiva` --references--> `pop()`  [INFERRED]
-  .claude/skills/reel-nextlayer/SKILL.md → src/VerticalReel.tsx
+- `Directiva de dirección de arte y sonido` --references--> `VerticalReel()`  [INFERRED]
+  CLAUDE.md → src/VerticalReel.tsx
 - `6. Un riser tiene que crecer y desembocar en algo` --references--> `VerticalReel()`  [INFERRED]
   .claude/skills/reel-nextlayer/SKILL.md → src/VerticalReel.tsx
 - `Jerarquía de audio (no se negocia)` --references--> `VerticalReel()`  [INFERRED]
   .claude/skills/reel-nextlayer/SKILL.md → src/VerticalReel.tsx
 - `Lo que hace que el cierre funcione` --references--> `VerticalReel()`  [INFERRED]
   .claude/skills/reel-nextlayer/SKILL.md → src/VerticalReel.tsx
+- `La cadena para que una corrección humana sobreviva` --references--> `syncCaptions()`  [INFERRED]
+  docs/journal.md → scripts/syncCaptions.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (27 total, 1 thin omitted)
+## Communities (32 total, 1 thin omitted)
 
-### Community 0 - "Plan build and transcript loading"
-Cohesion: 0.11
-Nodes (28): arg(), argv, flag(), loadTranscript(), main(), mergeRanges(), normalizar(), Plan (+20 more)
-
-### Community 1 - "Audio sync and probing"
-Cohesion: 0.08
-Nodes (40): arg(), argv, ff(), main(), mejorLag(), muestras(), Shot, Word (+32 more)
-
-### Community 2 - "Font and audio extraction"
-Cohesion: 0.08
-Nodes (26): main(), paginaHtml(), argv, AUDIO_EXTENSIONS, audioDir, files, hqDir, projectDir (+18 more)
-
-### Community 3 - "Reel pipeline instructions"
-Cohesion: 0.05
-Nodes (65): Contexto y memoria (leer `docs/contexto.md` antes de explorar), Directiva de dirección de arte y sonido, Entorno, "Haz el siguiente video", Instrucciones para el agente, Reglas del repositorio, Referencias del motor, Verificar antes de entregar (+57 more)
-
-### Community 4 - "Package dependencies"
-Cohesion: 0.05
-Nodes (48): author, bugs, url, dependencies, googleapis@^178.0.0, lottie-web@5.13.0, react-dom@^19.2.8, @remotion/cli@^4.0.520 (+40 more)
-
-### Community 5 - "Drive clip fetching"
+### Community 0 - "Lessons and Video 44 feedback"
 Cohesion: 0.07
-Nodes (50): dotenv@^17.4.2, dotenv, fetchDriveClip(), FetchOptions, parseArgs(), pickMainClip(), AssetKind, AUDIO_EXTENSIONS (+42 more)
+Nodes (40): Feedback de Cris sobre el Video 44 v3 (3-nov-2026), Gráfica, Herramientas, Lecciones ya pagadas, Plugins del proyecto, Sonido, Tipografía, fijarSfx() (+32 more)
 
-### Community 6 - "Asset and overlay selection"
-Cohesion: 0.07
-Nodes (61): arg(), argv, buscar(), Clip, conPlan(), fijarSfx(), Fila, hojaCandidatos() (+53 more)
+### Community 1 - "Color matching and analysis"
+Cohesion: 0.33
+Nodes (10): run(), acotar(), analyze(), arg(), argv, ColorStats, escalaDe(), filterFor() (+2 more)
 
-### Community 7 - "Reels skill playbook"
+### Community 2 - "Font and sound fetching"
 Cohesion: 0.18
-Nodes (10): Antes que nada: mira el video, no los frames, Comandos, El cierre: HyperFrames, no React, El orden correcto de trabajo, Honestidad del contenido, Lo que hace que el cierre funcione, Música, Reels de Next Layer (+2 more)
+Nodes (9): main(), paginaHtml(), cubreLatinBasico(), FaceMeta, FAMILIES, main(), parseBlocks(), MUSIC (+1 more)
 
-### Community 8 - "Transcript digest builder"
-Cohesion: 0.11
-Nodes (30): argv, dichoEn(), digest(), FUENTE, hoja(), leerTranscripcion(), mmss(), Palabra (+22 more)
+### Community 3 - "Remotion reel rendering and captions"
+Cohesion: 0.06
+Nodes (63): Subtítulos y sincronía, Gráfica: cinética, no diapositiva, Referencias del motor, 2026-09-05 · Se instaló la skill oficial de Remotion, 2026-10-29 · La marca de los reels pasa al Brand Book, con energía, 2026-10-30 · Video 44, v2 y v3 — "poco cómico" y la instalación en el lugar equivocado, con medición. De paso apareció un bug real de tipografías que llevaba varios renders., El desfase de audio: no existía, y perseguirlo enseñó algo (+55 more)
+
+### Community 4 - "Package dependencies and metadata"
+Cohesion: 0.05
+Nodes (50): author, bugs, url, dependencies, dotenv@^17.4.2, googleapis@^178.0.0, lottie-web@5.13.0, react-dom@^19.2.8 (+42 more)
+
+### Community 5 - "Google Drive clip fetching"
+Cohesion: 0.08
+Nodes (41): fetchDriveClip(), FetchOptions, pickMainClip(), AssetKind, AUDIO_EXTENSIONS, classifyAsset(), downloadFile(), DRIVE_SCOPES (+33 more)
+
+### Community 6 - "Asset and plan helpers"
+Cohesion: 0.09
+Nodes (51): arg(), argv, buscar(), Clip, conPlan(), Fila, hojaCandidatos(), hojaFilas() (+43 more)
+
+### Community 7 - "Reel production playbook"
+Cohesion: 0.06
+Nodes (38): 10. Render (background) y revisión de verdad, Material y transcripción, Antes que nada: mira el video, no los frames, Comandos, Cómo diagnosticar algo así, Efecto en la gráfica, El cierre: HyperFrames, no React, El gancho vive en los primeros 1,5 segundos (+30 more)
+
+### Community 8 - "Pipeline status and clip checks"
+Cohesion: 0.08
+Nodes (38): 2026-09-24 · El pipeline pasa a ser agéntico: "haz el siguiente video", Descartado, con razón, Drive: el bloqueo de semanas no existía, Gráfica y sonido desde APIs, elegidos por video, La regla de ingreso, en código, Pendiente, Tokens, Verificado (+30 more)
 
 ### Community 9 - "npm script commands"
 Cohesion: 0.06
-Nodes (31): scripts, assets, audio, captions, check, cierre, color, dev (+23 more)
+Nodes (33): scripts, assets, audio, captions, check, cierre, color, dev (+25 more)
 
 ### Community 10 - "Project decision journal"
-Cohesion: 0.06
-Nodes (32): 2026-09-04 · Qué se descartó y por qué, 2026-09-04 · Se evaluaron 3 herramientas externas de video (heygen-com/hyperframes,, 2026-09-04 · Video 46: elección de material y guion, 2026-09-05 · Diseño sonoro: dos errores que la usuaria detectó de oído, 2026-09-05 · El gancho real lo dijo la usuaria, no el modelo, 2026-09-05 · Se probó HyperFrames a fondo (la usuaria pidió meterlo "sí o sí") y se descartó, 2026-09-05 (tarde) · Se rehizo el tercio final. Y se corrigió el veredicto sobre, 2026-09-05 · Video 46 v2: se rehizo entero. El v1 estaba mal por omisión. (+24 more)
+Cohesion: 0.07
+Nodes (28): 2026-09-04 · Qué se descartó y por qué, 2026-09-04 · Se evaluaron 3 herramientas externas de video (heygen-com/hyperframes,, 2026-09-04 · Video 46: elección de material y guion, 2026-09-05 · Diseño sonoro: dos errores que la usuaria detectó de oído, 2026-09-05 · El gancho real lo dijo la usuaria, no el modelo, 2026-09-05 · Se probó HyperFrames a fondo (la usuaria pidió meterlo "sí o sí") y se descartó, 2026-09-05 (tarde) · Se rehizo el tercio final. Y se corrigió el veredicto sobre, 2026-09-05 · Video 46 v2: se rehizo entero. El v1 estaba mal por omisión. (+20 more)
 
-### Community 11 - "Transcription and energy analysis"
+### Community 11 - "Clip transcription and energy"
 Cohesion: 0.18
 Nodes (16): 2026-09-04 · Detalles técnicos que costaron encontrar, alignWords(), arg(), argv, ClipTranscript, dropMarkers(), energyRanges(), main() (+8 more)
 
-### Community 12 - "TypeScript configuration"
+### Community 12 - "TypeScript compiler configuration"
 Cohesion: 0.12
 Nodes (15): compilerOptions, allowSyntheticDefaultImports, esModuleInterop, forceConsistentCasingInFileNames, jsx, lib, module, moduleResolution (+7 more)
 
-### Community 13 - "Lessons learned and tooling"
-Cohesion: 0.25
-Nodes (7): Gráfica, Herramientas, Lecciones ya pagadas, Material y transcripción, Plugins del proyecto, Sonido, Tipografía
+### Community 13 - "Frame and transcript tooling"
+Cohesion: 0.16
+Nodes (14): arg(), argv, GIRO, main(), ffmpegCompleto(), tieneFiltros(), arg(), argv (+6 more)
 
-### Community 14 - "Audio design rules"
+### Community 14 - "Sound design rules"
 Cohesion: 0.17
 Nodes (12): 1. El sonido tiene que corresponder a lo que se ve, 2. El whoosh va en cada cambio de escena, y solo ahí, 3. Audio opaco, 4. Efectos sintetizados, 5. El mismo sonido repetido, 6. Un riser tiene que crecer y desembocar en algo, 7. El cross-fade encima las dos voces, 8. La velocidad no puede saltar dentro de una misma idea (+4 more)
 
@@ -135,45 +140,65 @@ Nodes (12): 1. El sonido tiene que corresponder a lo que se ve, 2. El whoosh va 
 Cohesion: 0.20
 Nodes (9): authoringSkill, media, autoProxy, paths, assets, blocks, components, registry (+1 more)
 
-### Community 16 - "Drive setup README"
+### Community 16 - "Drive setup and workflow README"
 Cohesion: 0.20
 Nodes (9): 1. Estructura esperada en Drive, 2. Credenciales de Google Cloud, 3. El flujo completo, 4. El plan de edición, 6. Retomar una sesión cortada, 7. Notas, Opción A — Service Account (recomendada para automatizar), Opción B — OAuth2 con tu cuenta (+1 more)
 
-### Community 17 - "Cierre package scripts"
+### Community 17 - "Closing package scripts"
 Cohesion: 0.22
 Nodes (8): name, private, scripts, check, dev, publish, render, type
 
-### Community 18 - "AGENTS.md HyperFrames guide"
+### Community 18 - "AGENTS.md HyperFrames guidance"
 Cohesion: 0.25
 Nodes (7): Commands, Documentation, HyperFrames Composition Project, Key Rules, Linting — ALWAYS RUN AFTER CHANGES, Project Structure, Skills — USE THESE FIRST
 
-### Community 19 - "Cierre CLAUDE.md guide"
+### Community 19 - "Closing CLAUDE.md HyperFrames guidance"
 Cohesion: 0.25
 Nodes (7): Commands, Documentation, HyperFrames Composition Project, Key Rules, Linting — ALWAYS RUN AFTER CHANGES, Project Structure, Skills — USE THESE FIRST
 
-### Community 20 - "Pace and speed adjustment"
-Cohesion: 0.25
-Nodes (6): Ritmo: acelerar lo que no se mueve, argv, atempo(), Shot, WHISPER_PATH, Word
+### Community 20 - "Production workflow for reels"
+Cohesion: 0.12
+Nodes (15): 0. Contexto barato primero (2 min), 11. Panel de críticos sobre el render (la v2 → v3 del 44), 1. Bajar el POOL, no solo el siguiente video (15–25 min, en background), 2. Mirar cada hoja y escribir UNA línea por clip, 3. Transcribir tramo por tramo, y desconfiar igual, 4. Mapear historias, no carpetas, 5. Gancho: tres candidatos, una segunda opinión sin anclar, 6. Ventanas exactas con frames de verdad (+7 more)
 
-### Community 22 - "Caption sync and timing"
-Cohesion: 0.29
-Nodes (7): Subtítulos y sincronía, Jerga: lo que whisper no entiende suele ser lo mejor del video, La solución de fondo: transcribir el audio ya montado, Ojo: `npm run captions` suelto no es idempotente, Por qué no alcanza con alinear sobre el audio original, Subtítulos: cómo verificar que calzan (y por qué se rompen), syncCaptions()
+### Community 22 - "Audio sync checking"
+Cohesion: 0.33
+Nodes (9): arg(), argv, ff(), framesDe(), main(), mejorLag(), muestras(), Shot (+1 more)
 
-### Community 23 - "Reel hook and graphics craft"
-Cohesion: 0.29
-Nodes (7): El gancho vive en los primeros 1,5 segundos, Gráfica: cinética, no diapositiva, La capa gráfica: se baja, y se elige para este video, La curva de energía, Marca en los reels: el Brand Book, con energía, Qué hace que un reel funcione, Ritmo
+### Community 23 - "Audio extraction from video"
+Cohesion: 0.20
+Nodes (8): argv, AUDIO_EXTENSIONS, audioDir, files, hqDir, projectDir, VIDEO_EXTENSIONS, vocesEnOff()
 
-### Community 24 - "Project context map"
+### Community 24 - "Context map and closing protocol"
 Cohesion: 0.40
 Nodes (4): El grafo (graphify), Fuentes y dónde están, Mapa de contexto de Next Layer, Protocolo de cierre (lo que mantiene todo al día)
 
-### Community 25 - "Font and effect diagnostics"
-Cohesion: 0.50
-Nodes (4): Cómo diagnosticar algo así, Efecto en la gráfica, Por qué existe ese comando, Tipografía: cargarla no es aplicarla
+### Community 25 - "Project status reporting"
+Cohesion: 0.29
+Nodes (9): listFiles(), main(), mtime(), nextStep(), Plan, PlanClip, ProjectState, readProjects() (+1 more)
 
-### Community 26 - "Video verification notes"
-Cohesion: 0.50
-Nodes (4): 2026-09-17 · Versión final. El clip que estaba marcado `ignoreSpeech` tenía el mejor remate., Dos trampas nuevas, las dos ya con guardia, La cadena para que una corrección humana sobreviva, Verificado antes de entregar
+### Community 26 - "Watch and review reel output"
+Cohesion: 0.33
+Nodes (7): argv, ffmpeg(), flag(), main(), mmss(), niveles(), Palabra
+
+### Community 27 - "Repo CLAUDE.md agent instructions"
+Cohesion: 0.25
+Nodes (7): Contexto y memoria (leer `docs/contexto.md` antes de explorar), Directiva de dirección de arte y sonido, Entorno, "Haz el siguiente video", Instrucciones para el agente, Reglas del repositorio, Verificar antes de entregar
+
+### Community 28 - "Subtitle processing"
+Cohesion: 0.43
+Nodes (7): parseArgs(), arg(), argv, flag(), loadSubtitles(), main(), SubtitleCue
+
+### Community 29 - "Reel review tooling"
+Cohesion: 0.43
+Nodes (7): probe(), arg(), argv, levelBar(), main(), resolveInput(), rmsWindows()
+
+### Community 30 - "Media normalization and ffmpeg"
+Cohesion: 0.48
+Nodes (6): ffmpegCommand(), filtroGiro(), Giro, hasSystemFfmpeg(), MediaInfo, normalize()
+
+### Community 31 - "Closing HTML generation"
+Cohesion: 0.40
+Nodes (5): archivoCierre(), asegurarCierre(), HTML, Plan, RAIZ
 
 ## Knowledge Gaps
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
@@ -181,17 +206,17 @@ Nodes (4): 2026-09-17 · Versión final. El clip que estaba marcado `ignoreSpeec
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `VerticalReel()` connect `Reel pipeline instructions` to `Project decision journal`, `Audio design rules`, `Reels skill playbook`?**
-  _High betweenness centrality (0.099) - this node is a cross-community bridge._
-- **Should `Plan build and transcript loading` be split into smaller, more focused modules?**
-  _Cohesion score 0.10685483870967742 - nodes in this community are weakly interconnected._
-- **Why does `scripts` connect `npm script commands` to `Package dependencies`?**
-  _High betweenness centrality (0.087) - this node is a cross-community bridge._
-- **Should `Audio sync and probing` be split into smaller, more focused modules?**
-  _Cohesion score 0.08067375886524823 - nodes in this community are weakly interconnected._
-- **Why does `Bitácora de decisiones` connect `Project decision journal` to `Reel pipeline instructions`, `Video verification notes`, `Transcription and energy analysis`?**
-  _High betweenness centrality (0.083) - this node is a cross-community bridge._
-- **Should `Font and audio extraction` be split into smaller, more focused modules?**
-  _Cohesion score 0.07563025210084033 - nodes in this community are weakly interconnected._
-- **Should `Reel pipeline instructions` be split into smaller, more focused modules?**
-  _Cohesion score 0.05228105228105228 - nodes in this community are weakly interconnected._
+- **Why does `syncCaptions()` connect `Reel production playbook` to `Color matching and analysis`, `Project decision journal`, `Remotion reel rendering and captions`, `Asset and plan helpers`?**
+  _High betweenness centrality (0.123) - this node is a cross-community bridge._
+- **Should `Lessons and Video 44 feedback` be split into smaller, more focused modules?**
+  _Cohesion score 0.07373737373737374 - nodes in this community are weakly interconnected._
+- **Why does `Bitácora de decisiones` connect `Project decision journal` to `Remotion reel rendering and captions`, `Pipeline status and clip checks`, `Clip transcription and energy`, `Reel production playbook`?**
+  _High betweenness centrality (0.089) - this node is a cross-community bridge._
+- **Should `Remotion reel rendering and captions` be split into smaller, more focused modules?**
+  _Cohesion score 0.05621621621621622 - nodes in this community are weakly interconnected._
+- **Why does `VerticalReel()` connect `Remotion reel rendering and captions` to `Repo CLAUDE.md agent instructions`, `Sound design rules`, `Reel production playbook`?**
+  _High betweenness centrality (0.088) - this node is a cross-community bridge._
+- **Should `Package dependencies and metadata` be split into smaller, more focused modules?**
+  _Cohesion score 0.05203619909502263 - nodes in this community are weakly interconnected._
+- **Should `Google Drive clip fetching` be split into smaller, more focused modules?**
+  _Cohesion score 0.08163265306122448 - nodes in this community are weakly interconnected._

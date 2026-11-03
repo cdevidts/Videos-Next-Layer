@@ -26,15 +26,15 @@
     "semantic_hash": "8e3af86b39e2e3ecf74750f6fc22f0e0"
   },
   "package.json": {
-    "mtime": 1793313759.2777567,
-    "seen": 1793313760.1372604,
-    "ast_hash": "0f1ff8e73ae074a3f59a58efe7edbd5e",
+    "mtime": 1793715335.5100088,
+    "seen": 1793715461.8618703,
+    "ast_hash": "e3c7b51b113a312f49e6f6b742f98c28",
     "semantic_hash": ""
   },
   "plans/_plantilla.json": {
-    "mtime": 1793714981.3965945,
-    "seen": 1793715121.9314783,
-    "ast_hash": "4507032ff1e1c4f166ed23e56b691332",
+    "mtime": 1793715335.5140088,
+    "seen": 1793715461.8618731,
+    "ast_hash": "ca9893ed6cb8a839891b5e4f3369de4a",
     "semantic_hash": ""
   },
   "plans/video-41.json": {
@@ -52,10 +52,10 @@
     "ast_empty": true
   },
   "remotion.config.ts": {
-    "mtime": 1793312441.0428717,
-    "seen": 1793313625.0339525,
-    "ast_hash": "a2287d87ef0d3faf64552943368c8514",
-    "semantic_hash": "a2287d87ef0d3faf64552943368c8514"
+    "mtime": 1793715335.5289257,
+    "seen": 1793715461.8618832,
+    "ast_hash": "374edd18e787af29a60e457d38308a78",
+    "semantic_hash": ""
   },
   "scripts/assets.ts": {
     "mtime": 1793312441.4185855,
@@ -64,9 +64,9 @@
     "semantic_hash": "927f25d08fb6449eac649e9e53f6fa39"
   },
   "scripts/buildReel.ts": {
-    "mtime": 1793714981.3965945,
-    "seen": 1793715121.9314866,
-    "ast_hash": "7c3c565db9339e405e58da9203ffa464",
+    "mtime": 1793715335.8780088,
+    "seen": 1793715461.8618865,
+    "ast_hash": "6bbb479d6cff0cd0d0ca168d84ef677c",
     "semantic_hash": ""
   },
   "scripts/checkFonts.ts": {
@@ -76,16 +76,16 @@
     "semantic_hash": "8d542f6a662eb86b0e633a7b8fb4dac1"
   },
   "scripts/checkPlan.ts": {
-    "mtime": 1793312441.4222744,
-    "seen": 1793313625.0340226,
-    "ast_hash": "ee9a74f0f1c5add040bfeef23761faff",
-    "semantic_hash": "ee9a74f0f1c5add040bfeef23761faff"
+    "mtime": 1793715335.8780088,
+    "seen": 1793715461.8618896,
+    "ast_hash": "4276d4ac5dbcc5bf42fa5de35998c08f",
+    "semantic_hash": ""
   },
   "scripts/checkSync.ts": {
-    "mtime": 1793312441.4222744,
-    "seen": 1793313625.0340383,
-    "ast_hash": "50ad3828d4368548962f016871abb5a6",
-    "semantic_hash": "50ad3828d4368548962f016871abb5a6"
+    "mtime": 1793715335.8820088,
+    "seen": 1793715461.8618913,
+    "ast_hash": "6b3eb2a559b6b72e9fd1e2fa24177a52",
+    "semantic_hash": ""
   },
   "scripts/cierre.ts": {
     "mtime": 1793714981.3965945,
@@ -148,10 +148,10 @@
     "semantic_hash": "9861fda8d73b310a68a4ca3a57df6fed"
   },
   "scripts/lib/ffmpegFull.ts": {
-    "mtime": 1793312441.424596,
-    "seen": 1793313625.0342157,
-    "ast_hash": "11306b9a75c942ceafd85f31749e32b7",
-    "semantic_hash": "11306b9a75c942ceafd85f31749e32b7"
+    "mtime": 1793715335.8820088,
+    "seen": 1793715461.861914,
+    "ast_hash": "341c658e090a969f572c5e9c6fd97dcb",
+    "semantic_hash": ""
   },
   "scripts/lib/manifest.ts": {
     "mtime": 1793312441.424596,
@@ -166,10 +166,10 @@
     "semantic_hash": "03dc7cf2df96d55bd7c9df46b5099c09"
   },
   "scripts/lib/sonido.ts": {
-    "mtime": 1793312441.424596,
-    "seen": 1793313625.0342672,
-    "ast_hash": "701e969b4083aa11496947fad937ab11",
-    "semantic_hash": "701e969b4083aa11496947fad937ab11"
+    "mtime": 1793715335.8820088,
+    "seen": 1793715461.8619184,
+    "ast_hash": "9fa50b9d12831e6ae36ad3263c469c5b",
+    "semantic_hash": ""
   },
   "scripts/matchColor.ts": {
     "mtime": 1793312441.424596,
@@ -178,10 +178,10 @@
     "semantic_hash": "54462846a36a4bb9c5160191ef0fdf58"
   },
   "scripts/next.ts": {
-    "mtime": 1793312441.424596,
-    "seen": 1793313625.0342996,
-    "ast_hash": "ae4291d1a2f1ba65795c32aa0bd49ce1",
-    "semantic_hash": "ae4291d1a2f1ba65795c32aa0bd49ce1"
+    "mtime": 1793715335.8820088,
+    "seen": 1793715461.8619213,
+    "ast_hash": "d18b384488ae9ffac9696e8776534919",
+    "semantic_hash": ""
   },
   "scripts/processClip.ts": {
     "mtime": 1793714981.3965945,
@@ -202,10 +202,10 @@
     "semantic_hash": "f9b0910698039b8a30fe6640b92bc285"
   },
   "scripts/sfxCatalog.ts": {
-    "mtime": 1793312441.424596,
-    "seen": 1793313625.0343628,
-    "ast_hash": "d1fb757eac367249c87e846cd6c69607",
-    "semantic_hash": "d1fb757eac367249c87e846cd6c69607"
+    "mtime": 1793715335.8820088,
+    "seen": 1793715461.8619273,
+    "ast_hash": "18520aa8b9963efed26313ca2b4bbbcd",
+    "semantic_hash": ""
   },
   "scripts/status.ts": {
     "mtime": 1793312441.424596,
@@ -214,10 +214,10 @@
     "semantic_hash": "abb5b291e684bb0c89e92dbe1848924f"
   },
   "scripts/syncCaptions.ts": {
-    "mtime": 1793312441.424596,
-    "seen": 1793313625.0344222,
-    "ast_hash": "6a61aa6bff40c7b590b627e6e5334058",
-    "semantic_hash": "6a61aa6bff40c7b590b627e6e5334058"
+    "mtime": 1793715335.8860087,
+    "seen": 1793715461.86193,
+    "ast_hash": "383e0d6d822442692bf36be51b45b377",
+    "semantic_hash": ""
   },
   "scripts/transcribeClips.ts": {
     "mtime": 1793312441.424596,
@@ -263,9 +263,9 @@
     "semantic_hash": ""
   },
   "src/VerticalReel.tsx": {
-    "mtime": 1793714981.3965945,
-    "seen": 1793715121.9315336,
-    "ast_hash": "2300f7938f0726dd04dba21d99d0190a",
+    "mtime": 1793715335.8860087,
+    "seen": 1793715461.8619444,
+    "ast_hash": "d819b6532b7eea5abdc6f54def195b8b",
     "semantic_hash": ""
   },
   "src/fonts.generated.ts": {
@@ -287,10 +287,10 @@
     "semantic_hash": ""
   },
   "src/lib/reel.ts": {
-    "mtime": 1793312441.4275022,
-    "seen": 1793313625.0346,
-    "ast_hash": "379e9f06389611b2dc4cbb811f6d7881",
-    "semantic_hash": "379e9f06389611b2dc4cbb811f6d7881"
+    "mtime": 1793715335.8860087,
+    "seen": 1793715461.8619497,
+    "ast_hash": "7d3fc9ad65ad99fcb0d58a713c2d0cad",
+    "semantic_hash": ""
   },
   "src/lib/types.ts": {
     "mtime": 1793312441.4275022,
@@ -305,11 +305,10 @@
     "semantic_hash": "aec35eece7ef4ce043fc58a52457a784"
   },
   "videos.json": {
-    "mtime": 1793312441.4275022,
-    "seen": 1793313625.0346491,
-    "ast_hash": "fcc97c9f18a1a663ea80a46a6ef6b0d5",
-    "semantic_hash": "fcc97c9f18a1a663ea80a46a6ef6b0d5",
-    "ast_empty": true
+    "mtime": 1793715335.8860087,
+    "seen": 1793715461.8619545,
+    "ast_hash": "dcb02fc092ce214669ffd22356bb4e33",
+    "semantic_hash": ""
   },
   "public/brand/cierre.webm": {
     "mtime": 1793312441.0385854,
@@ -330,21 +329,21 @@
     "semantic_hash": ""
   },
   ".claude/skills/reel-nextlayer/SKILL.md": {
-    "mtime": 1793714981.3899877,
-    "seen": 1793715121.9315436,
-    "ast_hash": "c235bceeaec2df4549aee6a0ef05d930",
+    "mtime": 1793715335.5060089,
+    "seen": 1793715461.8619564,
+    "ast_hash": "a2a96478e50ef5867ff2c3cc6d0906ab",
     "semantic_hash": ""
   },
   ".claude/skills/reel-nextlayer/references/lecciones.md": {
-    "mtime": 1793312441.0178347,
-    "seen": 1793313760.1373236,
-    "ast_hash": "f4a375db466331ff29c5323c2ef7c898",
+    "mtime": 1793715335.5060089,
+    "seen": 1793715461.8619592,
+    "ast_hash": "4e8ee6a21d9f521510a428b503b18094",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1793714981.3899877,
-    "seen": 1793715121.931546,
-    "ast_hash": "e7447569e3b177c5b4b8a6f6a02c1453",
+    "mtime": 1793715335.5100088,
+    "seen": 1793715461.8619604,
+    "ast_hash": "fb148d8f7303be89e6b6b44e13a32125",
     "semantic_hash": ""
   },
   "README.md": {
@@ -372,15 +371,45 @@
     "semantic_hash": ""
   },
   "docs/journal.md": {
-    "mtime": 1793715117.8866613,
-    "seen": 1793715121.9315543,
-    "ast_hash": "59252c1c2056a5b1c71bb09ccf1894cb",
+    "mtime": 1793715459.60258,
+    "seen": 1793715461.861969,
+    "ast_hash": "96f33609d085befec51dfff51654d6c5",
     "semantic_hash": ""
   },
   "docs/contexto.md": {
     "mtime": 1793313886.9750898,
     "seen": 1793715121.931553,
     "ast_hash": "273ba839b31949e15ee3594f5eabf8c5",
+    "semantic_hash": ""
+  },
+  "plans/video-44.json": {
+    "mtime": 1793715335.5140088,
+    "seen": 1793715461.8618782,
+    "ast_hash": "0943af9afa9b08ddd7caad609859ab59",
+    "semantic_hash": ""
+  },
+  "scripts/frames.ts": {
+    "mtime": 1793715335.8820088,
+    "seen": 1793715461.8619032,
+    "ast_hash": "572e8e54e10fa8203aa27227e480f703",
+    "semantic_hash": ""
+  },
+  "scripts/transcribeTramos.ts": {
+    "mtime": 1793715335.8860087,
+    "seen": 1793715461.8619328,
+    "ast_hash": "f005c57cfb3f2aeee1ba67188d176f83",
+    "semantic_hash": ""
+  },
+  ".claude/skills/reel-nextlayer/references/flujo.md": {
+    "mtime": 1793715335.5060089,
+    "seen": 1793715461.8619576,
+    "ast_hash": "e698dc7b560575444185d75515fa1e12",
+    "semantic_hash": ""
+  },
+  "public/cierres/video-44.webm": {
+    "mtime": 1793715335.5289257,
+    "seen": 1793715461.8619733,
+    "ast_hash": "9d906e1492647e917d6d632bf55ff0be",
     "semantic_hash": ""
   },
   "package-lock.json": {
