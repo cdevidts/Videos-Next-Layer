@@ -48,6 +48,6 @@ loadAll()
   .then(() => continueRender(handle))
   .catch((error) => cancelRender(error));
 
-export const DISPLAY_FONT = 'Anton, "Arial Black", Impact, system-ui, sans-serif';
+export const DISPLAY_FONT = 'Montserrat, "Arial Black", Impact, system-ui, sans-serif';
 export const TEXT_FONT =
   'Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif';

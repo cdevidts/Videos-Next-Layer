@@ -53,9 +53,9 @@ export const asegurarCierre = (planPath: string, forzar = false): string | undef
     tagDer: plan.cierre.tagDer ?? '',
     marca: plan.cierre.marca ?? 'Next Layer',
     bajadaMarca: plan.cierre.bajadaMarca ?? 'IMPRESIÓN 3D',
-    primario: plan.primaryColor ?? '#0047AB',
-    secundario: plan.secondaryColor ?? '#00D4FF',
-    acento: plan.accentColor ?? '#FF6600',
+    primario: plan.primaryColor ?? '#011D62',
+    secundario: plan.secondaryColor ?? '#0382F7',
+    acento: plan.accentColor ?? '#FB830F',
   };
   const varsFile = path.join(RAIZ, 'out', `cierre-${proyecto}.vars.json`);
   const varsJson = `${JSON.stringify(vars, null, 2)}\n`;
