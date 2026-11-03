@@ -25,7 +25,7 @@
     "digest": "tsx scripts/digest.ts",
     "review": "tsx scripts/reviewReel.ts",
     "check": "tsx scripts/checkPlan.ts",
-    "skills": "npx -y skills add remotion-dev/skills && npx -y skills add Rajbharti06/Ultimate-Video-Editing-Skills",
+    "skills": "npx -y skills add remotion-dev/skills && npx -y skills add Rajbharti06/Ultimate-Video-Editing-Skills && npx -y skills add tenfoldmarc/video-edit-skill",
     "captions": "tsx scripts/syncCaptions.ts",
     "color": "tsx scripts/matchColor.ts",
     "fonts-check": "tsx scripts/checkFonts.ts",
