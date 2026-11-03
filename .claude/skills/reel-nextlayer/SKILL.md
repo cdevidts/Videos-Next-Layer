@@ -105,7 +105,8 @@ pocos tokens: los scripts miden y resumen, el agente lee resúmenes y decide.
 
 Antes de ordenar cortes lee `references/comedia-y-ritmo.md`: la historia en una línea,
 causa antes que efecto, setup rápido + pausa antes del remate + reacción después, y un
-checklist de orden. El Video 44 salió poco cómico por saltarse esto.
+checklist de orden. El Video 44 salió poco cómico por saltarse esto. Las *Reglas duras de
+Cris* de arriba mandan sobre la guía.
 
 ## Qué hace que un reel funcione
 
@@ -259,9 +260,9 @@ Si el plano pide algo específico (una sierra, una caja registradora):
 
 ### Licencias de lo que se baja
 `"buscar:<términos>"` también consulta Lots of Sounds, que **no declara licencia por sonido**:
-para un reel comercial, prefiere Mixkit (`assets` avisa). Los emoji animados de Noto son
-**CC BY 4.0**: pon el crédito en la descripción del post. Freesound: solo CC0 y a mano (su
-API es no comercial). Detalle en `references/comedia-y-ritmo.md` §5.
+para un reel comercial, prefiere Mixkit (`assets` avisa). Los emoji animados de Noto
+(`emoji:`) **no se usan**: emoji como gráfica está prohibido (*Reglas duras de Cris*). Freesound:
+solo CC0 y a mano (su API es no comercial). Detalle en `references/comedia-y-ritmo.md` §5.
 
 ### 3. Audio opaco
 Nunca uses `_audio/<clip>.wav` como pista del reel: es mono 16 kHz porque lo
