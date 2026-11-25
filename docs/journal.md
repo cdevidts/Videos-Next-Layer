@@ -1015,3 +1015,18 @@ eso va un seguimiento que no cambia su sustancia:
 **Lo que no se hizo**: bloquear `emoji:` en `npm run check`. Sería la compuerta de
 verdad, pero el plan del 44 v3 (que Cris pidió no tocar) todavía los usa y `check` lo
 frenaría; conviene decidirlo cuando se rehaga el 44.
+
+## 2026-11-25 · Se incorpora la carpeta EMPRESA IMPRESION al contexto
+
+Cris entregó la carpeta de Drive con el contexto de Next Layer que estaba pendiente
+(es la misma carpeta OneDrive de su computador). Se leyeron sus documentos de texto
+(contabilidad, informes, web, briefs de clientes, prospección) y se dejaron en la
+memoria del proyecto (`nextlayer-finanzas`, `nextlayer-web`, mapa en
+`nextlayer-context-sources`) y en el documento maestro (sección *Archivo de la
+empresa*). Aquí solo cambia `docs/contexto.md`, que la nombra como fuente.
+
+**Lo que no se hizo**: no se copiaron cifras contables ni datos personales al repo, y
+no se indexó la carpeta en el grafo (26 GB, casi todo STL, video y librerías).
+**Para el pipeline de video**: la *Matriz de contenido v1* de esa carpeta trae ideas de
+reels ya puntuadas (hook, formato, CTA) y conviene mirarla al elegir el gancho del
+próximo video.

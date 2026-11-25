@@ -25,6 +25,13 @@ y se para en cuanto alcanza.**
   `<Video N>/Videos/`, voces en `Sonido/`. La carpeta del proyecto en claude.ai
   apunta a la misma raíz. El grafo **no** indexa Drive: lo que se aprende de un
   video va a `videos.json`, al plan y al journal.
+- **Carpeta EMPRESA IMPRESION** (archivo real de la empresa, 26 GB): OneDrive del
+  computador de Cris y su copia en Drive (memoria `nextlayer-context-sources`, con el
+  mapa de subcarpetas). Para video sirve `CREACION CONTENIDO/` (crudos de reels hechos
+  a mano) y `ORGANIZACIÓN/Alineamiento 2026/` (Matriz de contenido v1 con ideas
+  puntuadas por hook, formato y CTA; métricas de 249 reels). Contabilidad y web viven
+  ahí también (memorias `nextlayer-finanzas` y `nextlayer-web`). No es una fuente del
+  pipeline: no se baja ni se indexa.
 - **Memoria del proyecto**: la lee el coordinador y cada hilo al empezar.
 - **Instagram**: vía Metricool; ver memoria `nextlayer-instagram`.
 
